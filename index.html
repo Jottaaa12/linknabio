@@ -9,8 +9,17 @@
     <meta property="og:description" content="Acesse nosso cardápio online, WhatsApp, Instagram e mais. Tudo que você precisa está aqui!">
     <meta property="og:image" content="https://i.imgur.com/d1KJ35R.jpeg">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://acaisabordaterra.deeliv.app/">
+    <meta property="og:url" content="https://www.acaisabordaterra.com.br/">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍇</text></svg>">
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8E9HZ5QYNT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-8E9HZ5QYNT');
+    </script>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -71,7 +80,6 @@
                  style="box-shadow: 0 0 30px -5px var(--accent-green);">
             
             <h1 class="text-2xl font-extrabold mt-6 tracking-tight">Açaí Sabor da Terra</h1>
-            
             <p class="mt-2 text-md opacity-70" style="color: var(--subtle-text);">Mais que açaí, uma experiência.</p>
 
             <div class="flex justify-center space-x-5 mt-6 text-xl" style="color: var(--subtle-text);">
@@ -109,7 +117,7 @@
         </footer>
     </main>
 
-    <div id="wifi-modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50" style="display: none;">
+    <div id="wifi-modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50">
         <div class="modal-content p-6 rounded-2xl shadow-2xl text-center relative max-w-xs w-full">
             <button data-close-modal="wifi-modal" class="absolute -top-3 -right-3 bg-white text-purple-700 w-8 h-8 rounded-full shadow-lg font-bold" aria-label="Fechar modal">×</button>
             <h3 class="text-lg font-bold mb-2">Conecte-se ao nosso Wi-Fi</h3>
@@ -124,7 +132,7 @@
             </div>
         </div>
     </div>
-    <div id="qr-modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50" style="display: none;">
+    <div id="qr-modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50">
         <div class="modal-content p-6 rounded-2xl shadow-2xl text-center relative max-w-xs w-full">
             <button data-close-modal="qr-modal" class="absolute -top-3 -right-3 bg-white text-purple-700 w-8 h-8 rounded-full shadow-lg font-bold" aria-label="Fechar modal">×</button>
             <h3 class="text-lg font-bold mb-4">Escaneie para Compartilhar</h3>
@@ -140,8 +148,8 @@
                 const button = document.getElementById(buttonId);
                 if (!modal || !button) return;
                 const closeButtons = modal.querySelectorAll(`[data-close-modal="${modalId}"]`);
-                const openModal = () => { modal.style.display = 'flex'; };
-                const closeModal = () => { modal.style.display = 'none'; };
+                const openModal = () => { modal.classList.remove('hidden'); };
+                const closeModal = () => { modal.classList.add('hidden'); };
                 button.addEventListener('click', openModal);
                 closeButtons.forEach(btn => btn.addEventListener('click', closeModal));
                 modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
@@ -149,13 +157,11 @@
             setupModal('qr-code-button', 'qr-modal');
             setupModal('wifi-button', 'wifi-modal');
 
-            // Lógica específica do QR Code da Página
+            // Lógica restante...
             document.getElementById('qr-code-button').addEventListener('click', () => {
                 const qrImage = document.getElementById('qr-image');
                 qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(window.location.href)}&qzone=1&bgcolor=1e0e20&color=e2e8f0`;
             });
-
-            // Lógica para copiar senha do Wi-Fi
             const copyPasswordBtn = document.getElementById('copy-password-button');
             if(copyPasswordBtn) {
                 const passwordSpan = document.getElementById('wifi-password');
@@ -172,8 +178,6 @@
                     });
                 });
             }
-
-            // Lógica dos Botões de Ação
             const vCardButton = document.getElementById('vcard-button');
             if(vCardButton) {
                 vCardButton.href = `data:text/vcard;charset=utf-8,${encodeURIComponent('BEGIN:VCARD\nVERSION:3.0\nN:Sabor da Terra;Açaí;;;\nFN:Açaí Sabor da Terra\nTEL;TYPE=CELL,PREF:+5588988229312\nEND:VCARD')}`;
@@ -187,8 +191,6 @@
                     } else { alert('A função de compartilhar não é suportada neste navegador.'); } 
                 });
             }
-            
-            // Lógica Final
             document.getElementById('current-year').textContent = new Date().getFullYear();
         });
     </script>
