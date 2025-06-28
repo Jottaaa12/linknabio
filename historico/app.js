@@ -32,7 +32,6 @@ const PainelControleModule = {
             const querySnapshot = await getDocs(collection(this.db, "registrosDiarios"));
             this.todosOsRegistros = querySnapshot.docs;
             
-            // *** AQUI ESTÁ A CORREÇÃO PRINCIPAL ***
             // Ordena os registros de forma segura, tratando registros antigos e novos
             this.todosOsRegistros.sort((a, b) => {
                 const dataA = a.data();
@@ -71,15 +70,15 @@ const PainelControleModule = {
         if (dataInicio) {
             const inicio = new Date(dataInicio + "T00:00:00");
             registrosFiltrados = registrosFiltrados.filter(doc => {
-                 const dataRegistro = doc.data().timestamp?.toDate() || new Date(doc.data().data + "T00:00:00");
-                 return dataRegistro >= inicio;
+                const dataRegistro = doc.data().timestamp?.toDate() || new Date(doc.data().data + "T00:00:00");
+                return dataRegistro >= inicio;
             });
         }
         if (dataFim) {
             const fim = new Date(dataFim + "T23:59:59");
              registrosFiltrados = registrosFiltrados.filter(doc => {
-                 const dataRegistro = doc.data().timestamp?.toDate() || new Date(doc.data().data + "T00:00:00");
-                 return dataRegistro <= fim;
+                const dataRegistro = doc.data().timestamp?.toDate() || new Date(doc.data().data + "T00:00:00");
+                return dataRegistro <= fim;
             });
         }
 
@@ -108,7 +107,7 @@ const PainelControleModule = {
         document.getElementById('mediaDiaria').textContent = this.formatCurrency(mediaDiaria);
     },
 
-    // Renderiza a lista de registros na tela
+    // Renderiza a lista de registros na tela (MODIFICADA)
     renderizarLista(registros) {
         const listaEl = document.getElementById('listaRegistros');
         listaEl.innerHTML = ''; // Limpa a lista
@@ -121,20 +120,36 @@ const PainelControleModule = {
         registros.forEach(doc => {
             const data = doc.data();
             const dataFormatada = data.timestamp ? data.timestamp.toDate().toLocaleDateString('pt-BR') : new Date(data.data + "T00:00:00").toLocaleDateString('pt-BR');
-            const itemEl = document.createElement('div');
-            itemEl.className = 'registro-item';
+            
+            const cardEl = document.createElement('div');
+            cardEl.className = 'registro-card'; // Usa a nova classe para o card
             
             const entradas = (parseFloat(data.dinheiroEntrada) || 0) + (parseFloat(data.pixEntrada) || 0) + (parseFloat(data.cartaoEntrada) || 0);
             const saidas = data.totalSaidas || (parseFloat(data.dinheiroSaida) || 0) + (parseFloat(data.pixSaida) || 0);
+            const saldo = entradas - saidas;
 
-            itemEl.innerHTML = `
-                <p><strong>Data:</strong> ${dataFormatada}</p>
-                <p><strong>Funcionário:</strong> ${data.funcionario}</p>
-                <p><strong>Entradas:</strong> ${this.formatCurrency(entradas)}</p>
-                <p><strong>Saídas:</strong> ${this.formatCurrency(saidas)}</p>
-                <p><strong>Saldo:</strong> ${this.formatCurrency(entradas - saidas)}</p>
+            // Estrutura HTML interna do card, mais organizada e semântica
+            cardEl.innerHTML = `
+                <div class="card-header">
+                    <h4>${dataFormatada}</h4>
+                    <p class="funcionario">${data.funcionario}</p>
+                </div>
+                <div class="card-body">
+                    <div class="info-row">
+                        <span>Entradas</span>
+                        <span class="valor-positivo">${this.formatCurrency(entradas)}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Saídas</span>
+                        <span class="valor-negativo">${this.formatCurrency(saidas)}</span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <span>Saldo do Dia</span>
+                    <strong>${this.formatCurrency(saldo)}</strong>
+                </div>
             `;
-            listaEl.appendChild(itemEl);
+            listaEl.appendChild(cardEl);
         });
     },
 
