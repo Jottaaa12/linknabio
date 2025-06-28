@@ -77,91 +77,99 @@
             parseData(text) {
                 const lines = text.split('\n');
                 const dailyRecords = new Map();
-
-                let currentDate = null;
+                let currentDateStr = null;
 
                 for (const line of lines) {
-                    // Tenta encontrar uma nova data
-                    const dateMatch = line.match(/Data: (\d{2}\/\d{2}\/\d{4})/);
-                    if (dateMatch) {
-                        currentDate = dateMatch[1];
-                        if (!dailyRecords.has(currentDate)) {
-                            // Inicializa o registro para este dia
-                            dailyRecords.set(currentDate, {
-                                data: '',
-                                funcionario: 'Histórico',
-                                dinheiroEntrada: 0, pixEntrada: 0, cartaoEntrada: 0,
-                                saida: 'nao', motivoSaida: [], dinheiroSaida: 0, pixSaida: 0,
-                                fidelidade: 'nao', fidelidadeQuantidade: 0,
-                                climaLoja: 'Bom', observacoesDia: [],
-                                dataDeRegistro: null,
-                                ajuste: { sistemaDinheiro: 0, realDinheiro: 0, diferencaDinheiro: 0, sistemaPix: 0, realPix: 0, diferencaPix: 0, motivo: '' }
-                            });
-                        }
+                    const trimmedLine = line.trim();
+                    if (!trimmedLine || trimmedLine.startsWith('---') || trimmedLine.startsWith('###') || trimmedLine.startsWith('COMPILADO')) {
+                        continue; // Pula linhas de cabeçalho ou vazias
                     }
 
-                    if (!currentDate) continue;
+                    const dateMatch = trimmedLine.match(/Data: (\d{2}\/\d{2}\/\d{4})/);
+                    if (dateMatch) {
+                        currentDateStr = dateMatch[1];
+                    }
 
-                    const record = dailyRecords.get(currentDate);
+                    if (!currentDateStr) continue;
+
+                    if (!dailyRecords.has(currentDateStr)) {
+                        dailyRecords.set(currentDateStr, {
+                            data: '', funcionario: 'Histórico',
+                            dinheiroEntrada: 0, pixEntrada: 0, cartaoEntrada: 0,
+                            saida: 'nao', motivoSaida: [], dinheiroSaida: 0, pixSaida: 0,
+                            fidelidade: 'nao', fidelidadeQuantidade: 0,
+                            climaLoja: 'Bom', observacoesDia: [],
+                            dataDeRegistro: null,
+                            ajuste: { sistemaDinheiro: 0, realDinheiro: 0, diferencaDinheiro: 0, sistemaPix: 0, realPix: 0, diferencaPix: 0, motivo: '' }
+                        });
+                    }
                     
-                    const valueMatch = line.match(/([+-]?R\$\s?[\d.,]+)/);
-                    const value = valueMatch ? parseFloat(valueMatch[1].replace('R$', '').replace(/\./g, '').replace(',', '.')) : 0;
+                    const record = dailyRecords.get(currentDateStr);
+                    
+                    const valueMatch = trimmedLine.match(/([+-])?R\$\s*([\d.,]+)/);
+                    if (!valueMatch) {
+                        if (trimmedLine.includes('TRANSFER')) {
+                            const description = (trimmedLine.split('|')[0].split(':')[1] || '').trim();
+                            record.observacoesDia.push(`Transferência Interna: ${description}`);
+                        }
+                        continue;
+                    }
+                    
+                    const sign = valueMatch[1] === '-' ? -1 : 1;
+                    const numberStr = valueMatch[2].replace(/\./g, '').replace(',', '.');
+                    const value = parseFloat(numberStr) * sign;
 
-                    const type = line.split(':')[0].trim();
-                    const description = (line.split('|')[0].split(':')[1] || '').trim();
-
-                    if (type.includes('ENTRADA')) {
-                        if (line.includes('| Dinheiro |')) record.dinheiroEntrada += value;
-                        if (line.includes('| Pix |')) record.pixEntrada += value;
-                        if (line.includes('| Cartão |')) record.cartaoEntrada += value;
-                    } else if (type.includes('SAÍDA')) {
+                    const descriptionMatch = trimmedLine.match(/:([^|]+)/);
+                    const description = descriptionMatch ? descriptionMatch[1].trim() : 'N/A';
+                    
+                    if (trimmedLine.includes('ENTRADA')) {
+                        if (trimmedLine.includes('| Dinheiro |')) record.dinheiroEntrada += value;
+                        else if (trimmedLine.includes('| Pix |')) record.pixEntrada += value;
+                        else if (trimmedLine.includes('| Cartão |')) record.cartaoEntrada += value;
+                    } else if (trimmedLine.includes('SAÍDA')) {
                         record.saida = 'sim';
                         record.motivoSaida.push(description);
-                        if (line.includes('| Dinheiro |')) record.dinheiroSaida += Math.abs(value);
-                        if (line.includes('| Pix |')) record.pixSaida += Math.abs(value);
+                        if (trimmedLine.includes('| Dinheiro |')) record.dinheiroSaida += Math.abs(value);
+                        else if (trimmedLine.includes('| Pix |')) record.pixSaida += Math.abs(value);
                         
                         const fidelidadeMatch = description.match(/(\d+)\s+Prêmios\s+Fidelidade/i);
                         if (fidelidadeMatch) {
                             record.fidelidade = 'sim';
                             record.fidelidadeQuantidade += parseInt(fidelidadeMatch[1], 10);
                         }
-                    } else if (type.includes('AJUSTE')) {
-                        if (value > 0) { // Ajuste positivo é entrada
-                            if (line.includes('| Dinheiro |')) record.dinheiroEntrada += value;
-                            if (line.includes('| Pix |')) record.pixEntrada += value;
-                        } else { // Ajuste negativo é saída
-                            record.saida = 'sim';
-                            record.motivoSaida.push('Ajuste de Caixa');
-                            if (line.includes('| Dinheiro |')) record.dinheiroSaida += Math.abs(value);
-                            if (line.includes('| Pix |')) record.pixSaida += Math.abs(value);
+                    } else if (trimmedLine.includes('AJUSTE')) {
+                        record.motivoSaida.push(`Ajuste de Caixa: ${description}`);
+                        if (value > 0) {
+                             if (trimmedLine.includes('| Dinheiro |')) record.dinheiroEntrada += value;
+                             else if (trimmedLine.includes('| Pix |')) record.pixEntrada += value;
+                        } else {
+                             record.saida = 'sim';
+                             if (trimmedLine.includes('| Dinheiro |')) record.dinheiroSaida += Math.abs(value);
+                             else if (trimmedLine.includes('| Pix |')) record.pixSaida += Math.abs(value);
                         }
-                    } else if (type.includes('TRANSFER')) {
-                        record.observacoesDia.push(`Transferência Interna: ${description}`);
                     }
                 }
 
-                // Finaliza e formata os registros
                 const formattedRecords = [];
                 for (const [dateStr, record] of dailyRecords.entries()) {
                     const [day, month, year] = dateStr.split('/');
-                    record.data = `${year}-${month}-${day}`;
-                    record.dataDeRegistro = new Date(record.data);
+                    if (!day || !month || !year) continue;
                     
-                    // Junta os motivos e observações
+                    record.data = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                    record.dataDeRegistro = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                    
                     record.motivoSaida = record.motivoSaida.join('; ');
                     record.observacoesDia = record.observacoesDia.join('; ');
 
-                    // Calcula os saldos finais para o ajuste
                     const saldoDinheiro = record.dinheiroEntrada - record.dinheiroSaida;
                     const saldoPix = record.pixEntrada - record.pixSaida;
                     record.ajuste.sistemaDinheiro = saldoDinheiro;
-                    record.ajuste.realDinheiro = saldoDinheiro; // Assume que o valor real é o do sistema
+                    record.ajuste.realDinheiro = saldoDinheiro;
                     record.ajuste.sistemaPix = saldoPix;
-                    record.ajuste.realPix = saldoPix; // Assume que o valor real é o do sistema
+                    record.ajuste.realPix = saldoPix;
 
                     formattedRecords.push(record);
                 }
-
                 return formattedRecords;
             },
 
@@ -186,12 +194,11 @@
 
                     statusEl.textContent = `Encontrados ${recordsToImport.length} registros. Iniciando importação para o Firebase...`;
 
-                    // Usar um "batch" para salvar todos os registros de uma vez é mais eficiente
                     const batch = writeBatch(this.db);
                     const recordsRef = collection(this.db, "registrosDiarios");
 
                     recordsToImport.forEach(record => {
-                        const newDocRef = doc(recordsRef); // Cria uma nova referência de documento com ID automático
+                        const newDocRef = doc(recordsRef);
                         batch.set(newDocRef, record);
                     });
 
