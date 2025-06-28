@@ -21,7 +21,9 @@
         .tab-button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
         .content { padding: 1.5rem; }
         .form-section, .card { background-color: var(--background-very-light); padding: 1.5rem; border-radius: var(--border-radius-lg); border: 1px solid var(--border-color); margin-bottom: 1.5rem; box-shadow: 0 4px 12px var(--shadow-color); }
-        h2 { color: var(--primary-color); margin-bottom: 1.5rem; font-size: 1.5rem; text-align: center; }
+        h2, h4 { color: var(--primary-color); text-align: center; }
+        h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
+        h4 { margin-bottom: 1rem; font-size: 1.2rem; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
         .form-group { display: flex; flex-direction: column; }
         .form-group.full-width { grid-column: 1 / -1; }
@@ -49,7 +51,7 @@
         .mood-option.selected, .mood-option:hover { background-color: var(--primary-lighter); transform: scale(1.1); }
         #fraseMotivacionalArea { margin-top: 1rem; padding: 1rem; background-color: var(--white); border-radius: var(--border-radius-md); border: 1px solid var(--primary-lighter); min-height: 50px; }
         #confirmacao .card, #envio .card { text-align: center; }
-        #resumo { text-align: left; white-space: pre-wrap; line-height: 1.8; }
+        #resumo { text-align: left; white-space: pre-wrap; line-height: 1.8; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); background-color: #fff;}
         .feedback-positivo { color: var(--success-color); font-weight: bold; }
         .feedback-negativo { color: var(--danger-color); font-weight: bold; }
         .feedback-elevado { color: var(--primary-color); font-weight: bold; }
@@ -57,34 +59,23 @@
         .toast.show { bottom: 30px; }
         .toast.success { background-color: var(--success-color); }
         .toast.error { background-color: var(--danger-color); }
-        #calculator-toggle { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background-color: var(--primary-color); color: var(--white); border-radius: 50%; border: none; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 999; transition: transform 0.2s ease; }
-        #calculator-toggle:hover { transform: scale(1.1); }
-        #pocket-calculator { position: fixed; bottom: 80px; right: 20px; width: 220px; background-color: var(--background-very-light); border-radius: var(--border-radius-lg); box-shadow: 0 5px 20px rgba(0,0,0,0.25); z-index: 1000; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--primary-lighter); transform: scale(0.95) translateY(10px); opacity: 0; visibility: hidden; transition: transform 0.2s ease, opacity 0.2s ease, visibility 0s 0.2s; }
-        #pocket-calculator.open { transform: scale(1) translateY(0); opacity: 1; visibility: visible; transition: transform 0.2s ease, opacity 0.2s ease, visibility 0s 0s; }
-        .calculator-header { padding: 5px 10px; background-color: var(--background-light); text-align: right; }
-        #calculator-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--primary-light); }
-        #calculator-display { background-color: var(--background-light); color: var(--primary-color); font-size: 1.8rem; text-align: right; padding: 10px 15px; word-wrap: break-word; min-height: 54px; }
-        #calculator-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background-color: var(--primary-lighter); padding: 1px; }
-        #calculator-buttons button { background-color: var(--white); border: none; padding: 15px 0; font-size: 1.1rem; font-weight: 500; cursor: pointer; transition: background-color 0.2s; }
-        #calculator-buttons button:hover { background-color: var(--background-light); }
-        #calculator-buttons .operator { background-color: var(--primary-lighter); color: var(--primary-color); font-weight: 600; }
-        #calculator-buttons .equals { grid-column: span 2; background-color: var(--primary-light); color: var(--white); }
-        #calculator-buttons .equals:hover { background-color: var(--primary-color); }
         .hidden { display: none !important; }
         .justify-center { justify-content: center; }
-        @media (max-width: 600px) { body { padding: 0.5rem; } .app-container { border-radius: 0; } .content { padding: 1rem; } .form-grid { grid-template-columns: 1fr; } .tab-button, .nav-link { padding: 0.8rem 0.5rem; font-size: 0.9rem; } #calculator-toggle { width: 45px; height: 45px; font-size: 1.3rem; } #pocket-calculator { width: calc(100% - 20px); bottom: 10px; right: 10px; } }
+        #ajusteCaixa { border-top: 2px solid var(--primary-lighter); margin-top: 1.5rem; padding-top: 1.5rem; }
+        .ajuste-group { margin-bottom: 1rem; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); }
+        .ajuste-group label { font-size: 1.1rem; font-weight: bold; margin-bottom: 0.8rem; display: block; }
+        .ajuste-group span { display: block; margin-bottom: 0.5rem; }
+        .ajuste-group input { margin-bottom: 0.5rem; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <!-- Navegação -->
         <nav class="tabs">
             <button class="tab-button active">📊 Registro Diário</button>
             <a href="/fiados/" class="nav-link">👥 Controle de Fiados</a>
         </nav>
 
-        <!-- Conteúdo Principal -->
         <main class="content">
             <div id="registroDiarioContainer">
                 <form id="registroForm">
@@ -104,110 +95,79 @@
                                 <label for="data">Data</label>
                                 <input type="date" id="data" required>
                             </div>
-                            
                             <div class="form-group full-width">
                                 <label>Entradas do Dia</label>
                                 <div class="form-grid">
-                                    <div class="form-group">
-                                        <label for="dinheiroEntrada">💰 Dinheiro</label>
-                                        <input type="number" id="dinheiroEntrada" placeholder="0.00" step="0.01" min="0">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="pixEntrada">📱 PIX</label>
-                                        <input type="number" id="pixEntrada" placeholder="0.00" step="0.01" min="0">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="cartaoEntrada">💳 Cartão</label>
-                                        <input type="number" id="cartaoEntrada" placeholder="0.00" step="0.01" min="0">
-                                    </div>
+                                    <div class="form-group"><label for="dinheiroEntrada">💰 Dinheiro</label><input type="number" id="dinheiroEntrada" placeholder="0.00" step="0.01" min="0"></div>
+                                    <div class="form-group"><label for="pixEntrada">📱 PIX</label><input type="number" id="pixEntrada" placeholder="0.00" step="0.01" min="0"></div>
+                                    <div class="form-group"><label for="cartaoEntrada">💳 Cartão</label><input type="number" id="cartaoEntrada" placeholder="0.00" step="0.01" min="0"></div>
                                 </div>
                             </div>
-                            
                             <div class="form-group full-width">
                                 <label>Houve saída de dinheiro/PIX do caixa?</label>
-                                <div class="radio-group">
-                                    <input type="radio" id="saidaSim" name="saida" value="sim"> <label for="saidaSim">Sim</label>
-                                    <input type="radio" id="saidaNao" name="saida" value="nao" checked> <label for="saidaNao">Não</label>
-                                </div>
+                                <div class="radio-group"><input type="radio" id="saidaSim" name="saida" value="sim"> <label for="saidaSim">Sim</label><input type="radio" id="saidaNao" name="saida" value="nao" checked> <label for="saidaNao">Não</label></div>
                             </div>
-
                             <div id="saidas" class="full-width">
                                 <div class="form-grid">
-                                    <div class="form-group full-width">
-                                        <label for="motivoSaida">Motivo da Saída</label>
-                                        <input type="text" id="motivoSaida" placeholder="Ex: Compra de gelo">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="dinheiroSaida">💰 Dinheiro</label>
-                                        <input type="number" id="dinheiroSaida" placeholder="0.00" step="0.01" min="0">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="pixSaida">📱 PIX</label>
-                                        <input type="number" id="pixSaida" placeholder="0.00" step="0.01" min="0">
-                                    </div>
+                                    <div class="form-group full-width"><label for="motivoSaida">Motivo da Saída</label><input type="text" id="motivoSaida" placeholder="Ex: Compra de gelo"></div>
+                                    <div class="form-group"><label for="dinheiroSaida">💰 Dinheiro</label><input type="number" id="dinheiroSaida" placeholder="0.00" step="0.01" min="0"></div>
+                                    <div class="form-group"><label for="pixSaida">📱 PIX</label><input type="number" id="pixSaida" placeholder="0.00" step="0.01" min="0"></div>
                                 </div>
                             </div>
-
                             <div class="form-group full-width">
                                 <label>🎁 Houve cartão fidelidade hoje?</label>
-                                <div class="radio-group">
-                                    <input type="radio" id="fidelidadeSim" name="fidelidade" value="sim"> <label for="fidelidadeSim">Sim</label>
-                                    <input type="radio" id="fidelidadeNao" name="fidelidade" value="nao" checked> <label for="fidelidadeNao">Não</label>
-                                </div>
+                                <div class="radio-group"><input type="radio" id="fidelidadeSim" name="fidelidade" value="sim"> <label for="fidelidadeSim">Sim</label><input type="radio" id="fidelidadeNao" name="fidelidade" value="nao" checked> <label for="fidelidadeNao">Não</label></div>
                             </div>
-
                             <div id="fidelidadeDetalhes" class="full-width">
                                 <div class="form-grid">
-                                    <div class="form-group full-width">
-                                        <label for="fidelidadeQuantidade">Quantos cartões foram utilizados?</label>
-                                        <input type="number" id="fidelidadeQuantidade" placeholder="0" step="1" min="0">
-                                    </div>
+                                    <div class="form-group full-width"><label for="fidelidadeQuantidade">Quantos cartões foram utilizados?</label><input type="number" id="fidelidadeQuantidade" placeholder="0" step="1" min="0"></div>
                                 </div>
                             </div>
-
                             <div class="form-group full-width">
-                                <label for="observacoesDia">Observações do Dia</label>
-                                <textarea id="observacoesDia" placeholder="Anotações importantes sobre o dia de hoje..."></textarea>
+                                <label for="observacoesDia">Observações do Dia</label><textarea id="observacoesDia" placeholder="Anotações importantes sobre o dia de hoje..."></textarea>
                             </div>
-
                             <div class="form-group full-width">
                                 <label>Termômetro da Loja (Como foi o dia?)</label>
-                                <div class="mood-options">
-                                    <label class="mood-option">😴<input type="radio" name="climaLoja" value="Muito Fraco"></label>
-                                    <label class="mood-option">😐<input type="radio" name="climaLoja" value="Fraco"></label>
-                                    <label class="mood-option">🙂<input type="radio" name="climaLoja" value="Bom"></label>
-                                    <label class="mood-option">😄<input type="radio" name="climaLoja" value="Ótimo"></label>
-                                    <label class="mood-option">🚀<input type="radio" name="climaLoja" value="Excepcional"></label>
-                                </div>
-                            </div>
-
-                            <div class="form-group full-width">
-                                <label>Frase do Dia (Opcional)</label>
-                                <button type="button" id="btnSugerirFrase" class="btn btn-gemini">Sugerir com IA ✨</button>
-                                <div id="fraseMotivacionalArea" contenteditable="true" placeholder="Clique para editar ou cole uma frase aqui..."></div>
+                                <div class="mood-options"><label class="mood-option">😴<input type="radio" name="climaLoja" value="Muito Fraco"></label><label class="mood-option">😐<input type="radio" name="climaLoja" value="Fraco"></label><label class="mood-option">🙂<input type="radio" name="climaLoja" value="Bom"></label><label class="mood-option">😄<input type="radio" name="climaLoja" value="Ótimo"></label><label class="mood-option">🚀<input type="radio" name="climaLoja" value="Excepcional"></label></div>
                             </div>
                         </div>
                     </div>
-                    <div class="button-group justify-center">
-                        <button type="button" id="btnRevisar" class="btn btn-primary">Revisar Registro</button>
-                    </div>
+                    <div class="button-group justify-center"><button type="button" id="btnRevisar" class="btn btn-primary">Revisar Registro</button></div>
                 </form>
 
                 <div id="confirmacao" class="hidden">
                     <div class="card">
                         <h2>Revisão do Registro</h2>
-                        <p id="resumo"></p>
+                        <div id="resumoContainer">
+                            <div id="resumo"></div>
+                            <div id="ajusteCaixa" class="form-section">
+                                <h4>Conciliação de Caixa (Opcional)</h4>
+                                <div class="ajuste-group">
+                                    <label>Dinheiro em Espécie</label>
+                                    <span>Saldo do Sistema: <strong id="sistemaDinheiro">R$ 0,00</strong></span>
+                                    <input type="number" id="realDinheiro" placeholder="Valor real na gaveta" step="0.01">
+                                    <span>Diferença: <strong id="diferencaDinheiro">R$ 0,00</strong></span>
+                                </div>
+                                <div class="ajuste-group">
+                                    <label>Saldo em PIX</label>
+                                    <span>Saldo do Sistema: <strong id="sistemaPix">R$ 0,00</strong></span>
+                                    <input type="number" id="realPix" placeholder="Valor real no extrato" step="0.01">
+                                    <span>Diferença: <strong id="diferencaPix">R$ 0,00</strong></span>
+                                </div>
+                                <textarea id="motivoAjuste" placeholder="Motivo do(s) ajuste(s)..."></textarea>
+                            </div>
+                        </div>
                         <div class="button-group justify-center">
                             <button type="button" id="btnEditar" class="btn btn-secondary">Editar</button>
-                            <button type="button" id="btnConfirmar" class="btn btn-success">Confirmar e Salvar</button>
+                            <button type="button" id="btnConfirmar" class="btn btn-success">Confirmar e Salvar Online</button>
                         </div>
                     </div>
                 </div>
 
                 <div id="envio" class="hidden">
                     <div class="card">
-                        <h2>✅ Registro Confirmado!</h2>
-                        <p>Seu registro diário foi salvo com sucesso.</p>
+                        <h2>✅ Registro Salvo Online!</h2>
+                        <p>Seu registro diário foi salvo com sucesso na nuvem.</p>
                         <div class="button-group justify-center">
                             <button type="button" id="btnEnviarWhatsApp" class="btn btn-success">Enviar para WhatsApp</button>
                             <button type="button" id="btnNovoRegistro" class="btn btn-primary">Novo Registro</button>
@@ -217,47 +177,41 @@
             </div>
         </main>
     </div>
-
-    <!-- Botão e Painel da Calculadora de Bolso -->
-    <button id="calculator-toggle">🧮</button>
-    <div id="pocket-calculator">
-        <div class="calculator-header">
-            <button id="calculator-close">&times;</button>
-        </div>
-        <div id="calculator-display">0</div>
-        <div id="calculator-buttons">
-            <button class="operator" data-action="clear">C</button>
-            <button class="operator" data-value="/">÷</button>
-            <button class="operator" data-value="*">×</button>
-            <button class="operator" data-value="-">-</button>
-            <button data-value="7">7</button>
-            <button data-value="8">8</button>
-            <button data-value="9">9</button>
-            <button class="operator" data-value="+">+</button>
-            <button data-value="4">4</button>
-            <button data-value="5">5</button>
-            <button data-value="6">6</button>
-            <button data-value="1">1</button>
-            <button data-value="2">2</button>
-            <button data-value="3">3</button>
-            <button class="equals" data-action="calculate">=</button>
-            <button data-value="0">0</button>
-            <button data-value=".">.</button>
-        </div>
-    </div>
     
-    <!-- Elemento Toast para Notificações -->
     <div id="toast" class="toast"></div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const App = {
-            init() {
-                RegistroDiarioModule.init();
-                CalculatorModule.init();
+        document.addEventListener('DOMContentLoaded', async () => {
+            const firebaseConfig = {
+              apiKey: "AIzaSyCyzA-QWhXZTUahk13tKhMEAt8AqLpCzDc",
+              authDomain: "acai-sabordaterra-fiados.firebaseapp.com",
+              projectId: "acai-sabordaterra-fiados",
+              storageBucket: "acai-sabordaterra-fiados.appspot.com",
+              messagingSenderId: "95507357232",
+              appId: "1:95507357232:web:22d0264b98bd5ab0ff57f5"
+            };
+
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    RegistroDiarioModule.init(db);
+                }
+            });
+
+            try {
+                await signInAnonymously(auth);
+            } catch (error) {
+                console.error("Falha na autenticação anônima:", error);
+                Utils.showToast("Falha crítica na conexão. O app não funcionará.", "error");
             }
-        };
+        });
 
         const Utils = {
             showToast(message, type = 'info', duration = 3000) {
@@ -277,30 +231,7 @@
             getTodayDateString() { return new Date().toISOString().split('T')[0]; }
         };
         
-        const AIModule = {
-            apiKey: "",
-            endpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
-            async generateText(prompt) {
-                const url = `${this.endpoint}?key=${this.apiKey}`;
-                const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
-                try {
-                    const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                    if (!response.ok) { throw new Error(`API Error: ${response.statusText}`); }
-                    const result = await response.json();
-                    if (result.candidates && result.candidates.length > 0) {
-                        return result.candidates[0].content.parts[0].text.trim();
-                    } else {
-                        const blockReason = result.promptFeedback?.blockReason;
-                        return blockReason ? `Conteúdo bloqueado: ${blockReason}.` : "Não foi possível gerar uma resposta.";
-                    }
-                } catch (error) {
-                    console.error("Erro ao chamar a API Gemini:", error);
-                    return "Falha na comunicação com a IA.";
-                }
-            }
-        };
-        
-        const StorageModule = {
+        const LocalStorageModule = {
             set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (error) { console.error("Erro ao salvar no localStorage:", error); } },
             get(key) { try { const item = localStorage.getItem(key); return item ? JSON.parse(item) : null; } catch (error) { console.error("Erro ao carregar do localStorage:", error); localStorage.removeItem(key); return null; } },
             remove(key) { localStorage.removeItem(key); }
@@ -310,7 +241,10 @@
             RASCUNHO_KEY: 'registroDiarioRascunho_AcaiSaborDaTerra',
             form: document.getElementById('registroForm'),
             dadosParaEnvio: {},
-            init() {
+            db: null,
+            
+            init(db) {
+                this.db = db;
                 this.setupEventListeners();
                 this.loadDraft();
                 document.getElementById('data').value = Utils.getTodayDateString();
@@ -323,12 +257,13 @@
                 document.querySelectorAll('input[name="saida"]').forEach(radio => radio.addEventListener('change', () => this.showHideSaidas()));
                 document.querySelectorAll('input[name="fidelidade"]').forEach(radio => radio.addEventListener('change', () => this.showHideFidelidade()));
                 document.querySelectorAll('.mood-option input').forEach(radio => radio.addEventListener('change', () => this.updateMoodOptionsStyle()));
-                document.getElementById('btnSugerirFrase').addEventListener('click', () => this.suggestPhrase());
                 document.getElementById('btnRevisar').addEventListener('click', () => this.review());
                 document.getElementById('btnEditar').addEventListener('click', () => this.edit());
-                document.getElementById('btnConfirmar').addEventListener('click', () => this.confirm());
+                document.getElementById('btnConfirmar').addEventListener('click', () => this.confirmAndSave());
                 document.getElementById('btnEnviarWhatsApp').addEventListener('click', () => this.sendToWhatsApp());
                 document.getElementById('btnNovoRegistro').addEventListener('click', () => this.reset());
+                document.getElementById('realDinheiro').addEventListener('input', () => this.updateAjuste());
+                document.getElementById('realPix').addEventListener('input', () => this.updateAjuste());
             },
             getFormValues() {
                 const formValues = {};
@@ -346,9 +281,9 @@
                 formValues.data = document.getElementById('data').value;
                 return formValues;
             },
-            saveDraft() { StorageModule.set(this.RASCUNHO_KEY, this.getFormValues()); },
+            saveDraft() { LocalStorageModule.set(this.RASCUNHO_KEY, this.getFormValues()); },
             loadDraft() {
-                const draft = StorageModule.get(this.RASCUNHO_KEY);
+                const draft = LocalStorageModule.get(this.RASCUNHO_KEY);
                 if (draft) {
                     Object.keys(draft).forEach(key => {
                         const element = document.getElementById(key) || this.form.querySelector(`[name="${key}"][value="${draft[key]}"]`);
@@ -360,22 +295,10 @@
                     });
                 }
             },
-            clearDraft() { StorageModule.remove(this.RASCUNHO_KEY); },
+            clearDraft() { LocalStorageModule.remove(this.RASCUNHO_KEY); },
             showHideSaidas() { document.getElementById('saidas').classList.toggle('saidas-visivel', document.getElementById('saidaSim').checked); },
             showHideFidelidade() { document.getElementById('fidelidadeDetalhes').classList.toggle('fidelidade-visivel', document.getElementById('fidelidadeSim').checked); },
             updateMoodOptionsStyle() { document.querySelectorAll('.mood-option').forEach(label => { label.classList.toggle('selected', label.querySelector('input').checked); }); },
-            async suggestPhrase() {
-                const button = document.getElementById('btnSugerirFrase');
-                const area = document.getElementById('fraseMotivacionalArea');
-                button.disabled = true;
-                button.textContent = 'Gerando...';
-                area.innerText = 'Aguarde...';
-                const prompt = "Você é um assistente criativo para uma loja de açaí chamada 'Açaí Sabor da Terra'. Crie uma frase curta, positiva e inspiradora para o dia. Pode ser sobre açaí, felicidade, energia ou sucesso. Seja criativo e evite clichês. Apenas a frase, sem introduções.";
-                area.innerText = await AIModule.generateText(prompt);
-                button.disabled = false;
-                button.innerHTML = 'Sugerir com IA ✨';
-                this.saveDraft();
-            },
             validateForm() {
                 const values = this.getFormValues();
                 const totalEntradas = (parseFloat(values.dinheiroEntrada) || 0) + (parseFloat(values.pixEntrada) || 0) + (parseFloat(values.cartaoEntrada) || 0);
@@ -391,36 +314,113 @@
                 if (!this.validateForm()) return;
                 this.dadosParaEnvio = this.getFormValues();
                 document.getElementById('resumo').innerHTML = this.generateSummaryHTML(this.dadosParaEnvio);
+                
+                const { saldoDinheiro, saldoPix } = this.calculateTotals(this.dadosParaEnvio);
+                document.getElementById('sistemaDinheiro').textContent = Utils.formatCurrency(saldoDinheiro);
+                document.getElementById('sistemaPix').textContent = Utils.formatCurrency(saldoPix);
+                
+                // Limpa campos de ajuste anteriores
+                document.getElementById('realDinheiro').value = '';
+                document.getElementById('realPix').value = '';
+                document.getElementById('motivoAjuste').value = '';
+                this.updateAjuste();
+
+
                 document.getElementById('registroForm').classList.add('hidden');
                 document.getElementById('confirmacao').classList.remove('hidden');
             },
+            updateAjuste() {
+                const { saldoDinheiro, saldoPix } = this.calculateTotals(this.dadosParaEnvio);
+                
+                const realDinheiroEl = document.getElementById('realDinheiro');
+                const realPixEl = document.getElementById('realPix');
+                
+                const realDinheiro = parseFloat(realDinheiroEl.value) || saldoDinheiro;
+                const realPix = parseFloat(realPixEl.value) || saldoPix;
+
+                const diferencaDinheiro = realDinheiro - saldoDinheiro;
+                const diferencaPix = realPix - saldoPix;
+
+                const diferencaDinheiroEl = document.getElementById('diferencaDinheiro');
+                diferencaDinheiroEl.textContent = Utils.formatCurrency(diferencaDinheiro);
+                diferencaDinheiroEl.style.color = diferencaDinheiro < 0 ? 'var(--danger-color)' : 'var(--success-color)';
+
+                const diferencaPixEl = document.getElementById('diferencaPix');
+                diferencaPixEl.textContent = Utils.formatCurrency(diferencaPix);
+                diferencaPixEl.style.color = diferencaPix < 0 ? 'var(--danger-color)' : 'var(--success-color)';
+            },
             generateSummaryHTML(data) {
                 const { totalEntradas, totalSaidas, totalGeral } = this.calculateTotals(data);
-                let html = `<strong>REGISTRO DIÁRIO - AÇAÍ SABOR DA TERRA</strong>\n-------------------------------------\n<strong>Funcionário(a):</strong> ${data.funcionario}\n<strong>Data:</strong> ${Utils.formatDate(data.data)}\n-------------------------------------\n<strong>ENTRADAS:</strong>\n💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroEntrada)}\n📱 PIX: ${Utils.formatCurrency(data.pixEntrada)}\n💳 Cartão: ${Utils.formatCurrency(data.cartaoEntrada)}\n<span class="feedback-elevado">Total Entradas: ${Utils.formatCurrency(totalEntradas)}</span>\n-------------------------------------`;
+                let html = `<pre><strong>REGISTRO DIÁRIO - AÇAÍ SABOR DA TERRA</strong>\n-------------------------------------\n<strong>Funcionário(a):</strong> ${data.funcionario}\n<strong>Data:</strong> ${Utils.formatDate(data.data)}\n-------------------------------------\n<strong>ENTRADAS:</strong>\n💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroEntrada)}\n📱 PIX: ${Utils.formatCurrency(data.pixEntrada)}\n💳 Cartão: ${Utils.formatCurrency(data.cartaoEntrada)}\n<span class="feedback-elevado">Total Entradas: ${Utils.formatCurrency(totalEntradas)}</span>\n-------------------------------------`;
                 if(data.saida === 'sim' && totalSaidas > 0) { html += `\n<strong>SAÍDAS:</strong>\nMotivo: ${data.motivoSaida || 'Não informado'}\n💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroSaida)}\n📱 PIX: ${Utils.formatCurrency(data.pixSaida)}\n<span class="feedback-negativo">Total Saídas: ${Utils.formatCurrency(totalSaidas)}</span>\n-------------------------------------`; }
                 if(data.fidelidade === 'sim' && (parseInt(data.fidelidadeQuantidade) || 0) > 0) { html += `\n<strong>FIDELIDADE:</strong>\n🎁 Cartões Utilizados: ${data.fidelidadeQuantidade}\n-------------------------------------`; }
-                html += `\n<span class="feedback-positivo"><strong>TOTAL GERAL: ${Utils.formatCurrency(totalGeral)}</strong></span>\n-------------------------------------\n<strong>Termômetro da Loja:</strong> ${data.climaLoja}\n<strong>Observações:</strong> ${data.observacoesDia || 'Nenhuma'}\n<strong>Frase do Dia:</strong> "${data.fraseMotivacionalArea || 'Nenhuma'}"`;
+                html += `\n<span class="feedback-positivo"><strong>TOTAL GERAL (Sistema): ${Utils.formatCurrency(totalGeral)}</strong></span>\n-------------------------------------\n<strong>Termômetro da Loja:</strong> ${data.climaLoja}\n<strong>Observações:</strong> ${data.observacoesDia || 'Nenhuma'}</pre>`;
                 return html;
             },
-            generateSummaryText(data) {
-                const { totalEntradas, totalSaidas, totalGeral } = this.calculateTotals(data);
-                let text = `*REGISTRO DIÁRIO - AÇAÍ SABOR DA TERRA*\n\n*Funcionário(a):* ${data.funcionario}\n*Data:* ${Utils.formatDate(data.data)}\n\n*ENTRADAS:*\n💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroEntrada)}\n📱 PIX: ${Utils.formatCurrency(data.pixEntrada)}\n💳 Cartão: ${Utils.formatCurrency(data.cartaoEntrada)}\n*Total Entradas:* ${Utils.formatCurrency(totalEntradas)}\n`;
-                if(data.saida === 'sim' && totalSaidas > 0) { text += `\n*SAÍDAS:*\nMotivo: ${data.motivoSaida || 'Não informado'}\n💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroSaida)}\n📱 PIX: ${Utils.formatCurrency(data.pixSaida)}\n*Total Saídas:* ${Utils.formatCurrency(totalSaidas)}\n`; }
-                if(data.fidelidade === 'sim' && (parseInt(data.fidelidadeQuantidade) || 0) > 0) { text += `\n*FIDELIDADE:*\n🎁 Cartões Utilizados: ${data.fidelidadeQuantidade}\n`; }
-                text += `\n*TOTAL GERAL:* ${Utils.formatCurrency(totalGeral)}\n\n*Termômetro da Loja:* ${data.climaLoja}\n*Observações:* ${data.observacoesDia || 'Nenhuma'}\n*Frase do Dia:* "${data.fraseMotivacionalArea || 'Nenhuma'}"`;
-                return text;
-            },
             calculateTotals(data) {
-                const totalEntradas = (parseFloat(data.dinheiroEntrada) || 0) + (parseFloat(data.pixEntrada) || 0) + (parseFloat(data.cartaoEntrada) || 0);
-                const totalSaidas = (parseFloat(data.dinheiroSaida) || 0) + (parseFloat(data.pixSaida) || 0);
+                const dinheiroEntrada = parseFloat(data.dinheiroEntrada) || 0;
+                const pixEntrada = parseFloat(data.pixEntrada) || 0;
+                const cartaoEntrada = parseFloat(data.cartaoEntrada) || 0;
+                const dinheiroSaida = parseFloat(data.dinheiroSaida) || 0;
+                const pixSaida = parseFloat(data.pixSaida) || 0;
+
+                const totalEntradas = dinheiroEntrada + pixEntrada + cartaoEntrada;
+                const totalSaidas = dinheiroSaida + pixSaida;
                 const totalGeral = totalEntradas - totalSaidas;
-                return { totalEntradas, totalSaidas, totalGeral };
+                
+                const saldoDinheiro = dinheiroEntrada - dinheiroSaida;
+                const saldoPix = pixEntrada - pixSaida;
+
+                return { totalEntradas, totalSaidas, totalGeral, saldoDinheiro, saldoPix };
             },
             edit() { document.getElementById('registroForm').classList.remove('hidden'); document.getElementById('confirmacao').classList.add('hidden'); },
-            confirm() { this.clearDraft(); document.getElementById('confirmacao').classList.add('hidden'); document.getElementById('envio').classList.remove('hidden'); Utils.showToast("Registro salvo com sucesso!", 'success'); },
+            async confirmAndSave() {
+                if (!this.db) {
+                    Utils.showToast("Erro: Conexão com banco de dados não estabelecida.", "error");
+                    return;
+                }
+                const btn = document.getElementById('btnConfirmar');
+                btn.disabled = true;
+                btn.textContent = 'Salvando...';
+
+                const { saldoDinheiro, saldoPix } = this.calculateTotals(this.dadosParaEnvio);
+                const realDinheiro = parseFloat(document.getElementById('realDinheiro').value);
+                const realPix = parseFloat(document.getElementById('realPix').value);
+
+                const registroParaSalvar = {
+                    ...this.dadosParaEnvio,
+                    dataDeRegistro: new Date(),
+                    ajuste: {
+                        sistemaDinheiro: saldoDinheiro,
+                        realDinheiro: isNaN(realDinheiro) ? saldoDinheiro : realDinheiro,
+                        diferencaDinheiro: isNaN(realDinheiro) ? 0 : realDinheiro - saldoDinheiro,
+                        sistemaPix: saldoPix,
+                        realPix: isNaN(realPix) ? saldoPix : realPix,
+                        diferencaPix: isNaN(realPix) ? 0 : realPix - saldoPix,
+                        motivo: document.getElementById('motivoAjuste').value || ''
+                    }
+                };
+                
+                // Atualiza os dados para envio do WhatsApp com os valores ajustados
+                this.dadosParaEnvio.ajuste = registroParaSalvar.ajuste;
+
+
+                try {
+                    const docRef = await addDoc(collection(this.db, "registrosDiarios"), registroParaSalvar);
+                    this.clearDraft();
+                    document.getElementById('confirmacao').classList.add('hidden');
+                    document.getElementById('envio').classList.remove('hidden');
+                    Utils.showToast("Registro salvo online com sucesso!", 'success');
+                } catch (e) {
+                    console.error("Error adding document: ", e);
+                    Utils.showToast("Falha ao salvar o registro online.", "error");
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'Confirmar e Salvar Online';
+                }
+            },
             reset() {
                 this.form.reset();
-                document.getElementById('fraseMotivacionalArea').innerText = '';
                 document.getElementById('data').value = Utils.getTodayDateString();
                 this.saveDraft();
                 this.showHideSaidas();
@@ -429,60 +429,44 @@
                 document.getElementById('envio').classList.add('hidden');
                 document.getElementById('registroForm').classList.remove('hidden');
             },
-            sendToWhatsApp() { const mensagem = this.generateSummaryText(this.dadosParaEnvio); window.open(`https://wa.me/?text=${encodeURIComponent(mensagem)}`, '_blank'); }
-        };
-        
-        const CalculatorModule = {
-            KEY: 'calculatorLastValue_AcaiSaborDaTerra',
-            init() {
-                this.panel = document.getElementById('pocket-calculator');
-                this.display = document.getElementById('calculator-display');
-                this.currentInput = '0';
-                this.shouldResetDisplay = false;
-                this.loadLastValue();
-                this.setupEventListeners();
-            },
-            setupEventListeners() {
-                document.getElementById('calculator-toggle').addEventListener('click', () => this.toggle(true));
-                document.getElementById('calculator-close').addEventListener('click', () => this.toggle(false));
-                document.getElementById('calculator-buttons').addEventListener('click', (e) => this.handleButtonClick(e));
-            },
-            loadLastValue() { const lastValue = StorageModule.get(this.KEY); if (lastValue) { this.currentInput = String(lastValue); this.updateDisplay(); } },
-            toggle(open) { this.panel.classList.toggle('open', open); },
-            handleButtonClick(event) {
-                const button = event.target.closest('button');
-                if (!button) return;
-                const { action, value } = button.dataset;
-                if (action === 'clear') this.clear();
-                else if (action === 'calculate') this.calculate();
-                else if (value) this.appendValue(value);
-            },
-            appendValue(value) {
-                const operators = ['/', '*', '-', '+'];
-                const lastChar = this.currentInput.slice(-1);
-                if (this.shouldResetDisplay || this.currentInput === '0' || this.currentInput === 'Erro') { this.currentInput = ''; this.shouldResetDisplay = false; }
-                if (operators.includes(value) && operators.includes(lastChar)) { this.currentInput = this.currentInput.slice(0, -1); }
-                const currentNumber = this.currentInput.split(/[/+*-]/).pop();
-                if (value === '.' && currentNumber.includes('.')) return;
-                this.currentInput += value;
-                this.updateDisplay();
-            },
-            clear() { this.currentInput = '0'; this.updateDisplay(); },
-            calculate() {
-                if (this.currentInput === 'Erro') return;
-                try {
-                    const result = new Function('return ' + this.currentInput)();
-                    this.currentInput = String(parseFloat(result.toFixed(10)));
-                    StorageModule.set(this.KEY, this.currentInput);
-                } catch (error) { this.currentInput = 'Erro'; }
-                this.shouldResetDisplay = true;
-                this.updateDisplay();
-            },
-            updateDisplay() { this.display.textContent = this.currentInput; }
-        };
+            sendToWhatsApp() { 
+                const data = this.dadosParaEnvio;
+                const { totalEntradas, totalSaidas } = this.calculateTotals(data);
+                
+                const totalRealDinheiro = data.ajuste.realDinheiro;
+                const totalRealPix = data.ajuste.realPix;
+                const totalCartao = parseFloat(data.cartaoEntrada) || 0;
+                const totalGeralReal = totalRealDinheiro + totalRealPix + totalCartao;
 
-        App.init();
-    });
+                let text = `*REGISTRO DIÁRIO - AÇAÍ SABOR DA TERRA*\n\n` +
+                           `*Funcionário(a):* ${data.funcionario}\n` +
+                           `*Data:* ${Utils.formatDate(data.data)}\n\n` +
+                           `*ENTRADAS:*\n` +
+                           `💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroEntrada)}\n` +
+                           `📱 PIX: ${Utils.formatCurrency(data.pixEntrada)}\n` +
+                           `💳 Cartão: ${Utils.formatCurrency(data.cartaoEntrada)}\n` +
+                           `*Total Entradas (Sistema):* ${Utils.formatCurrency(totalEntradas)}\n`;
+                if(data.saida === 'sim' && totalSaidas > 0) { 
+                    text += `\n*SAÍDAS:*\n` +
+                            `Motivo: ${data.motivoSaida || 'Não informado'}\n` +
+                            `💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroSaida)}\n` +
+                            `📱 PIX: ${Utils.formatCurrency(data.pixSaida)}\n` +
+                            `*Total Saídas:* ${Utils.formatCurrency(totalSaidas)}\n`;
+                }
+                
+                text += `\n--- *CONCILIAÇÃO* ---\n` +
+                        `*Caixa Final (Dinheiro):* ${Utils.formatCurrency(totalRealDinheiro)}\n` +
+                        `*Caixa Final (PIX):* ${Utils.formatCurrency(totalRealPix)}\n` +
+                        `*Diferença Dinheiro:* ${Utils.formatCurrency(data.ajuste.diferencaDinheiro)}\n` +
+                        `*Diferença PIX:* ${Utils.formatCurrency(data.ajuste.diferencaPix)}\n` +
+                        `*Motivo:* ${data.ajuste.motivo || 'Nenhum'}\n` +
+                        `-----------------------\n` +
+                        `*TOTAL GERAL (Real):* ${Utils.formatCurrency(totalGeralReal)}\n\n` +
+                        `*Termômetro da Loja:* ${data.climaLoja}\n`;
+
+                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank'); 
+            }
+        };
     </script>
 </body>
 </html>
