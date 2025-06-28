@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Registros - Açaí Sabor da Terra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4A0E68; --primary-light: #9370DB; --primary-lighter: #DCC9E8; --background-light: #f0eef4; --background-very-light: #FBF9FE; --text-color: #333; --white: #fff; --border-color: #e0e0e0; --success-color: #28a745; --danger-color: #dc3545; --info-color: #17a2b8; --warning-color: #ffc107; --shadow-color: rgba(74, 14, 104, 0.1); --focus-shadow: rgba(106, 27, 154, 0.2); --border-radius-md: 8px; --border-radius-lg: 16px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--background-light); color: var(--text-color); display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 1rem; }
+        .app-container { width: 100%; max-width: 1200px; background-color: var(--white); border-radius: var(--border-radius-lg); box-shadow: 0 8px 24px var(--shadow-color); overflow: hidden; }
+        .content { padding: 1.5rem; }
+        h2, h3 { color: var(--primary-color); text-align: center; }
+        h2 { margin-bottom: 1.5rem; font-size: 1.8rem; }
+        h3 { margin-bottom: 1rem; font-size: 1.5rem; }
+        
+        /* Password Overlay */
+        #password-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); z-index: 2000; display: flex; justify-content: center; align-items: center; }
+        #password-box { background: var(--white); padding: 2rem; border-radius: var(--border-radius-lg); text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        #password-box input { font-size: 1.2rem; padding: 0.8rem; border-radius: var(--border-radius-md); border: 1px solid var(--border-color); margin: 1rem 0; }
+        #password-box button { font-size: 1.1rem; padding: 0.8rem 1.5rem; background-color: var(--primary-color); color: var(--white); border: none; border-radius: var(--border-radius-md); cursor: pointer; }
+        #password-error { color: var(--danger-color); display: none; }
+
+        /* Main Content */
+        #main-content { display: none; }
+
+        /* KPIs */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .kpi-card { background-color: var(--background-very-light); padding: 1.5rem; border-radius: var(--border-radius-lg); text-align: center; border: 1px solid var(--border-color); }
+        .kpi-card h4 { font-size: 1rem; color: var(--primary-light); margin-bottom: 0.5rem; }
+        .kpi-card p { font-size: 1.8rem; font-weight: 700; color: var(--primary-color); }
+
+        /* Filters */
+        .filters { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; background-color: var(--background-very-light); padding: 1rem; border-radius: var(--border-radius-lg); margin-bottom: 2rem; }
+        .filters .form-group { flex-direction: row; align-items: center; gap: 0.5rem; }
+        .filters label { margin-bottom: 0; }
+        .filters input, .filters select { padding: 0.5rem; }
+
+        /* History Cards */
+        #history-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        .history-card { background: #fff; padding: 1.5rem; border-radius: var(--border-radius-lg); box-shadow: 0 4px 12px var(--shadow-color); border: 1px solid var(--border-color); display: flex; flex-direction: column; }
+        .history-card h4 { text-align: left; font-size: 1.2rem; }
+        .history-card p { margin: 0.5rem 0; }
+        .history-card .total { font-size: 1.5rem; font-weight: bold; color: var(--success-color); margin-top: auto; }
+        .history-card button { background-color: var(--primary-light); color: white; border: none; padding: 8px 12px; border-radius: var(--border-radius-md); cursor: pointer; align-self: flex-end; margin-top: 1rem; }
+
+        /* Modal */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 1000; display: none; justify-content: center; align-items: center; }
+        .modal-content { background: var(--white); padding: 2rem; border-radius: var(--border-radius-lg); width: 90%; max-width: 900px; max-height: 90vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .modal-header h3 { margin: 0; }
+        .modal-close { font-size: 2rem; background: none; border: none; cursor: pointer; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .btn { padding: 0.75rem 1.5rem; border-radius: var(--border-radius-md); border: none; font-size: 1rem; font-weight: 600; cursor: pointer; }
+        .btn-primary { background-color: var(--primary-color); color: var(--white); }
+        .btn-danger { background-color: var(--danger-color); color: var(--white); }
+        .button-group { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
+    </style>
+</head>
+<body>
+    <div id="password-overlay">
+        <div id="password-box">
+            <h3>Acesso Restrito</h3>
+            <p>Digite a senha para acessar o histórico.</p>
+            <input type="password" id="password-input" placeholder="Senha">
+            <button id="password-submit">Entrar</button>
+            <p id="password-error">Senha incorreta.</p>
+        </div>
+    </div>
+
+    <div id="main-content" class="app-container">
+        <main class="content">
+            <h2>Painel de Controle Gerencial</h2>
+            
+            <section class="kpi-grid">
+                <div class="kpi-card"><h4>Faturamento Bruto (Mês)</h4><p id="kpi-faturamento">R$ 0,00</p></div>
+                <div class="kpi-card"><h4>Total de Saídas (Mês)</h4><p id="kpi-saidas">R$ 0,00</p></div>
+                <div class="kpi-card"><h4>Saldo Líquido (Mês)</h4><p id="kpi-saldo">R$ 0,00</p></div>
+                <div class="kpi-card"><h4>Média Diária (Mês)</h4><p id="kpi-media">R$ 0,00</p></div>
+            </section>
+
+            <section class="filters">
+                <div class="form-group"><label for="filter-start-date">De:</label><input type="date" id="filter-start-date"></div>
+                <div class="form-group"><label for="filter-end-date">Até:</label><input type="date" id="filter-end-date"></div>
+                <div class="form-group"><label for="filter-employee">Funcionário:</label><select id="filter-employee"><option value="">Todos</option></select></div>
+            </section>
+
+            <section id="history-container">
+                <p>Carregando registros...</p>
+            </section>
+        </main>
+    </div>
+
+    <div id="details-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Detalhes do Registro</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div id="modal-body">
+                <!-- O formulário de edição será injetado aqui pelo JS -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const firebaseConfig = {
+              apiKey: "AIzaSyCyzA-QWhXZTUahk13tKhMEAt8AqLpCzDc",
+              authDomain: "acai-sabordaterra-fiados.firebaseapp.com",
+              projectId: "acai-sabordaterra-fiados",
+              storageBucket: "acai-sabordaterra-fiados.appspot.com",
+              messagingSenderId: "95507357232",
+              appId: "1:95507357232:web:22d0264b98bd5ab0ff57f5"
+            };
+
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    HistoricoModule.init(db);
+                }
+            });
+
+            try {
+                await signInAnonymously(auth);
+            } catch (error) {
+                console.error("Falha na autenticação anônima:", error);
+            }
+            
+            PasswordModule.init();
+        });
+
+        const Utils = {
+            formatCurrency(value) { return parseFloat(value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); },
+            formatDate(dateString) {
+                if (!dateString) return 'N/A';
+                if (dateString.seconds) {
+                    dateString = new Date(dateString.seconds * 1000).toISOString();
+                }
+                const date = new Date(dateString);
+                const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+                return new Date(date.getTime() + userTimezoneOffset).toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            }
+        };
+
+        const PasswordModule = {
+            // ATENÇÃO: Altere a senha aqui se desejar
+            CORRECT_PASSWORD: "@Pedro1352",
+            init() {
+                document.getElementById('password-submit').addEventListener('click', () => this.checkPassword());
+                document.getElementById('password-input').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.checkPassword();
+                });
+            },
+            checkPassword() {
+                const input = document.getElementById('password-input');
+                const errorEl = document.getElementById('password-error');
+                if (input.value === this.CORRECT_PASSWORD) {
+                    document.getElementById('password-overlay').style.display = 'none';
+                    document.getElementById('main-content').style.display = 'block';
+                } else {
+                    errorEl.style.display = 'block';
+                    input.value = '';
+                }
+            }
+        };
+
+        const HistoricoModule = {
+            db: null,
+            allRecords: [],
+            
+            init(db) {
+                this.db = db;
+                this.listenForRecords();
+                this.setupFilters();
+                document.querySelector('.modal-close').addEventListener('click', () => this.closeModal());
+            },
+
+            listenForRecords() {
+                const recordsRef = collection(this.db, "registrosDiarios");
+                onSnapshot(recordsRef, (snapshot) => {
+                    this.allRecords = [];
+                    snapshot.forEach(doc => {
+                        this.allRecords.push({ id: doc.id, ...doc.data() });
+                    });
+                    this.allRecords.sort((a, b) => b.dataDeRegistro.seconds - a.dataDeRegistro.seconds);
+                    this.applyFilters();
+                    this.updateKPIs(this.allRecords);
+                    this.populateEmployeeFilter(this.allRecords);
+                });
+            },
+
+            setupFilters() {
+                document.getElementById('filter-start-date').addEventListener('change', () => this.applyFilters());
+                document.getElementById('filter-end-date').addEventListener('change', () => this.applyFilters());
+                document.getElementById('filter-employee').addEventListener('change', () => this.applyFilters());
+            },
+
+            populateEmployeeFilter(records) {
+                const employeeFilter = document.getElementById('filter-employee');
+                const employees = [...new Set(records.map(r => r.funcionario))];
+                
+                // Salva o valor selecionado
+                const selectedValue = employeeFilter.value;
+                
+                employeeFilter.innerHTML = '<option value="">Todos</option>';
+                employees.forEach(employee => {
+                    if(employee) {
+                        const option = document.createElement('option');
+                        option.value = employee;
+                        option.textContent = employee;
+                        employeeFilter.appendChild(option);
+                    }
+                });
+
+                // Restaura o valor selecionado
+                employeeFilter.value = selectedValue;
+            },
+
+            applyFilters() {
+                let filteredRecords = [...this.allRecords];
+                const startDate = document.getElementById('filter-start-date').value;
+                const endDate = document.getElementById('filter-end-date').value;
+                const employee = document.getElementById('filter-employee').value;
+
+                if (startDate) {
+                    const startTimestamp = new Date(startDate).getTime() / 1000;
+                    filteredRecords = filteredRecords.filter(r => r.dataDeRegistro.seconds >= startTimestamp);
+                }
+                if (endDate) {
+                    const endTimestamp = new Date(endDate).setHours(23, 59, 59, 999) / 1000;
+                    filteredRecords = filteredRecords.filter(r => r.dataDeRegistro.seconds <= endTimestamp);
+                }
+                if (employee) {
+                    filteredRecords = filteredRecords.filter(r => r.funcionario === employee);
+                }
+                
+                this.renderHistory(filteredRecords);
+            },
+
+            updateKPIs(records) {
+                const now = new Date();
+                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime() / 1000;
+                const monthRecords = records.filter(r => r.dataDeRegistro.seconds >= startOfMonth);
+
+                let faturamentoBruto = 0;
+                let totalSaidas = 0;
+
+                monthRecords.forEach(r => {
+                    faturamentoBruto += (parseFloat(r.dinheiroEntrada) || 0) + (parseFloat(r.pixEntrada) || 0) + (parseFloat(r.cartaoEntrada) || 0);
+                    totalSaidas += (parseFloat(r.dinheiroSaida) || 0) + (parseFloat(r.pixSaida) || 0);
+                });
+
+                const saldoLiquido = faturamentoBruto - totalSaidas;
+                const mediaDiaria = monthRecords.length > 0 ? saldoLiquido / monthRecords.length : 0;
+
+                document.getElementById('kpi-faturamento').textContent = Utils.formatCurrency(faturamentoBruto);
+                document.getElementById('kpi-saidas').textContent = Utils.formatCurrency(totalSaidas);
+                document.getElementById('kpi-saldo').textContent = Utils.formatCurrency(saldoLiquido);
+                document.getElementById('kpi-media').textContent = Utils.formatCurrency(mediaDiaria);
+            },
+
+            renderHistory(records) {
+                const container = document.getElementById('history-container');
+                container.innerHTML = '';
+                if (records.length === 0) {
+                    container.innerHTML = '<p>Nenhum registro encontrado para os filtros selecionados.</p>';
+                    return;
+                }
+                records.forEach(record => {
+                    const totalGeralReal = (record.ajuste?.realDinheiro || 0) + (record.ajuste?.realPix || 0) + (parseFloat(record.cartaoEntrada) || 0);
+                    const card = document.createElement('div');
+                    card.className = 'history-card';
+                    card.innerHTML = `
+                        <h4>${Utils.formatDate(record.dataDeRegistro)}</h4>
+                        <p><strong>Funcionário(a):</strong> ${record.funcionario || 'N/A'}</p>
+                        <p><strong>Termômetro:</strong> ${record.climaLoja || 'N/A'}</p>
+                        <p class="total">${Utils.formatCurrency(totalGeralReal)}</p>
+                        <button data-id="${record.id}">Ver Detalhes</button>
+                    `;
+                    container.appendChild(card);
+                });
+
+                container.querySelectorAll('button').forEach(button => {
+                    button.addEventListener('click', (e) => this.openModal(e.target.dataset.id));
+                });
+            },
+
+            openModal(recordId) {
+                const record = this.allRecords.find(r => r.id === recordId);
+                if (!record) return;
+
+                const modalBody = document.getElementById('modal-body');
+                // Injeta o formulário completo no modal
+                modalBody.innerHTML = `
+                    <form id="edit-form" data-id="${record.id}">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Funcionário(a)</label>
+                                <input type="text" id="edit-funcionario" value="${record.funcionario || ''}">
+                            </div>
+                            <div class="form-group">
+                                <label>Data</label>
+                                <input type="date" id="edit-data" value="${record.data || ''}">
+                            </div>
+                            <!-- Entradas -->
+                            <div class="form-group full-width">
+                                <label>Entradas</label>
+                                <div class="form-grid">
+                                    <div class="form-group"><label>💰 Dinheiro</label><input type="number" id="edit-dinheiroEntrada" value="${record.dinheiroEntrada || 0}"></div>
+                                    <div class="form-group"><label>📱 PIX</label><input type="number" id="edit-pixEntrada" value="${record.pixEntrada || 0}"></div>
+                                    <div class="form-group"><label>💳 Cartão</label><input type="number" id="edit-cartaoEntrada" value="${record.cartaoEntrada || 0}"></div>
+                                </div>
+                            </div>
+                            <!-- Saídas -->
+                            <div class="form-group full-width">
+                                <label>Saídas</label>
+                                <div class="form-grid">
+                                    <div class="form-group full-width"><label>Motivo</label><input type="text" id="edit-motivoSaida" value="${record.motivoSaida || ''}"></div>
+                                    <div class="form-group"><label>💰 Dinheiro</label><input type="number" id="edit-dinheiroSaida" value="${record.dinheiroSaida || 0}"></div>
+                                    <div class="form-group"><label>📱 PIX</label><input type="number" id="edit-pixSaida" value="${record.pixSaida || 0}"></div>
+                                </div>
+                            </div>
+                            <!-- Fidelidade -->
+                             <div class="form-group full-width">
+                                <label>Cartões Fidelidade Utilizados</label>
+                                <input type="number" id="edit-fidelidadeQuantidade" value="${record.fidelidadeQuantidade || 0}">
+                            </div>
+                            <!-- Ajustes -->
+                            <div class="form-group full-width">
+                                <label>Ajuste de Caixa</label>
+                                <div class="form-grid">
+                                    <div class="form-group"><label>Real Dinheiro</label><input type="number" id="edit-realDinheiro" value="${record.ajuste?.realDinheiro || 0}"></div>
+                                    <div class="form-group"><label>Real PIX</label><input type="number" id="edit-realPix" value="${record.ajuste?.realPix || 0}"></div>
+                                    <div class="form-group full-width"><label>Motivo Ajuste</label><textarea id="edit-motivoAjuste">${record.ajuste?.motivo || ''}</textarea></div>
+                                </div>
+                            </div>
+                            <!-- Observações -->
+                            <div class="form-group full-width">
+                                <label>Observações do Dia</label>
+                                <textarea id="edit-observacoesDia">${record.observacoesDia || ''}</textarea>
+                            </div>
+                        </div>
+                        <div class="button-group">
+                            <button type="button" id="btn-delete" class="btn btn-danger">Excluir Registro</button>
+                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                        </div>
+                    </form>
+                `;
+                document.getElementById('details-modal').style.display = 'flex';
+                
+                document.getElementById('edit-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.saveChanges(record.id);
+                });
+                document.getElementById('btn-delete').addEventListener('click', () => {
+                    if(confirm('Tem certeza que deseja excluir este registro permanentemente? Esta ação não pode ser desfeita.')) {
+                        this.deleteRecord(record.id);
+                    }
+                });
+            },
+
+            closeModal() {
+                document.getElementById('details-modal').style.display = 'none';
+            },
+
+            async saveChanges(recordId) {
+                const form = document.getElementById('edit-form');
+                const updatedData = {
+                    funcionario: form.querySelector('#edit-funcionario').value,
+                    data: form.querySelector('#edit-data').value,
+                    dinheiroEntrada: form.querySelector('#edit-dinheiroEntrada').value,
+                    pixEntrada: form.querySelector('#edit-pixEntrada').value,
+                    cartaoEntrada: form.querySelector('#edit-cartaoEntrada').value,
+                    motivoSaida: form.querySelector('#edit-motivoSaida').value,
+                    dinheiroSaida: form.querySelector('#edit-dinheiroSaida').value,
+                    pixSaida: form.querySelector('#edit-pixSaida').value,
+                    fidelidadeQuantidade: form.querySelector('#edit-fidelidadeQuantidade').value,
+                    observacoesDia: form.querySelector('#edit-observacoesDia').value,
+                    ajuste: {
+                        realDinheiro: parseFloat(form.querySelector('#edit-realDinheiro').value) || 0,
+                        realPix: parseFloat(form.querySelector('#edit-realPix').value) || 0,
+                        motivo: form.querySelector('#edit-motivoAjuste').value,
+                    }
+                };
+                
+                const recordRef = doc(this.db, "registrosDiarios", recordId);
+                try {
+                    await updateDoc(recordRef, updatedData);
+                    alert('Registro atualizado com sucesso!');
+                    this.closeModal();
+                } catch (error) {
+                    console.error("Erro ao atualizar:", error);
+                    alert('Falha ao atualizar o registro.');
+                }
+            },
+
+            async deleteRecord(recordId) {
+                const recordRef = doc(this.db, "registrosDiarios", recordId);
+                try {
+                    await deleteDoc(recordRef);
+                    alert('Registro excluído com sucesso!');
+                    this.closeModal();
+                } catch (error) {
+                    console.error("Erro ao excluir:", error);
+                    alert('Falha ao excluir o registro.');
+                }
+            }
+        };
+    </script>
+</body>
+</html>
