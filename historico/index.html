@@ -3,61 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Gerencial - Açaí Sabor da Terra</title>
+    <title>Painel de Controle - Açaí Sabor da Terra</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- CSS do Toastify para notificações -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    
-    <!-- Seu arquivo de estilos -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- O conteúdo principal agora é exibido por padrão -->
-    <div id="main-content" class="app-container">
-        <main class="content">
-            <h2>Painel de Controle Gerencial</h2>
-            
-            <section class="kpi-grid">
-                <div class="kpi-card"><h4>Faturamento Bruto</h4><p id="kpi-faturamento">R$ 0,00</p></div>
-                <div class="kpi-card"><h4>Total de Saídas</h4><p id="kpi-saidas">R$ 0,00</p></div>
-                <div class="kpi-card"><h4>Saldo Líquido</h4><p id="kpi-saldo">R$ 0,00</p></div>
-                <div class="kpi-card"><h4>Média Diária</h4><p id="kpi-media">R$ 0,00</p></div>
-            </section>
+    <div class="app-container">
+        <header>
+            <h1>Painel de Controle Gerencial</h1>
+        </header>
+        <main>
+            <div class="cards-container">
+                <div class="card">
+                    <h4>Faturamento Bruto</h4>
+                    <p id="faturamentoBruto">R$ 0,00</p>
+                </div>
+                <div class="card">
+                    <h4>Total de Saídas</h4>
+                    <p id="totalSaidas">R$ 0,00</p>
+                </div>
+                <div class="card">
+                    <h4>Saldo Líquido</h4>
+                    <p id="saldoLiquido">R$ 0,00</p>
+                </div>
+                <div class="card">
+                    <h4>Média Diária</h4>
+                    <p id="mediaDiaria">R$ 0,00</p>
+                </div>
+            </div>
 
-            <section class="filters">
-                <div class="form-group"><label for="filter-start-date">De:</label><input type="date" id="filter-start-date"></div>
-                <div class="form-group"><label for="filter-end-date">Até:</label><input type="date" id="filter-end-date"></div>
-                <div class="form-group"><label for="filter-employee">Funcionário:</label><select id="filter-employee"><option value="">Todos</option></select></div>
-                <!-- Botão para exportar para CSV -->
-                <button id="export-csv-btn" class="btn btn-primary">Exportar para CSV</button>
-            </section>
+            <div class="filters-container card">
+                <h4>Filtros</h4>
+                <div class="filter-item">
+                    <label for="dataInicio">De:</label>
+                    <input type="date" id="dataInicio">
+                </div>
+                <div class="filter-item">
+                    <label for="dataFim">Até:</label>
+                    <input type="date" id="dataFim">
+                </div>
+                <div class="filter-item">
+                    <label for="filtroFuncionario">Funcionário:</label>
+                    <select id="filtroFuncionario">
+                        <option value="Todos">Todos</option>
+                        <option value="Manoela">Manoela</option>
+                        <option value="Nayara">Nayara</option>
+                        <option value="João Pedro (gerente)">João Pedro (gerente)</option>
+                    </select>
+                </div>
+                <button id="btnExportarCsv" class="btn">Exportar para CSV</button>
+            </div>
 
-            <section id="history-container">
-                <p>Carregando registros...</p>
-            </section>
+            <div class="registros-container">
+                <p id="statusCarregamento">Carregando registros...</p>
+                <div id="listaRegistros">
+                    <!-- Registros serão inseridos aqui -->
+                </div>
+            </div>
         </main>
     </div>
 
-    <!-- Modal para detalhes e edição -->
-    <div id="details-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modal-title">Detalhes do Registro</h3>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div id="modal-body">
-                <!-- O formulário de edição será injetado aqui pelo JS -->
-            </div>
-        </div>
-    </div>
-
-    <!-- JavaScript do Toastify -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    
-    <!-- Seu script principal do aplicativo -->
     <script type="module" src="app.js"></script>
 </body>
 </html>
