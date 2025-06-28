@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="app-container">
@@ -56,8 +57,23 @@
                 <button id="btnExportarCsv" class="btn">Exportar para CSV</button>
             </div>
 
+            <!-- Seção de Gráficos -->
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3>Evolução do Saldo Líquido</h3>
+                    <canvas id="saldoChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Distribuição das Entradas</h3>
+                    <canvas id="entradasChart"></canvas>
+                </div>
+            </div>
+
             <div class="registros-container">
-                <h2>Registros Detalhados</h2>
+                <div class="registros-header">
+                    <h2>Registros Detalhados</h2>
+                    <button id="btnNovoRegistro" class="btn">Adicionar Registro</button>
+                </div>
                 <p id="statusCarregamento">Carregando registros...</p>
                 <div id="listaRegistros">
                     <!-- Registros serão inseridos aqui -->
@@ -70,7 +86,7 @@
     <div id="editModal" class="modal-overlay">
         <div class="modal-content">
             <header class="modal-header">
-                <h2>Editar Registro</h2>
+                <h2 id="modalTitle">Editar Registro</h2>
                 <button id="closeModalBtn" class="close-button">&times;</button>
             </header>
             <form id="formEdicao">
@@ -112,11 +128,38 @@
 
                 <div class="modal-footer">
                     <button type="button" id="btnCancelarEdicao" class="btn btn-secondary">Cancelar</button>
-                    <button type="submit" class="btn">Salvar Alterações</button>
+                    <button type="submit" id="btnSalvar" class="btn">
+                        <span class="btn-text">Salvar Alterações</span>
+                        <span class="btn-spinner" style="display: none;">⏳</span>
+                    </button>
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="deleteConfirmModal" class="modal-overlay">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2>Confirmar Exclusão</h2>
+                <button id="closeDeleteModalBtn" class="close-button">&times;</button>
+            </header>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir este registro?</p>
+                <p class="warning-text">Esta ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCancelarExclusao" class="btn btn-secondary">Cancelar</button>
+                <button type="button" id="btnConfirmarExclusao" class="btn btn-danger">
+                    <span class="btn-text">Excluir</span>
+                    <span class="btn-spinner" style="display: none;">⏳</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sistema de Toasts -->
+    <div id="toastContainer" class="toast-container"></div>
 
     <script type="module" src="app.js"></script>
 </body>
