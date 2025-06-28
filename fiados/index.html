@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Fiados - Açaí Sabor da Terra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4A0E68; --primary-light: #9370DB; --primary-lighter: #DCC9E8; --background-light: #f0eef4; --background-very-light: #FBF9FE; --text-color: #333; --white: #fff; --border-color: #e0e0e0; --success-color: #28a745; --danger-color: #dc3545; --info-color: #17a2b8; --warning-color: #ffc107; --shadow-color: rgba(74, 14, 104, 0.1); --focus-shadow: rgba(106, 27, 154, 0.2); --border-radius-md: 8px; --border-radius-lg: 16px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--background-light); color: var(--text-color); display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 1rem; }
+        .app-container { width: 100%; max-width: 900px; background-color: var(--white); border-radius: var(--border-radius-lg); box-shadow: 0 8px 24px var(--shadow-color); overflow: hidden; }
+        .tabs { display: flex; background-color: var(--background-very-light); border-bottom: 1px solid var(--border-color); }
+        .tab-button, .nav-link { flex-grow: 1; padding: 1rem 1.5rem; border: none; background-color: transparent; cursor: pointer; font-size: 1rem; font-weight: 600; color: var(--primary-light); transition: all 0.3s ease; border-bottom: 3px solid transparent; text-decoration: none; text-align: center; display: inline-block; }
+        .nav-link:hover { background-color: var(--background-light); }
+        .tab-button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+        .content { padding: 1.5rem; }
+        .form-section, .card { background-color: var(--background-very-light); padding: 1.5rem; border-radius: var(--border-radius-lg); border: 1px solid var(--border-color); margin-bottom: 1.5rem; box-shadow: 0 4px 12px var(--shadow-color); }
+        h2 { color: var(--primary-color); margin-bottom: 1.5rem; font-size: 1.5rem; text-align: center; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        label { margin-bottom: 0.5rem; font-weight: 600; color: var(--primary-color); }
+        input[type="text"], input[type="number"], input[type="date"], select, textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); font-size: 1rem; transition: all 0.2s ease; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px var(--focus-shadow); }
+        .btn { padding: 0.75rem 1.5rem; border-radius: var(--border-radius-md); border: none; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .btn-primary { background-color: var(--primary-color); color: var(--white); }
+        .btn-primary:hover { background-color: #3a0b54; }
+        .btn-secondary { background-color: var(--primary-lighter); color: var(--primary-color); }
+        .btn-secondary:hover { background-color: #c9b6d8; }
+        .btn-success { background-color: var(--success-color); color: var(--white); }
+        .btn-success:hover { background-color: #218838; }
+        .btn-danger { background-color: var(--danger-color); color: var(--white); }
+        .btn-danger:hover { background-color: #c82333; }
+        .btn-info { background-color: var(--info-color); color: var(--white); }
+        .btn-info:hover { background-color: #138496; }
+        .button-group { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+        #listaFiados { margin-top: 2rem; overflow-x: auto; }
+        #fiadosTable { width: 100%; border-collapse: collapse; text-align: left; }
+        #fiadosTable th, #fiadosTable td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); }
+        #fiadosTable th { background-color: var(--background-very-light); color: var(--primary-color); }
+        #fiadosTable tr:hover { background-color: var(--background-light); }
+        .status { padding: 0.25rem 0.5rem; border-radius: var(--border-radius-md); color: var(--white); font-weight: 600; font-size: 0.8rem; text-align: center; }
+        .status-aberto { background-color: var(--warning-color); }
+        .status-pago { background-color: var(--success-color); }
+        .acoes-fiado button { padding: 0.4rem 0.6rem; font-size: 0.9rem; margin-right: 0.5rem; }
+        .btn-excluir.confirm-delete { background-color: var(--danger-color); color: white; }
+        #areaLembreteIA { margin-top: 1rem; }
+        #lembreteGerado { background-color: #fff; padding: 1rem; border-radius: var(--border-radius-md); border: 1px dashed var(--info-color); min-height: 100px; white-space: pre-wrap; }
+        #lembreteGerado.loading::after { content: 'Gerando lembrete com IA...'; color: var(--primary-light); }
+        .toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); padding: 1rem 2rem; border-radius: var(--border-radius-md); box-shadow: 0 4px 15px rgba(0,0,0,0.2); color: var(--white); font-weight: 600; transition: bottom 0.5s ease-in-out; z-index: 1000; }
+        .toast.show { bottom: 30px; }
+        .toast.success { background-color: var(--success-color); }
+        .toast.error { background-color: var(--danger-color); }
+        .toast.info { background-color: var(--primary-color); }
+        .hidden { display: none !important; }
+        .justify-center { justify-content: center; }
+        .mt-1 { margin-top: 1rem; }
+        @media (max-width: 600px) { body { padding: 0.5rem; } .app-container { border-radius: 0; } .content { padding: 1rem; } .form-grid { grid-template-columns: 1fr; } .tab-button, .nav-link { padding: 0.8rem 0.5rem; font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Navegação -->
+        <nav class="tabs">
+            <a href="/registrardiario/" class="nav-link">📊 Registro Diário</a>
+            <button class="tab-button active">👥 Controle de Fiados</button>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <main class="content">
+            <form id="formFiado" class="form-section">
+                <h2>Registrar Novo Fiado</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="nomeCliente">Nome do Cliente</label>
+                        <input type="text" id="nomeCliente" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="valorFiado">Valor (R$)</label>
+                        <input type="number" id="valorFiado" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataFiado">Data do Fiado</label>
+                        <input type="date" id="dataFiado" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="previsaoPagamento">Previsão de Pagamento</label>
+                        <input type="date" id="previsaoPagamento">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="funcionarioFiado">Registrado por</label>
+                        <input type="text" id="funcionarioFiado" placeholder="Seu nome" required>
+                    </div>
+                </div>
+                <div class="button-group justify-center">
+                    <button type="submit" class="btn btn-primary">Registrar Fiado e Abrir WhatsApp 🟢</button>
+                </div>
+            </form>
+
+            <div id="areaLembreteIA" class="card hidden">
+                <h3>Lembrete de Cobrança (Sugestão da IA)</h3>
+                <div id="lembreteGerado" class="loading"></div>
+                <div class="button-group justify-center mt-1">
+                   <button type="button" class="btn btn-secondary" id="btnCopiarLembrete">Copiar Mensagem</button>
+                </div>
+            </div>
+
+            <div id="listaFiados" class="card">
+                <h2>Fiados Atuais</h2>
+                <table id="fiadosTable">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Valor</th>
+                            <th>Data</th>
+                            <th>Previsão Pgt.</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Linhas inseridas via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Elemento Toast para Notificações -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const App = {
+            init() {
+                FiadosModule.init();
+            }
+        };
+
+        const Utils = {
+            showToast(message, type = 'info', duration = 3000) {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.className = 'toast show';
+                toast.classList.add(type);
+                setTimeout(() => { toast.className = 'toast'; }, duration);
+            },
+            formatCurrency(value) { return parseFloat(value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); },
+            formatDate(dateString) {
+                if (!dateString) return 'N/A';
+                const date = new Date(dateString);
+                const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+                return new Date(date.getTime() + userTimezoneOffset).toLocaleDateString('pt-BR');
+            },
+            getTodayDateString() { return new Date().toISOString().split('T')[0]; }
+        };
+        
+        const AIModule = {
+            apiKey: "",
+            endpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+            async generateText(prompt) {
+                const url = `${this.endpoint}?key=${this.apiKey}`;
+                const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                try {
+                    const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) { throw new Error(`API Error: ${response.statusText}`); }
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0) {
+                        return result.candidates[0].content.parts[0].text.trim();
+                    } else {
+                        const blockReason = result.promptFeedback?.blockReason;
+                        return blockReason ? `Conteúdo bloqueado: ${blockReason}.` : "Não foi possível gerar uma resposta.";
+                    }
+                } catch (error) {
+                    console.error("Erro ao chamar a API Gemini:", error);
+                    return "Falha na comunicação com a IA.";
+                }
+            }
+        };
+        
+        const StorageModule = {
+            set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (error) { console.error("Erro ao salvar no localStorage:", error); } },
+            get(key) { try { const item = localStorage.getItem(key); return item ? JSON.parse(item) : null; } catch (error) { console.error("Erro ao carregar do localStorage:", error); localStorage.removeItem(key); return null; } },
+            remove(key) { localStorage.removeItem(key); }
+        };
+        
+        const FiadosModule = {
+            LISTA_KEY: 'listaFiados_AcaiSaborDaTerra',
+            RASCUNHO_KEY: 'fiadoRascunho_AcaiSaborDaTerra',
+            form: document.getElementById('formFiado'),
+            fiados: [],
+            init() {
+                this.fiados = StorageModule.get(this.LISTA_KEY) || [];
+                this.loadDraft();
+                this.renderList();
+                this.setupEventListeners();
+                document.getElementById('dataFiado').value = Utils.getTodayDateString();
+            },
+            setupEventListeners() {
+                this.form.addEventListener('submit', (e) => this.addFiado(e));
+                this.form.addEventListener('input', () => this.saveDraft());
+                document.getElementById('listaFiados').addEventListener('click', (e) => this.handleListActions(e));
+                document.getElementById('btnCopiarLembrete').addEventListener('click', () => this.copyReminder());
+            },
+            saveDraft() {
+                const draft = {
+                    nomeCliente: document.getElementById('nomeCliente').value,
+                    valorFiado: document.getElementById('valorFiado').value,
+                    dataFiado: document.getElementById('dataFiado').value,
+                    previsaoPagamento: document.getElementById('previsaoPagamento').value,
+                    funcionarioFiado: document.getElementById('funcionarioFiado').value,
+                };
+                StorageModule.set(this.RASCUNHO_KEY, draft);
+            },
+            loadDraft() {
+                const draft = StorageModule.get(this.RASCUNHO_KEY);
+                if (draft) {
+                    Object.keys(draft).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element) element.value = draft[key];
+                    });
+                }
+            },
+            clearDraft() {
+                this.form.reset();
+                document.getElementById('dataFiado').value = Utils.getTodayDateString();
+                StorageModule.remove(this.RASCUNHO_KEY);
+            },
+            saveList() { StorageModule.set(this.LISTA_KEY, this.fiados); },
+            renderList() {
+                const tbody = document.querySelector('#fiadosTable tbody');
+                tbody.innerHTML = '';
+                if (this.fiados.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum fiado registrado.</td></tr>';
+                    return;
+                }
+                this.fiados.sort((a, b) => b.id - a.id).forEach(fiado => {
+                    const tr = document.createElement('tr');
+                    tr.dataset.fiadoId = fiado.id;
+                    const statusClass = fiado.status === 'Pago' ? 'status-pago' : 'status-aberto';
+                    tr.innerHTML = `
+                        <td>${fiado.nomeCliente}</td>
+                        <td>${Utils.formatCurrency(fiado.valorFiado)}</td>
+                        <td>${Utils.formatDate(fiado.dataFiado)}</td>
+                        <td>${Utils.formatDate(fiado.previsaoPagamento)}</td>
+                        <td><span class="status ${statusClass}">${fiado.status}</span></td>
+                        <td class="acoes-fiado">
+                            ${fiado.status !== 'Pago' ? `<button class="btn btn-success btn-sm btn-marcar-pago" data-id="${fiado.id}">✔ Pagar</button>` : ''}
+                            ${fiado.status !== 'Pago' ? `<button class="btn btn-info btn-sm btn-lembrete-ia" data-id="${fiado.id}">🤖 Lembrete</button>` : ''}
+                            <button class="btn btn-danger btn-sm btn-excluir" data-id="${fiado.id}">✖ Excluir</button>
+                        </td>`;
+                    tbody.appendChild(tr);
+                });
+            },
+            addFiado(event) {
+                event.preventDefault();
+                const values = {
+                    nomeCliente: document.getElementById('nomeCliente').value,
+                    valorFiado: document.getElementById('valorFiado').value,
+                    dataFiado: document.getElementById('dataFiado').value,
+                    previsaoPagamento: document.getElementById('previsaoPagamento').value,
+                    funcionarioFiado: document.getElementById('funcionarioFiado').value,
+                };
+                if (!values.nomeCliente || !values.valorFiado || !values.funcionarioFiado) {
+                    return Utils.showToast("Preencha nome, valor e funcionário.", "error");
+                }
+                const newFiado = { ...values, id: Date.now(), dataRegistro: new Date().toISOString(), status: 'Aberto' };
+                this.fiados.unshift(newFiado);
+                this.saveList();
+                this.renderList();
+                this.clearDraft();
+                Utils.showToast("Fiado registrado!", 'success');
+                this.sendWhatsAppNotification(newFiado);
+            },
+            handleListActions(event) {
+                const button = event.target.closest('button');
+                if (!button) return;
+                const id = parseFloat(button.dataset.id);
+                if (button.classList.contains('btn-marcar-pago')) this.markAsPaid(id);
+                if (button.classList.contains('btn-lembrete-ia')) this.generateReminder(id);
+                if (button.classList.contains('btn-excluir')) {
+                    if (button.classList.contains('confirm-delete')) {
+                        this.delete(id);
+                    } else {
+                        this.requestDeleteConfirmation(button);
+                    }
+                }
+            },
+            requestDeleteConfirmation(button) {
+                document.querySelectorAll('.btn-excluir.confirm-delete').forEach(btn => {
+                    btn.classList.remove('confirm-delete');
+                    btn.textContent = '✖ Excluir';
+                });
+                button.classList.add('confirm-delete');
+                button.textContent = 'Confirmar?';
+            },
+            markAsPaid(id) {
+                const fiado = this.fiados.find(f => f.id === id);
+                if (fiado) {
+                    fiado.status = 'Pago';
+                    this.saveList();
+                    this.renderList();
+                    Utils.showToast(`${fiado.nomeCliente} marcado como pago.`, 'success');
+                }
+            },
+            delete(id) {
+                const fiadoIndex = this.fiados.findIndex(f => f.id === id);
+                if (fiadoIndex > -1) {
+                    const nomeCliente = this.fiados[fiadoIndex].nomeCliente;
+                    this.fiados.splice(fiadoIndex, 1);
+                    this.saveList();
+                    this.renderList();
+                    Utils.showToast(`Registro de ${nomeCliente} excluído.`, 'info');
+                }
+            },
+            async generateReminder(id) {
+                const fiado = this.fiados.find(f => f.id === id);
+                if (!fiado) return;
+                const area = document.getElementById('areaLembreteIA');
+                const lembreteDiv = document.getElementById('lembreteGerado');
+                area.classList.remove('hidden');
+                lembreteDiv.classList.add('loading');
+                lembreteDiv.scrollIntoView({ behavior: 'smooth' });
+                const prompt = `Você é um assistente de cobrança amigável para a loja 'Açaí Sabor da Terra'. Crie uma mensagem de lembrete de cobrança para WhatsApp. Seja educado e claro. Dados: Cliente: ${fiado.nomeCliente}, Valor: ${Utils.formatCurrency(fiado.valorFiado)}, Data: ${Utils.formatDate(fiado.dataFiado)}. Retorne apenas o texto da mensagem.`;
+                const mensagem = await AIModule.generateText(prompt);
+                lembreteDiv.innerText = mensagem;
+                lembreteDiv.classList.remove('loading');
+            },
+            copyReminder() {
+                const textToCopy = document.getElementById('lembreteGerado').innerText;
+                if (!textToCopy) return;
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => Utils.showToast("Mensagem copiada!", "success"))
+                    .catch(() => Utils.showToast("Falha ao copiar.", "error"));
+            },
+            sendWhatsAppNotification(fiado) {
+                const previsao = fiado.previsaoPagamento ? Utils.formatDate(fiado.previsaoPagamento) : 'Não informada';
+                const mensagem = `*NOVO FIADO REGISTRADO - AÇAÍ SABOR DA TERRA* 🍧\n\n` +
+                                 `📅 *Data do Registro:* ${Utils.formatDate(fiado.dataRegistro)}\n` +
+                                 `👤 *Cliente:* ${fiado.nomeCliente}\n` +
+                                 `💰 *Valor:* ${Utils.formatCurrency(fiado.valorFiado)}\n` +
+                                 `🗓️ *Data do Fiado:* ${Utils.formatDate(fiado.dataFiado)}\n` +
+                                 `📅 *Previsão de Pagamento:* ${previsao}\n` +
+                                 `✍️ *Funcionário Responsável:* ${fiado.funcionarioFiado}`;
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(mensagem)}`, '_blank');
+            }
+        };
+
+        App.init();
+    });
+    </script>
+</body>
+</html>
