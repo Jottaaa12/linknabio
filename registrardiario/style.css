@@ -1,0 +1,402 @@
+/* ------------------------- */
+/* VARS & GLOBAL RESETS    */
+/* ------------------------- */
+:root {
+    --primary-color: #4A0E68;
+    --primary-light: #9370DB;
+    --primary-lighter: #DCC9E8;
+    --background-light: #f0eef4;
+    --background-very-light: #FBF9FE;
+    --text-color: #333;
+    --white: #fff;
+    --border-color: #e0e0e0;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+    --warning-color: #ffc107;
+    --shadow-color: rgba(74, 14, 104, 0.1);
+    --focus-shadow: rgba(106, 27, 154, 0.2);
+    --border-radius-md: 8px;
+    --border-radius-lg: 16px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+/* ------------------------- */
+/* LAYOUT & CONTAINERS     */
+/* ------------------------- */
+.app-container {
+    width: 100%;
+    max-width: 900px;
+    background-color: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 8px 24px var(--shadow-color);
+    overflow: hidden;
+}
+
+.tabs {
+    display: flex;
+    background-color: var(--background-very-light);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.content {
+    padding: 1.5rem;
+}
+
+.form-section, .card {
+    background-color: var(--background-very-light);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+/* ------------------------- */
+/* TYPOGRAPHY & TEXT    */
+/* ------------------------- */
+h2, h4 {
+    color: var(--primary-color);
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+h4 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+#resumo {
+    text-align: left;
+    white-space: pre-wrap;
+    line-height: 1.8;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background-color: #fff;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* ------------------------- */
+/* FORM ELEMENTS        */
+/* ------------------------- */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="file"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background-color: var(--white);
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px var(--focus-shadow);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.radio-group label {
+    margin-bottom: 0;
+}
+
+#fidelidadeDetalhes {
+    display: none;
+    grid-column: 1 / -1;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--primary-lighter);
+    margin-top: 1rem;
+}
+
+#fidelidadeDetalhes.fidelidade-visivel {
+    display: contents;
+}
+
+progress {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    accent-color: var(--primary-color);
+}
+
+#textoMeta {
+    text-align: center;
+    font-weight: 500;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+/* ------------------------- */
+/* BUTTONS           */
+/* ------------------------- */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-md);
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-primary { background-color: var(--primary-color); color: var(--white); }
+.btn-primary:hover:not(:disabled) { background-color: #3a0b54; }
+
+.btn-secondary { background-color: var(--primary-lighter); color: var(--primary-color); }
+.btn-secondary:hover:not(:disabled) { background-color: #c9b6d8; }
+
+.btn-success { background-color: var(--success-color); color: var(--white); }
+.btn-success:hover:not(:disabled) { background-color: #218838; }
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+}
+
+.tab-button {
+    flex-grow: 1;
+    padding: 1rem 1.5rem;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-light);
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+}
+
+.tab-button.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+/* ------------------------- */
+/* COMPONENTS           */
+/* ------------------------- */
+.mood-options {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.mood-option {
+    cursor: pointer;
+    padding: 0.75rem;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    font-size: 1.8rem;
+}
+
+.mood-option input { display: none; }
+
+.mood-option.selected, .mood-option:hover {
+    background-color: var(--primary-lighter);
+    transform: scale(1.1);
+}
+
+#fraseMotivacionalArea {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: var(--white);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--border-color);
+    min-height: 50px;
+}
+
+#confirmacao .card, #envio .card {
+    text-align: center;
+}
+
+#ajusteCaixa {
+    border-top: 2px solid var(--primary-lighter);
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+}
+
+.ajuste-group {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+}
+
+.ajuste-group label {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.8rem;
+    display: block;
+}
+
+.ajuste-group span {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.ajuste-group input {
+    margin-bottom: 0.5rem;
+}
+
+/* SAÍDAS DETALHADAS */
+.saida-item {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    align-items: center;
+}
+
+.saida-item .saida-motivo {
+    flex-grow: 1;
+}
+
+.btn-remover-saida {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    background-color: var(--danger-color);
+    color: var(--white);
+    flex-shrink: 0;
+}
+
+#totalSaidas {
+    font-weight: bold;
+    color: var(--danger-color);
+}
+
+/* MODAL DE LOGS */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--white);
+    padding: 2rem;
+    border-radius: var(--border-radius-lg);
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+#logsContainer .log-item {
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.75rem 0;
+}
+#logsContainer .log-item:last-child {
+    border-bottom: none;
+}
+#logsContainer .log-date {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+#logsContainer pre {
+    white-space: pre-wrap;
+    word-break: break-all;
+    font-size: 0.85rem;
+    background-color: var(--background-light);
+    padding: 0.5rem;
+    border-radius: var(--border-radius-md);
+    margin-top: 0.5rem;
+}
+
+
+/* ------------------------- */
+/* UTILITY CLASSES      */
+/* ------------------------- */
+.hidden {
+    display: none !important;
+}
+
+.justify-center {
+    justify-content: center;
+}
