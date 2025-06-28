@@ -7,73 +7,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #4A0E68; --primary-light: #9370DB; --primary-lighter: #DCC9E8; --background-light: #f0eef4; --background-very-light: #FBF9FE; --text-color: #333; --white: #fff; --border-color: #e0e0e0; --success-color: #28a745; --danger-color: #dc3545; --info-color: #17a2b8; --warning-color: #ffc107; --shadow-color: rgba(74, 14, 104, 0.1); --focus-shadow: rgba(106, 27, 154, 0.2); --border-radius-md: 8px; --border-radius-lg: 16px;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--background-light); color: var(--text-color); display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 1rem; }
-        .app-container { width: 100%; max-width: 900px; background-color: var(--white); border-radius: var(--border-radius-lg); box-shadow: 0 8px 24px var(--shadow-color); overflow: hidden; }
-        .tabs { display: flex; background-color: var(--background-very-light); border-bottom: 1px solid var(--border-color); }
-        .tab-button, .nav-link { flex-grow: 1; padding: 1rem 1.5rem; border: none; background-color: transparent; cursor: pointer; font-size: 1rem; font-weight: 600; color: var(--primary-light); transition: all 0.3s ease; border-bottom: 3px solid transparent; text-decoration: none; text-align: center; display: inline-block; }
-        .nav-link:hover { background-color: var(--background-light); }
-        .tab-button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
-        .content { padding: 1.5rem; }
-        .form-section, .card { background-color: var(--background-very-light); padding: 1.5rem; border-radius: var(--border-radius-lg); border: 1px solid var(--border-color); margin-bottom: 1.5rem; box-shadow: 0 4px 12px var(--shadow-color); }
-        h2, h4 { color: var(--primary-color); text-align: center; }
-        h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
-        h4 { margin-bottom: 1rem; font-size: 1.2rem; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
-        .form-group { display: flex; flex-direction: column; }
-        .form-group.full-width { grid-column: 1 / -1; }
-        label { margin-bottom: 0.5rem; font-weight: 600; color: var(--primary-color); }
-        input[type="text"], input[type="number"], input[type="date"], select, textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); font-size: 1rem; transition: all 0.2s ease; }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px var(--focus-shadow); }
-        textarea { resize: vertical; min-height: 100px; }
-        .btn { padding: 0.75rem 1.5rem; border-radius: var(--border-radius-md); border: none; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
-        .btn-primary { background-color: var(--primary-color); color: var(--white); }
-        .btn-primary:hover { background-color: #3a0b54; }
-        .btn-secondary { background-color: var(--primary-lighter); color: var(--primary-color); }
-        .btn-secondary:hover { background-color: #c9b6d8; }
-        .btn-success { background-color: var(--success-color); color: var(--white); }
-        .btn-success:hover { background-color: #218838; }
-        .btn-gemini { background: linear-gradient(45deg, #4285F4, #9B72CB, #D96570, #F2A600); color: white; }
-        .btn-gemini:hover { opacity: 0.9; }
-        .button-group { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
-        .radio-group { display: flex; gap: 1rem; align-items: center; }
-        .radio-group label { margin-bottom: 0; }
-        #saidas, #fidelidadeDetalhes { display: none; grid-column: 1 / -1; padding-top: 1rem; border-top: 1px dashed var(--primary-lighter); margin-top: 1rem; }
-        #saidas.saidas-visivel, #fidelidadeDetalhes.fidelidade-visivel { display: contents; }
-        .mood-options { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-        .mood-option { cursor: pointer; padding: 0.75rem; border-radius: 50%; transition: all 0.2s ease; font-size: 1.8rem; }
-        .mood-option input { display: none; }
-        .mood-option.selected, .mood-option:hover { background-color: var(--primary-lighter); transform: scale(1.1); }
-        #fraseMotivacionalArea { margin-top: 1rem; padding: 1rem; background-color: var(--white); border-radius: var(--border-radius-md); border: 1px solid var(--primary-lighter); min-height: 50px; }
-        #confirmacao .card, #envio .card { text-align: center; }
-        #resumo { text-align: left; white-space: pre-wrap; line-height: 1.8; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); background-color: #fff;}
-        .feedback-positivo { color: var(--success-color); font-weight: bold; }
-        .feedback-negativo { color: var(--danger-color); font-weight: bold; }
-        .feedback-elevado { color: var(--primary-color); font-weight: bold; }
-        .toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); padding: 1rem 2rem; border-radius: var(--border-radius-md); box-shadow: 0 4px 15px rgba(0,0,0,0.2); color: var(--white); font-weight: 600; transition: bottom 0.5s ease-in-out; z-index: 1000; }
-        .toast.show { bottom: 30px; }
-        .toast.success { background-color: var(--success-color); }
-        .toast.error { background-color: var(--danger-color); }
-        .hidden { display: none !important; }
-        .justify-center { justify-content: center; }
-        #ajusteCaixa { border-top: 2px solid var(--primary-lighter); margin-top: 1.5rem; padding-top: 1.5rem; }
-        .ajuste-group { margin-bottom: 1rem; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); }
-        .ajuste-group label { font-size: 1.1rem; font-weight: bold; margin-bottom: 0.8rem; display: block; }
-        .ajuste-group span { display: block; margin-bottom: 0.5rem; }
-        .ajuste-group input { margin-bottom: 0.5rem; }
-    </style>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="app-container">
         <nav class="tabs">
             <button class="tab-button active">📊 Registro Diário</button>
-            <a href="/fiados/" class="nav-link">👥 Controle de Fiados</a>
         </nav>
 
         <main class="content">
@@ -81,6 +22,14 @@
                 <form id="registroForm">
                     <div class="form-section">
                         <h2>Registro Diário de Caixa</h2>
+                        
+                        <div class="form-group">
+                            <label for="metaDiaria">Meta Diária (R$)</label>
+                            <input type="number" id="metaDiaria" step="0.01" min="0" placeholder="Ex: 200.00">
+                        </div>
+                        <progress id="progressoMeta" max="100" value="0"></progress>
+                        <p id="textoMeta">0% da meta atingida</p>
+
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="funcionario">Funcionário(a)</label>
@@ -103,17 +52,17 @@
                                     <div class="form-group"><label for="cartaoEntrada">💳 Cartão</label><input type="number" id="cartaoEntrada" placeholder="0.00" step="0.01" min="0"></div>
                                 </div>
                             </div>
+                            
+                            <!-- SAÍDAS DETALHADAS -->
                             <div class="form-group full-width">
-                                <label>Houve saída de dinheiro/PIX do caixa?</label>
-                                <div class="radio-group"><input type="radio" id="saidaSim" name="saida" value="sim"> <label for="saidaSim">Sim</label><input type="radio" id="saidaNao" name="saida" value="nao" checked> <label for="saidaNao">Não</label></div>
-                            </div>
-                            <div id="saidas" class="full-width">
-                                <div class="form-grid">
-                                    <div class="form-group full-width"><label for="motivoSaida">Motivo da Saída</label><input type="text" id="motivoSaida" placeholder="Ex: Compra de gelo"></div>
-                                    <div class="form-group"><label for="dinheiroSaida">💰 Dinheiro</label><input type="number" id="dinheiroSaida" placeholder="0.00" step="0.01" min="0"></div>
-                                    <div class="form-group"><label for="pixSaida">📱 PIX</label><input type="number" id="pixSaida" placeholder="0.00" step="0.01" min="0"></div>
+                                <label>Saídas do Dia</label>
+                                <div id="saidasList">
+                                    <!-- Itens de saída serão adicionados dinamicamente aqui -->
                                 </div>
+                                <button type="button" id="btnAdicionarSaida" class="btn btn-secondary">+ Adicionar Saída</button>
+                                <p>Total Saídas: <span id="totalSaidas">R$ 0,00</span></p>
                             </div>
+
                             <div class="form-group full-width">
                                 <label>🎁 Houve cartão fidelidade hoje?</label>
                                 <div class="radio-group"><input type="radio" id="fidelidadeSim" name="fidelidade" value="sim"> <label for="fidelidadeSim">Sim</label><input type="radio" id="fidelidadeNao" name="fidelidade" value="nao" checked> <label for="fidelidadeNao">Não</label></div>
@@ -123,6 +72,13 @@
                                     <div class="form-group full-width"><label for="fidelidadeQuantidade">Quantos cartões foram utilizados?</label><input type="number" id="fidelidadeQuantidade" placeholder="0" step="1" min="0"></div>
                                 </div>
                             </div>
+
+                             <!-- UPLOAD DE COMPROVANTE -->
+                            <div class="form-group full-width">
+                                <label for="comprovante">Comprovante (imagem/PDF)</label>
+                                <input type="file" id="comprovante" accept="image/*,application/pdf">
+                            </div>
+
                             <div class="form-group full-width">
                                 <label for="observacoesDia">Observações do Dia</label><textarea id="observacoesDia" placeholder="Anotações importantes sobre o dia de hoje..."></textarea>
                             </div>
@@ -130,10 +86,9 @@
                                 <label>Termômetro da Loja (Como foi o dia?)</label>
                                 <div class="mood-options"><label class="mood-option">😴<input type="radio" name="climaLoja" value="Muito Fraco"></label><label class="mood-option">😐<input type="radio" name="climaLoja" value="Fraco"></label><label class="mood-option">🙂<input type="radio" name="climaLoja" value="Bom"></label><label class="mood-option">😄<input type="radio" name="climaLoja" value="Ótimo"></label><label class="mood-option">🚀<input type="radio" name="climaLoja" value="Excepcional"></label></div>
                             </div>
-                            <!-- SEÇÃO CORRIGIDA/ADICIONADA -->
                             <div class="form-group full-width">
                                 <label>Frase do Dia (Opcional)</label>
-                                <div id="fraseMotivacionalArea" contenteditable="true" placeholder="Clique para editar ou cole uma frase aqui..."></div>
+                                <div id="fraseMotivacionalArea" contenteditable="true"></div>
                             </div>
                         </div>
                     </div>
@@ -163,6 +118,7 @@
                             </div>
                         </div>
                         <div class="button-group justify-center">
+                            <button type="button" id="btnVerLogs" class="btn btn-secondary hidden">📜 Histórico de Revisões</button>
                             <button type="button" id="btnEditar" class="btn btn-secondary">Editar</button>
                             <button type="button" id="btnConfirmar" class="btn btn-success">Confirmar e Salvar Online</button>
                         </div>
@@ -182,294 +138,28 @@
             </div>
         </main>
     </div>
+
+    <!-- Modal para Logs -->
+    <div id="logsModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button id="closeLogsModal" class="modal-close-btn">&times;</button>
+            <h3>Histórico de Revisões</h3>
+            <div id="logsContainer"></div>
+        </div>
+    </div>
+
+    <!-- Datalist para Autocomplete de Motivos -->
+    <datalist id="motivosList">
+        <option value="Gelo"></option>
+        <option value="Limpeza"></option>
+        <option value="Suprimentos"></option>
+        <option value="Manutenção"></option>
+        <option value="Pagamento Fornecedor"></option>
+        <option value="Outros"></option>
+    </datalist>
     
-    <div id="toast" class="toast"></div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            const firebaseConfig = {
-              apiKey: "AIzaSyCyzA-QWhXZTUahk13tKhMEAt8AqLpCzDc",
-              authDomain: "acai-sabordaterra-fiados.firebaseapp.com",
-              projectId: "acai-sabordaterra-fiados",
-              storageBucket: "acai-sabordaterra-fiados.appspot.com",
-              messagingSenderId: "95507357232",
-              appId: "1:95507357232:web:22d0264b98bd5ab0ff57f5"
-            };
-
-            const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-            const db = getFirestore(app);
-
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    RegistroDiarioModule.init(db);
-                }
-            });
-
-            try {
-                await signInAnonymously(auth);
-            } catch (error) {
-                console.error("Falha na autenticação anônima:", error);
-                Utils.showToast("Falha crítica na conexão. O app não funcionará.", "error");
-            }
-        });
-
-        const Utils = {
-            showToast(message, type = 'info', duration = 3000) {
-                const toast = document.getElementById('toast');
-                toast.textContent = message;
-                toast.className = 'toast show';
-                toast.classList.add(type);
-                setTimeout(() => { toast.className = 'toast'; }, duration);
-            },
-            formatCurrency(value) { return parseFloat(value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); },
-            formatDate(dateString) {
-                if (!dateString) return 'N/A';
-                const date = new Date(dateString);
-                const userTimezoneOffset = date.getTimezoneOffset() * 60000;
-                return new Date(date.getTime() + userTimezoneOffset).toLocaleDateString('pt-BR');
-            },
-            getTodayDateString() { return new Date().toISOString().split('T')[0]; }
-        };
-        
-        const LocalStorageModule = {
-            set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (error) { console.error("Erro ao salvar no localStorage:", error); } },
-            get(key) { try { const item = localStorage.getItem(key); return item ? JSON.parse(item) : null; } catch (error) { console.error("Erro ao carregar do localStorage:", error); localStorage.removeItem(key); return null; } },
-            remove(key) { localStorage.removeItem(key); }
-        };
-
-        const RegistroDiarioModule = {
-            RASCUNHO_KEY: 'registroDiarioRascunho_AcaiSaborDaTerra',
-            form: document.getElementById('registroForm'),
-            dadosParaEnvio: {},
-            db: null,
-            
-            init(db) {
-                this.db = db;
-                this.setupEventListeners();
-                this.loadDraft();
-                document.getElementById('data').value = Utils.getTodayDateString();
-                this.showHideSaidas();
-                this.showHideFidelidade();
-                this.updateMoodOptionsStyle();
-            },
-            setupEventListeners() {
-                this.form.addEventListener('input', () => this.saveDraft());
-                document.querySelectorAll('input[name="saida"]').forEach(radio => radio.addEventListener('change', () => this.showHideSaidas()));
-                document.querySelectorAll('input[name="fidelidade"]').forEach(radio => radio.addEventListener('change', () => this.showHideFidelidade()));
-                document.querySelectorAll('.mood-option input').forEach(radio => radio.addEventListener('change', () => this.updateMoodOptionsStyle()));
-                document.getElementById('btnRevisar').addEventListener('click', () => this.review());
-                document.getElementById('btnEditar').addEventListener('click', () => this.edit());
-                document.getElementById('btnConfirmar').addEventListener('click', () => this.confirmAndSave());
-                document.getElementById('btnEnviarWhatsApp').addEventListener('click', () => this.sendToWhatsApp());
-                document.getElementById('btnNovoRegistro').addEventListener('click', () => this.reset());
-                document.getElementById('realDinheiro').addEventListener('input', () => this.updateAjuste());
-                document.getElementById('realPix').addEventListener('input', () => this.updateAjuste());
-            },
-            getFormValues() {
-                const formValues = {};
-                new FormData(this.form).forEach((value, key) => { formValues[key] = value; });
-                formValues.funcionario = document.getElementById('funcionario').value;
-                formValues.observacoesDia = document.getElementById('observacoesDia').value;
-                formValues.fraseMotivacionalArea = document.getElementById('fraseMotivacionalArea').innerText;
-                formValues.dinheiroEntrada = document.getElementById('dinheiroEntrada').value;
-                formValues.pixEntrada = document.getElementById('pixEntrada').value;
-                formValues.cartaoEntrada = document.getElementById('cartaoEntrada').value;
-                formValues.motivoSaida = document.getElementById('motivoSaida').value;
-                formValues.dinheiroSaida = document.getElementById('dinheiroSaida').value;
-                formValues.pixSaida = document.getElementById('pixSaida').value;
-                formValues.fidelidadeQuantidade = document.getElementById('fidelidadeQuantidade').value;
-                formValues.data = document.getElementById('data').value;
-                return formValues;
-            },
-            saveDraft() { LocalStorageModule.set(this.RASCUNHO_KEY, this.getFormValues()); },
-            loadDraft() {
-                const draft = LocalStorageModule.get(this.RASCUNHO_KEY);
-                if (draft) {
-                    Object.keys(draft).forEach(key => {
-                        const element = document.getElementById(key) || this.form.querySelector(`[name="${key}"][value="${draft[key]}"]`);
-                        if (element) {
-                            if (element.type === 'radio') element.checked = true;
-                            else if (key === 'fraseMotivacionalArea') element.innerText = draft[key];
-                            else element.value = draft[key];
-                        }
-                    });
-                }
-            },
-            clearDraft() { LocalStorageModule.remove(this.RASCUNHO_KEY); },
-            showHideSaidas() { document.getElementById('saidas').classList.toggle('saidas-visivel', document.getElementById('saidaSim').checked); },
-            showHideFidelidade() { document.getElementById('fidelidadeDetalhes').classList.toggle('fidelidade-visivel', document.getElementById('fidelidadeSim').checked); },
-            updateMoodOptionsStyle() { document.querySelectorAll('.mood-option').forEach(label => { label.classList.toggle('selected', label.querySelector('input').checked); }); },
-            validateForm() {
-                const values = this.getFormValues();
-                const totalEntradas = (parseFloat(values.dinheiroEntrada) || 0) + (parseFloat(values.pixEntrada) || 0) + (parseFloat(values.cartaoEntrada) || 0);
-                if (!values.funcionario || !values.data) return Utils.showToast("Preencha Funcionário e Data.", 'error');
-                if (totalEntradas <= 0) return Utils.showToast("Pelo menos uma entrada deve ser maior que zero.", 'error');
-                if (!values.climaLoja) return Utils.showToast("Selecione o 'Termômetro da Loja'.", 'error');
-                if (values.fidelidade === 'sim' && (!values.fidelidadeQuantidade || parseInt(values.fidelidadeQuantidade) <= 0)) {
-                    return Utils.showToast("Informe a quantidade de cartões fidelidade.", 'error');
-                }
-                return true;
-            },
-            review() {
-                if (!this.validateForm()) return;
-                this.dadosParaEnvio = this.getFormValues();
-                document.getElementById('resumo').innerHTML = this.generateSummaryHTML(this.dadosParaEnvio);
-                
-                const { saldoDinheiro, saldoPix } = this.calculateTotals(this.dadosParaEnvio);
-                document.getElementById('sistemaDinheiro').textContent = Utils.formatCurrency(saldoDinheiro);
-                document.getElementById('sistemaPix').textContent = Utils.formatCurrency(saldoPix);
-                
-                document.getElementById('realDinheiro').value = '';
-                document.getElementById('realPix').value = '';
-                document.getElementById('motivoAjuste').value = '';
-                this.updateAjuste();
-
-
-                document.getElementById('registroForm').classList.add('hidden');
-                document.getElementById('confirmacao').classList.remove('hidden');
-            },
-            updateAjuste() {
-                const { saldoDinheiro, saldoPix } = this.calculateTotals(this.dadosParaEnvio);
-                
-                const realDinheiroEl = document.getElementById('realDinheiro');
-                const realPixEl = document.getElementById('realPix');
-                
-                const realDinheiro = parseFloat(realDinheiroEl.value) || saldoDinheiro;
-                const realPix = parseFloat(realPixEl.value) || saldoPix;
-
-                const diferencaDinheiro = realDinheiro - saldoDinheiro;
-                const diferencaPix = realPix - saldoPix;
-
-                const diferencaDinheiroEl = document.getElementById('diferencaDinheiro');
-                diferencaDinheiroEl.textContent = Utils.formatCurrency(diferencaDinheiro);
-                diferencaDinheiroEl.style.color = diferencaDinheiro < 0 ? 'var(--danger-color)' : 'var(--success-color)';
-
-                const diferencaPixEl = document.getElementById('diferencaPix');
-                diferencaPixEl.textContent = Utils.formatCurrency(diferencaPix);
-                diferencaPixEl.style.color = diferencaPix < 0 ? 'var(--danger-color)' : 'var(--success-color)';
-            },
-            generateSummaryHTML(data) {
-                const { totalEntradas, totalSaidas, totalGeral } = this.calculateTotals(data);
-                let html = `<pre><strong>REGISTRO DIÁRIO - AÇAÍ SABOR DA TERRA</strong>\n-------------------------------------\n<strong>Funcionário(a):</strong> ${data.funcionario}\n<strong>Data:</strong> ${Utils.formatDate(data.data)}\n-------------------------------------\n<strong>ENTRADAS:</strong>\n💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroEntrada)}\n📱 PIX: ${Utils.formatCurrency(data.pixEntrada)}\n💳 Cartão: ${Utils.formatCurrency(data.cartaoEntrada)}\n<span class="feedback-elevado">Total Entradas: ${Utils.formatCurrency(totalEntradas)}</span>\n-------------------------------------`;
-                if(data.saida === 'sim' && totalSaidas > 0) { html += `\n<strong>SAÍDAS:</strong>\nMotivo: ${data.motivoSaida || 'Não informado'}\n💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroSaida)}\n📱 PIX: ${Utils.formatCurrency(data.pixSaida)}\n<span class="feedback-negativo">Total Saídas: ${Utils.formatCurrency(totalSaidas)}</span>\n-------------------------------------`; }
-                if(data.fidelidade === 'sim' && (parseInt(data.fidelidadeQuantidade) || 0) > 0) { html += `\n<strong>FIDELIDADE:</strong>\n🎁 Cartões Utilizados: ${data.fidelidadeQuantidade}\n-------------------------------------`; }
-                html += `\n<span class="feedback-positivo"><strong>TOTAL GERAL (Sistema): ${Utils.formatCurrency(totalGeral)}</strong></span>\n-------------------------------------\n<strong>Termômetro da Loja:</strong> ${data.climaLoja}\n<strong>Observações:</strong> ${data.observacoesDia || 'Nenhuma'}</pre>`;
-                return html;
-            },
-            calculateTotals(data) {
-                const dinheiroEntrada = parseFloat(data.dinheiroEntrada) || 0;
-                const pixEntrada = parseFloat(data.pixEntrada) || 0;
-                const cartaoEntrada = parseFloat(data.cartaoEntrada) || 0;
-                const dinheiroSaida = parseFloat(data.dinheiroSaida) || 0;
-                const pixSaida = parseFloat(data.pixSaida) || 0;
-
-                const totalEntradas = dinheiroEntrada + pixEntrada + cartaoEntrada;
-                const totalSaidas = dinheiroSaida + pixSaida;
-                const totalGeral = totalEntradas - totalSaidas;
-                
-                const saldoDinheiro = dinheiroEntrada - dinheiroSaida;
-                const saldoPix = pixEntrada - pixSaida;
-
-                return { totalEntradas, totalSaidas, totalGeral, saldoDinheiro, saldoPix };
-            },
-            edit() { document.getElementById('registroForm').classList.remove('hidden'); document.getElementById('confirmacao').classList.add('hidden'); },
-            async confirmAndSave() {
-                if (!this.db) {
-                    Utils.showToast("Erro: Conexão com banco de dados não estabelecida.", "error");
-                    return;
-                }
-                const btn = document.getElementById('btnConfirmar');
-                btn.disabled = true;
-                btn.textContent = 'Salvando...';
-
-                const { saldoDinheiro, saldoPix } = this.calculateTotals(this.dadosParaEnvio);
-                const realDinheiro = parseFloat(document.getElementById('realDinheiro').value);
-                const realPix = parseFloat(document.getElementById('realPix').value);
-
-                const registroParaSalvar = {
-                    ...this.dadosParaEnvio,
-                    dataDeRegistro: new Date(),
-                    ajuste: {
-                        sistemaDinheiro: saldoDinheiro,
-                        realDinheiro: isNaN(realDinheiro) ? saldoDinheiro : realDinheiro,
-                        diferencaDinheiro: isNaN(realDinheiro) ? 0 : realDinheiro - saldoDinheiro,
-                        sistemaPix: saldoPix,
-                        realPix: isNaN(realPix) ? saldoPix : realPix,
-                        diferencaPix: isNaN(realPix) ? 0 : realPix - saldoPix,
-                        motivo: document.getElementById('motivoAjuste').value || ''
-                    }
-                };
-                
-                this.dadosParaEnvio.ajuste = registroParaSalvar.ajuste;
-
-
-                try {
-                    const docRef = await addDoc(collection(this.db, "registrosDiarios"), registroParaSalvar);
-                    this.clearDraft();
-                    document.getElementById('confirmacao').classList.add('hidden');
-                    document.getElementById('envio').classList.remove('hidden');
-                    Utils.showToast("Registro salvo online com sucesso!", 'success');
-                } catch (e) {
-                    console.error("Error adding document: ", e);
-                    Utils.showToast("Falha ao salvar o registro online.", "error");
-                } finally {
-                    btn.disabled = false;
-                    btn.textContent = 'Confirmar e Salvar Online';
-                }
-            },
-            reset() {
-                this.form.reset();
-                document.getElementById('data').value = Utils.getTodayDateString();
-                this.saveDraft();
-                this.showHideSaidas();
-                this.showHideFidelidade();
-                this.updateMoodOptionsStyle();
-                document.getElementById('envio').classList.add('hidden');
-                document.getElementById('registroForm').classList.remove('hidden');
-            },
-            sendToWhatsApp() { 
-                const data = this.dadosParaEnvio;
-                const { totalEntradas, totalSaidas } = this.calculateTotals(data);
-                
-                const totalRealDinheiro = data.ajuste.realDinheiro;
-                const totalRealPix = data.ajuste.realPix;
-                const totalCartao = parseFloat(data.cartaoEntrada) || 0;
-                const totalGeralReal = totalRealDinheiro + totalRealPix + totalCartao;
-
-                let text = `*REGISTRO DIÁRIO - AÇAÍ SABOR DA TERRA*\n\n` +
-                           `*Funcionário(a):* ${data.funcionario}\n` +
-                           `*Data:* ${Utils.formatDate(data.data)}\n\n` +
-                           `*ENTRADAS:*\n` +
-                           `💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroEntrada)}\n` +
-                           `📱 PIX: ${Utils.formatCurrency(data.pixEntrada)}\n` +
-                           `💳 Cartão: ${Utils.formatCurrency(data.cartaoEntrada)}\n` +
-                           `*Total Entradas (Sistema):* ${Utils.formatCurrency(totalEntradas)}\n`;
-                if(data.saida === 'sim' && totalSaidas > 0) { 
-                    text += `\n*SAÍDAS:*\n` +
-                            `Motivo: ${data.motivoSaida || 'Não informado'}\n` +
-                            `💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroSaida)}\n` +
-                            `📱 PIX: ${Utils.formatCurrency(data.pixSaida)}\n` +
-                            `*Total Saídas:* ${Utils.formatCurrency(totalSaidas)}\n`;
-                }
-                
-                text += `\n--- *CONCILIAÇÃO* ---\n` +
-                        `*Caixa Final (Dinheiro):* ${Utils.formatCurrency(totalRealDinheiro)}\n` +
-                        `*Caixa Final (PIX):* ${Utils.formatCurrency(totalRealPix)}\n` +
-                        `*Diferença Dinheiro:* ${Utils.formatCurrency(data.ajuste.diferencaDinheiro)}\n` +
-                        `*Diferença PIX:* ${Utils.formatCurrency(data.ajuste.diferencaPix)}\n` +
-                        `*Motivo:* ${data.ajuste.motivo || 'Nenhum'}\n` +
-                        `-----------------------\n` +
-                        `*TOTAL GERAL (Real):* ${Utils.formatCurrency(totalGeralReal)}\n\n` +
-                        `*Termômetro da Loja:* ${data.climaLoja}\n`;
-
-                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank'); 
-            }
-        };
-    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
+
