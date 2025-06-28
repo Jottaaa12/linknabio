@@ -75,81 +75,75 @@
             },
 
             parseData(text) {
-                const lines = text.split('\n');
                 const dailyRecords = new Map();
-                let currentDateStr = null;
+                
+                // 1. Divide o texto em blocos, um para cada dia.
+                const dayBlocks = text.split('Data: ').slice(1);
 
-                for (const line of lines) {
-                    const trimmedLine = line.trim();
-                    if (!trimmedLine || trimmedLine.startsWith('---') || trimmedLine.startsWith('###') || trimmedLine.startsWith('COMPILADO')) {
-                        continue; // Pula linhas de cabeçalho ou vazias
-                    }
-
-                    const dateMatch = trimmedLine.match(/Data: (\d{2}\/\d{2}\/\d{4})/);
-                    if (dateMatch) {
-                        currentDateStr = dateMatch[1];
-                    }
-
-                    if (!currentDateStr) continue;
-
+                for (const block of dayBlocks) {
+                    const dateMatch = block.match(/^(\d{2}\/\d{2}\/\d{4})/);
+                    if (!dateMatch) continue;
+                    
+                    const currentDateStr = dateMatch[0];
+                    
+                    // 2. Inicializa o objeto para o dia se ele não existir.
                     if (!dailyRecords.has(currentDateStr)) {
                         dailyRecords.set(currentDateStr, {
                             data: '', funcionario: 'Histórico',
                             dinheiroEntrada: 0, pixEntrada: 0, cartaoEntrada: 0,
                             saida: 'nao', motivoSaida: [], dinheiroSaida: 0, pixSaida: 0,
                             fidelidade: 'nao', fidelidadeQuantidade: 0,
-                            climaLoja: 'Bom', observacoesDia: [],
-                            dataDeRegistro: null,
+                            climaLoja: 'Bom', observacoesDia: [], dataDeRegistro: null,
                             ajuste: { sistemaDinheiro: 0, realDinheiro: 0, diferencaDinheiro: 0, sistemaPix: 0, realPix: 0, diferencaPix: 0, motivo: '' }
                         });
                     }
-                    
                     const record = dailyRecords.get(currentDateStr);
-                    
-                    const valueMatch = trimmedLine.match(/([+-])?R\$\s*([\d.,]+)/);
-                    if (!valueMatch) {
-                        if (trimmedLine.includes('TRANSFER')) {
-                            const description = (trimmedLine.split('|')[0].split(':')[1] || '').trim();
-                            record.observacoesDia.push(`Transferência Interna: ${description}`);
-                        }
-                        continue;
-                    }
-                    
-                    const sign = valueMatch[1] === '-' ? -1 : 1;
-                    const numberStr = valueMatch[2].replace(/\./g, '').replace(',', '.');
-                    const value = parseFloat(numberStr) * sign;
 
-                    const descriptionMatch = trimmedLine.match(/:([^|]+)/);
-                    const description = descriptionMatch ? descriptionMatch[1].trim() : 'N/A';
-                    
-                    if (trimmedLine.includes('ENTRADA')) {
-                        if (trimmedLine.includes('| Dinheiro |')) record.dinheiroEntrada += value;
-                        else if (trimmedLine.includes('| Pix |')) record.pixEntrada += value;
-                        else if (trimmedLine.includes('| Cartão |')) record.cartaoEntrada += value;
-                    } else if (trimmedLine.includes('SAÍDA')) {
-                        record.saida = 'sim';
-                        record.motivoSaida.push(description);
-                        if (trimmedLine.includes('| Dinheiro |')) record.dinheiroSaida += Math.abs(value);
-                        else if (trimmedLine.includes('| Pix |')) record.pixSaida += Math.abs(value);
+                    // 3. Divide o bloco do dia em transações individuais.
+                    const transactions = block.split(/-\s*(?=ENTRADA:|SAÍDA:|AJUSTE:|TRANSFER:)/);
+
+                    for (const trans of transactions) {
+                        const trimmedTrans = trans.trim();
+                        if (!trimmedTrans) continue;
+
+                        const valueMatch = trimmedTrans.match(/([+-])?R\$\s*([\d.,]+)/);
+                        const value = valueMatch ? parseFloat(valueMatch[1] === '-' ? '-' + valueMatch[2].replace(/\./g, '').replace(',', '.') : valueMatch[2].replace(/\./g, '').replace(',', '.')) : 0;
                         
-                        const fidelidadeMatch = description.match(/(\d+)\s+Prêmios\s+Fidelidade/i);
-                        if (fidelidadeMatch) {
-                            record.fidelidade = 'sim';
-                            record.fidelidadeQuantidade += parseInt(fidelidadeMatch[1], 10);
-                        }
-                    } else if (trimmedLine.includes('AJUSTE')) {
-                        record.motivoSaida.push(`Ajuste de Caixa: ${description}`);
-                        if (value > 0) {
-                             if (trimmedLine.includes('| Dinheiro |')) record.dinheiroEntrada += value;
-                             else if (trimmedLine.includes('| Pix |')) record.pixEntrada += value;
-                        } else {
-                             record.saida = 'sim';
-                             if (trimmedLine.includes('| Dinheiro |')) record.dinheiroSaida += Math.abs(value);
-                             else if (trimmedLine.includes('| Pix |')) record.pixSaida += Math.abs(value);
+                        const descriptionMatch = trimmedTrans.match(/:([^|]+)/);
+                        const description = descriptionMatch ? descriptionMatch[1].trim() : 'N/A';
+
+                        if (trimmedTrans.startsWith('ENTRADA')) {
+                            if (trimmedTrans.includes('| Dinheiro |')) record.dinheiroEntrada += value;
+                            else if (trimmedTrans.includes('| Pix |')) record.pixEntrada += value;
+                            else if (trimmedTrans.includes('| Cartão |')) record.cartaoEntrada += value;
+                        } else if (trimmedTrans.startsWith('SAÍDA')) {
+                            record.saida = 'sim';
+                            record.motivoSaida.push(description);
+                            if (trimmedTrans.includes('| Dinheiro |')) record.dinheiroSaida += Math.abs(value);
+                            else if (trimmedTrans.includes('| Pix |')) record.pixSaida += Math.abs(value);
+                            
+                            const fidelidadeMatch = description.match(/(\d+)\s+Prêmios\s+Fidelidade/i);
+                            if (fidelidadeMatch) {
+                                record.fidelidade = 'sim';
+                                record.fidelidadeQuantidade += parseInt(fidelidadeMatch[1], 10);
+                            }
+                        } else if (trimmedTrans.startsWith('AJUSTE')) {
+                             record.motivoSaida.push(`Ajuste de Caixa: ${description}`);
+                             if (value > 0) {
+                                 if (trimmedTrans.includes('| Dinheiro |')) record.dinheiroEntrada += value;
+                                 else if (trimmedTrans.includes('| Pix |')) record.pixEntrada += value;
+                             } else {
+                                 record.saida = 'sim';
+                                 if (trimmedTrans.includes('| Dinheiro |')) record.dinheiroSaida += Math.abs(value);
+                                 else if (trimmedTrans.includes('| Pix |')) record.pixSaida += Math.abs(value);
+                             }
+                        } else if (trimmedTrans.startsWith('TRANSFER')) {
+                            record.observacoesDia.push(`Transferência Interna: ${description}`);
                         }
                     }
                 }
 
+                // 4. Finaliza e formata os registros para salvar.
                 const formattedRecords = [];
                 for (const [dateStr, record] of dailyRecords.entries()) {
                     const [day, month, year] = dateStr.split('/');
@@ -189,7 +183,7 @@
                 try {
                     const recordsToImport = this.parseData(text);
                     if (recordsToImport.length === 0) {
-                        throw new Error("Nenhum registro válido encontrado nos dados.");
+                        throw new Error("Nenhum registro válido encontrado nos dados. Verifique o formato do texto.");
                     }
 
                     statusEl.textContent = `Encontrados ${recordsToImport.length} registros. Iniciando importação para o Firebase...`;
