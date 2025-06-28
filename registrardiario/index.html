@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador Açaí Sabor da Terra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS Global e Variáveis --- */
+        :root {
+            --primary-color: #4A0E68;
+            --primary-light: #9370DB;
+            --primary-lighter: #DCC9E8;
+            --background-light: #f0eef4;
+            --background-very-light: #FBF9FE;
+            --text-color: #333;
+            --white: #fff;
+            --border-color: #e0e0e0;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --warning-color: #ffc107;
+            --shadow-color: rgba(74, 14, 104, 0.1);
+            --focus-shadow: rgba(106, 27, 154, 0.2);
+            --border-radius-md: 8px;
+            --border-radius-lg: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 900px;
+            background-color: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 8px 24px var(--shadow-color);
+            overflow: hidden;
+        }
+
+        /* --- Abas de Navegação --- */
+        .tabs {
+            display: flex;
+            background-color: var(--background-very-light);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-button {
+            flex-grow: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-button:hover {
+            background-color: var(--background-light);
+        }
+
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* --- Conteúdo das Abas --- */
+        .content {
+            padding: 1.5rem;
+        }
+
+        .content-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .content-section.active {
+            display: block;
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Estilos de Formulário Genéricos --- */
+        .form-section, .card {
+            background-color: var(--background-very-light);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px var(--focus-shadow);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* --- Estilos de Botões Genéricos --- */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius-md);
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        .btn-primary:hover { background-color: #3a0b54; }
+
+        .btn-secondary {
+            background-color: var(--primary-lighter);
+            color: var(--primary-color);
+        }
+        .btn-secondary:hover { background-color: #c9b6d8; }
+
+        .btn-success { background-color: var(--success-color); color: var(--white); }
+        .btn-success:hover { background-color: #218838; }
+
+        .btn-danger { background-color: var(--danger-color); color: var(--white); }
+        .btn-danger:hover { background-color: #c82333; }
+        
+        .btn-info { background-color: var(--info-color); color: var(--white); }
+        .btn-info:hover { background-color: #138496; }
+
+        .btn-gemini {
+            background: linear-gradient(45deg, #4285F4, #9B72CB, #D96570, #F2A600);
+            color: white;
+        }
+        .btn-gemini:hover { opacity: 0.9; }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        /* --- Componentes Específicos: Registro Diário --- */
+        .radio-group { display: flex; gap: 1rem; align-items: center; }
+        .radio-group label { margin-bottom: 0; }
+        
+        #saidas, #fidelidadeDetalhes {
+            display: none;
+            grid-column: 1 / -1;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--primary-lighter);
+            margin-top: 1rem;
+        }
+        #saidas.saidas-visivel, #fidelidadeDetalhes.fidelidade-visivel { 
+            display: contents; 
+        }
+
+        .mood-options {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .mood-option {
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            font-size: 1.8rem;
+        }
+        .mood-option input { display: none; }
+        .mood-option.selected, .mood-option:hover {
+            background-color: var(--primary-lighter);
+            transform: scale(1.1);
+        }
+
+        #fraseMotivacionalArea {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: var(--white);
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--primary-lighter);
+            min-height: 50px;
+        }
+
+        #confirmacao .card, #envio .card { text-align: center; }
+        #resumo { text-align: left; white-space: pre-wrap; line-height: 1.8; }
+        .feedback-positivo { color: var(--success-color); font-weight: bold; }
+        .feedback-bom { color: #17a2b8; font-weight: bold; }
+        .feedback-atencao { color: var(--warning-color); font-weight: bold; }
+        .feedback-negativo { color: var(--danger-color); font-weight: bold; }
+        .feedback-elevado { color: var(--primary-color); font-weight: bold; }
+
+        /* --- Componentes Específicos: Fiados --- */
+        #listaFiados {
+            margin-top: 2rem;
+            overflow-x: auto;
+        }
+
+        #fiadosTable {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        #fiadosTable th, #fiadosTable td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        #fiadosTable th {
+            background-color: var(--background-very-light);
+            color: var(--primary-color);
+        }
+
+        #fiadosTable tr:hover {
+            background-color: var(--background-light);
+        }
+
+        .status {
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--border-radius-md);
+            color: var(--white);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+        .status-aberto { background-color: var(--warning-color); }
+        .status-pago { background-color: var(--success-color); }
+
+        .acoes-fiado button {
+            padding: 0.4rem 0.6rem;
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+        }
+
+        .btn-excluir.confirm-delete {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        #areaLembreteIA {
+            margin-top: 1rem;
+        }
+        #lembreteGerado {
+            background-color: #fff;
+            padding: 1rem;
+            border-radius: var(--border-radius-md);
+            border: 1px dashed var(--info-color);
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+        #lembreteGerado.loading::after {
+            content: 'Gerando lembrete com IA...';
+            color: var(--primary-light);
+        }
+
+        /* --- Notificação Toast --- */
+        .toast {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            color: var(--white);
+            font-weight: 600;
+            transition: bottom 0.5s ease-in-out;
+            z-index: 1000;
+        }
+        .toast.show { bottom: 30px; }
+        .toast.success { background-color: var(--success-color); }
+        .toast.error { background-color: var(--danger-color); }
+        .toast.info { background-color: var(--primary-color); }
+        
+        /* --- Calculadora de Bolso --- */
+        #calculator-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-radius: 50%;
+            border: none;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 999;
+            transition: transform 0.2s ease;
+        }
+        #calculator-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        #pocket-calculator {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 220px;
+            background-color: var(--background-very-light);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--primary-lighter);
+            transform: scale(0.95) translateY(10px);
+            opacity: 0;
+            visibility: hidden;
+            transition: transform 0.2s ease, opacity 0.2s ease, visibility 0s 0.2s;
+        }
+
+        #pocket-calculator.open {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            visibility: visible;
+            transition: transform 0.2s ease, opacity 0.2s ease, visibility 0s 0s;
+        }
+        
+        .calculator-header {
+            padding: 5px 10px;
+            background-color: var(--background-light);
+            text-align: right;
+        }
+
+        #calculator-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--primary-light);
+        }
+
+        #calculator-display {
+            background-color: var(--background-light);
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            text-align: right;
+            padding: 10px 15px;
+            word-wrap: break-word;
+            min-height: 54px;
+        }
+
+        #calculator-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background-color: var(--primary-lighter);
+            padding: 1px;
+        }
+
+        #calculator-buttons button {
+            background-color: var(--white);
+            border: none;
+            padding: 15px 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        #calculator-buttons button:hover {
+            background-color: var(--background-light);
+        }
+
+        #calculator-buttons .operator {
+            background-color: var(--primary-lighter);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        #calculator-buttons .equals {
+            grid-column: span 2;
+            background-color: var(--primary-light);
+            color: var(--white);
+        }
+        #calculator-buttons .equals:hover {
+            background-color: var(--primary-color);
+        }
+
+        /* --- Classes Utilitárias --- */
+        .hidden { display: none !important; }
+        .d-flex { display: flex; }
+        .justify-center { justify-content: center; }
+        .mt-1 { margin-top: 1rem; }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            body { padding: 0.5rem; }
+            .app-container { border-radius: 0; }
+            .content { padding: 1rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .tab-button { padding: 0.8rem 0.5rem; font-size: 0.9rem; }
+            #calculator-toggle { width: 45px; height: 45px; font-size: 1.3rem; }
+            #pocket-calculator {
+                width: calc(100% - 20px);
+                bottom: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Navegação em Abas -->
+        <nav class="tabs">
+            <button class="tab-button active" data-tab="registro-diario-section">📊 Registro Diário</button>
+            <button class="tab-button" data-tab="fiados-section">👥 Controle de Fiados</button>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <main class="content">
+            <!-- Seção: Registro Diário -->
+            <section id="registro-diario-section" class="content-section active">
+                <div id="registroDiarioContainer">
+                    <form id="registroForm">
+                        <div class="form-section">
+                            <h2>Registro Diário de Caixa</h2>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="funcionario">Funcionário(a)</label>
+                                    <select id="funcionario" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="Manoela">Manoela</option>
+                                        <option value="Nayara">Nayara</option>
+                                        <option value="João Pedro (gerente)">João Pedro (gerente)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="data">Data</label>
+                                    <input type="date" id="data" required>
+                                </div>
+                                
+                                <div class="form-group full-width">
+                                    <label>Entradas do Dia</label>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="dinheiroEntrada">💰 Dinheiro</label>
+                                            <input type="number" id="dinheiroEntrada" placeholder="0.00" step="0.01" min="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="pixEntrada">📱 PIX</label>
+                                            <input type="number" id="pixEntrada" placeholder="0.00" step="0.01" min="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cartaoEntrada">💳 Cartão</label>
+                                            <input type="number" id="cartaoEntrada" placeholder="0.00" step="0.01" min="0">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group full-width">
+                                    <label>Houve saída de dinheiro/PIX do caixa?</label>
+                                    <div class="radio-group">
+                                        <input type="radio" id="saidaSim" name="saida" value="sim"> <label for="saidaSim">Sim</label>
+                                        <input type="radio" id="saidaNao" name="saida" value="nao" checked> <label for="saidaNao">Não</label>
+                                    </div>
+                                </div>
+
+                                <div id="saidas" class="full-width">
+                                    <div class="form-grid">
+                                        <div class="form-group full-width">
+                                            <label for="motivoSaida">Motivo da Saída</label>
+                                            <input type="text" id="motivoSaida" placeholder="Ex: Compra de gelo">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="dinheiroSaida">💰 Dinheiro</label>
+                                            <input type="number" id="dinheiroSaida" placeholder="0.00" step="0.01" min="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="pixSaida">📱 PIX</label>
+                                            <input type="number" id="pixSaida" placeholder="0.00" step="0.01" min="0">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- NOVA SEÇÃO CARTÃO FIDELIDADE -->
+                                <div class="form-group full-width">
+                                    <label>🎁 Houve cartão fidelidade hoje?</label>
+                                    <div class="radio-group">
+                                        <input type="radio" id="fidelidadeSim" name="fidelidade" value="sim"> <label for="fidelidadeSim">Sim</label>
+                                        <input type="radio" id="fidelidadeNao" name="fidelidade" value="nao" checked> <label for="fidelidadeNao">Não</label>
+                                    </div>
+                                </div>
+
+                                <div id="fidelidadeDetalhes" class="full-width">
+                                    <div class="form-grid">
+                                        <div class="form-group full-width">
+                                            <label for="fidelidadeQuantidade">Quantos cartões foram utilizados?</label>
+                                            <input type="number" id="fidelidadeQuantidade" placeholder="0" step="1" min="0">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- FIM DA NOVA SEÇÃO -->
+
+                                <div class="form-group full-width">
+                                    <label for="observacoesDia">Observações do Dia</label>
+                                    <textarea id="observacoesDia" placeholder="Anotações importantes sobre o dia de hoje..."></textarea>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label>Termômetro da Loja (Como foi o dia?)</label>
+                                    <div class="mood-options">
+                                        <label class="mood-option">😴<input type="radio" name="climaLoja" value="Muito Fraco"></label>
+                                        <label class="mood-option">😐<input type="radio" name="climaLoja" value="Fraco"></label>
+                                        <label class="mood-option">🙂<input type="radio" name="climaLoja" value="Bom"></label>
+                                        <label class="mood-option">😄<input type="radio" name="climaLoja" value="Ótimo"></label>
+                                        <label class="mood-option">🚀<input type="radio" name="climaLoja" value="Excepcional"></label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label>Frase do Dia (Opcional)</label>
+                                    <button type="button" id="btnSugerirFrase" class="btn btn-gemini">Sugerir com IA ✨</button>
+                                    <div id="fraseMotivacionalArea" contenteditable="true" placeholder="Clique para editar ou cole uma frase aqui..."></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="button-group justify-center">
+                            <button type="button" id="btnRevisar" class="btn btn-primary">Revisar Registro</button>
+                        </div>
+                    </form>
+
+                    <div id="confirmacao" class="hidden">
+                        <div class="card">
+                            <h2>Revisão do Registro</h2>
+                            <p id="resumo"></p>
+                            <div class="button-group justify-center">
+                                <button type="button" id="btnEditar" class="btn btn-secondary">Editar</button>
+                                <button type="button" id="btnConfirmar" class="btn btn-success">Confirmar e Salvar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="envio" class="hidden">
+                        <div class="card">
+                            <h2>✅ Registro Confirmado!</h2>
+                            <p>Seu registro diário foi salvo com sucesso.</p>
+                            <div class="button-group justify-center">
+                                <button type="button" id="btnEnviarWhatsApp" class="btn btn-success">Enviar para WhatsApp</button>
+                                <button type="button" id="btnNovoRegistro" class="btn btn-primary">Novo Registro</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção: Controle de Fiados -->
+            <section id="fiados-section" class="content-section">
+                <form id="formFiado" class="form-section">
+                    <h2>Registrar Novo Fiado</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nomeCliente">Nome do Cliente</label>
+                            <input type="text" id="nomeCliente" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="valorFiado">Valor (R$)</label>
+                            <input type="number" id="valorFiado" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dataFiado">Data do Fiado</label>
+                            <input type="date" id="dataFiado" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="previsaoPagamento">Previsão de Pagamento</label>
+                            <input type="date" id="previsaoPagamento">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="funcionarioFiado">Registrado por</label>
+                            <input type="text" id="funcionarioFiado" placeholder="Seu nome" required>
+                        </div>
+                    </div>
+                    <div class="button-group justify-center">
+                        <button type="submit" class="btn btn-primary">Registrar Fiado e Abrir WhatsApp 🟢</button>
+                    </div>
+                </form>
+
+                <div id="areaLembreteIA" class="card hidden">
+                    <h3>Lembrete de Cobrança (Sugestão da IA)</h3>
+                    <div id="lembreteGerado" class="loading"></div>
+                    <div class="button-group justify-center mt-1">
+                       <button type="button" class="btn btn-secondary" id="btnCopiarLembrete">Copiar Mensagem</button>
+                    </div>
+                </div>
+
+                <div id="listaFiados" class="card">
+                    <h2>Fiados Atuais</h2>
+                    <table id="fiadosTable">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Valor</th>
+                                <th>Data</th>
+                                <th>Previsão Pgt.</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Linhas inseridas via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Botão e Painel da Calculadora de Bolso -->
+    <button id="calculator-toggle">🧮</button>
+    <div id="pocket-calculator">
+        <div class="calculator-header">
+            <button id="calculator-close">&times;</button>
+        </div>
+        <div id="calculator-display">0</div>
+        <div id="calculator-buttons">
+            <button class="operator" data-action="clear">C</button>
+            <button class="operator" data-value="/">÷</button>
+            <button class="operator" data-value="*">×</button>
+            <button class="operator" data-value="-">-</button>
+            <button data-value="7">7</button>
+            <button data-value="8">8</button>
+            <button data-value="9">9</button>
+            <button class="operator" data-value="+">+</button>
+            <button data-value="4">4</button>
+            <button data-value="5">5</button>
+            <button data-value="6">6</button>
+            <button data-value="1">1</button>
+            <button data-value="2">2</button>
+            <button data-value="3">3</button>
+            <button class="equals" data-action="calculate">=</button>
+            <button data-value="0">0</button>
+            <button data-value=".">.</button>
+        </div>
+    </div>
+    
+    <!-- Elemento Toast para Notificações -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        /***************************************************
+         * MÓDULO PRINCIPAL DA APLICAÇÃO (APP)
+         * - Gerencia a navegação por abas e inicializa os outros módulos.
+         ***************************************************/
+        const App = {
+            init() {
+                this.setupTabs();
+                RegistroDiarioModule.init();
+                FiadosModule.init();
+                CalculatorModule.init();
+                this.switchTab('registro-diario-section'); 
+            },
+
+            setupTabs() {
+                const tabButtons = document.querySelectorAll('.tab-button');
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        this.switchTab(button.dataset.tab);
+                    });
+                });
+            },
+
+            switchTab(tabId) {
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+
+                document.querySelectorAll('.tab-button').forEach(button => {
+                    button.classList.remove('active');
+                    if (button.dataset.tab === tabId) {
+                        button.classList.add('active');
+                    }
+                });
+
+                const firstInput = document.querySelector(`#${tabId} form input, #${tabId} form select`);
+                if (firstInput) {
+                    firstInput.focus();
+                }
+            }
+        };
+
+        /***************************************************
+         * MÓDULO DE UTILIDADES (Utils)
+         ***************************************************/
+        const Utils = {
+            showToast(message, type = 'info', duration = 3000) {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.className = 'toast show';
+                toast.classList.add(type);
+
+                setTimeout(() => {
+                    toast.className = 'toast';
+                }, duration);
+            },
+            
+            formatCurrency(value) {
+                return parseFloat(value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            },
+
+            formatDate(dateString) {
+                if (!dateString) return 'N/A';
+                const date = new Date(dateString);
+                const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+                return new Date(date.getTime() + userTimezoneOffset).toLocaleDateString('pt-BR');
+            },
+
+            getTodayDateString() {
+                return new Date().toISOString().split('T')[0];
+            }
+        };
+        
+        /***************************************************
+         * MÓDULO DA API GEMINI (AI)
+         ***************************************************/
+        const AIModule = {
+            apiKey: "", // Insira sua chave de API do Gemini aqui
+            endpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+
+            async generateText(prompt) {
+                const url = `${this.endpoint}?key=${this.apiKey}`;
+                const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.statusText}`);
+                    }
+                    
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0) {
+                        return result.candidates[0].content.parts[0].text.trim();
+                    } else {
+                        const blockReason = result.promptFeedback?.blockReason;
+                        return blockReason ? `Conteúdo bloqueado: ${blockReason}.` : "Não foi possível gerar uma resposta.";
+                    }
+                } catch (error) {
+                    console.error("Erro ao chamar a API Gemini:", error);
+                    return "Falha na comunicação com a IA.";
+                }
+            }
+        };
+        
+        /***************************************************
+         * MÓDULO DE ARMAZENAMENTO (Storage)
+         ***************************************************/
+        const StorageModule = {
+            set(key, value) {
+                try {
+                    localStorage.setItem(key, JSON.stringify(value));
+                } catch (error) {
+                    console.error("Erro ao salvar no localStorage:", error);
+                }
+            },
+            get(key) {
+                try {
+                    const item = localStorage.getItem(key);
+                    return item ? JSON.parse(item) : null;
+                } catch (error) {
+                    console.error("Erro ao carregar do localStorage:", error);
+                    localStorage.removeItem(key); // Remove dado corrompido
+                    return null;
+                }
+            },
+            remove(key) {
+                localStorage.removeItem(key);
+            }
+        };
+
+        /***************************************************
+         * MÓDULO DE REGISTRO DIÁRIO
+         ***************************************************/
+        const RegistroDiarioModule = {
+            RASCUNHO_KEY: 'registroDiarioRascunho_AcaiSaborDaTerra',
+            form: document.getElementById('registroForm'),
+            dadosParaEnvio: {},
+
+            init() {
+                this.setupEventListeners();
+                this.loadDraft();
+                document.getElementById('data').value = Utils.getTodayDateString();
+                this.showHideSaidas();
+                this.showHideFidelidade(); // ADICIONADO
+                this.updateMoodOptionsStyle();
+            },
+
+            setupEventListeners() {
+                this.form.addEventListener('input', () => this.saveDraft());
+                document.querySelectorAll('input[name="saida"]').forEach(radio => radio.addEventListener('change', () => this.showHideSaidas()));
+                document.querySelectorAll('input[name="fidelidade"]').forEach(radio => radio.addEventListener('change', () => this.showHideFidelidade())); // ADICIONADO
+                document.querySelectorAll('.mood-option input').forEach(radio => radio.addEventListener('change', () => this.updateMoodOptionsStyle()));
+                document.getElementById('btnSugerirFrase').addEventListener('click', () => this.suggestPhrase());
+                document.getElementById('btnRevisar').addEventListener('click', () => this.review());
+                document.getElementById('btnEditar').addEventListener('click', () => this.edit());
+                document.getElementById('btnConfirmar').addEventListener('click', () => this.confirm());
+                document.getElementById('btnEnviarWhatsApp').addEventListener('click', () => this.sendToWhatsApp());
+                document.getElementById('btnNovoRegistro').addEventListener('click', () => this.reset());
+            },
+            
+            getFormValues() {
+                const formValues = {};
+                new FormData(this.form).forEach((value, key) => {
+                    formValues[key] = value;
+                });
+                // Captura campos que não estão no FormData padrão
+                formValues.funcionario = document.getElementById('funcionario').value;
+                formValues.observacoesDia = document.getElementById('observacoesDia').value;
+                formValues.fraseMotivacionalArea = document.getElementById('fraseMotivacionalArea').innerText;
+                formValues.dinheiroEntrada = document.getElementById('dinheiroEntrada').value;
+                formValues.pixEntrada = document.getElementById('pixEntrada').value;
+                formValues.cartaoEntrada = document.getElementById('cartaoEntrada').value;
+                formValues.motivoSaida = document.getElementById('motivoSaida').value;
+                formValues.dinheiroSaida = document.getElementById('dinheiroSaida').value;
+                formValues.pixSaida = document.getElementById('pixSaida').value;
+                formValues.fidelidadeQuantidade = document.getElementById('fidelidadeQuantidade').value; // ADICIONADO
+                formValues.data = document.getElementById('data').value;
+                return formValues;
+            },
+
+            saveDraft() {
+                StorageModule.set(this.RASCUNHO_KEY, this.getFormValues());
+            },
+
+            loadDraft() {
+                const draft = StorageModule.get(this.RASCUNHO_KEY);
+                if (draft) {
+                    Object.keys(draft).forEach(key => {
+                        const element = document.getElementById(key) || this.form.querySelector(`[name="${key}"][value="${draft[key]}"]`);
+                        if (element) {
+                            if (element.type === 'radio') element.checked = true;
+                            else if (key === 'fraseMotivacionalArea') element.innerText = draft[key];
+                            else element.value = draft[key];
+                        }
+                    });
+                }
+            },
+            
+            clearDraft() {
+                StorageModule.remove(this.RASCUNHO_KEY);
+            },
+            
+            showHideSaidas() {
+                document.getElementById('saidas').classList.toggle('saidas-visivel', document.getElementById('saidaSim').checked);
+            },
+
+            // NOVA FUNÇÃO
+            showHideFidelidade() {
+                document.getElementById('fidelidadeDetalhes').classList.toggle('fidelidade-visivel', document.getElementById('fidelidadeSim').checked);
+            },
+
+            updateMoodOptionsStyle() {
+                document.querySelectorAll('.mood-option').forEach(label => {
+                    label.classList.toggle('selected', label.querySelector('input').checked);
+                });
+            },
+
+            async suggestPhrase() {
+                const button = document.getElementById('btnSugerirFrase');
+                const area = document.getElementById('fraseMotivacionalArea');
+                button.disabled = true;
+                button.textContent = 'Gerando...';
+                area.innerText = 'Aguarde, a IA está preparando algo especial...';
+                const prompt = "Você é um assistente criativo para uma loja de açaí chamada 'Açaí Sabor da Terra'. Crie uma frase curta, positiva e inspiradora para o dia. Pode ser sobre açaí, felicidade, energia ou sucesso. Seja criativo e evite clichês. Apenas a frase, sem introduções.";
+                area.innerText = await AIModule.generateText(prompt);
+                button.disabled = false;
+                button.innerHTML = 'Sugerir com IA ✨';
+                this.saveDraft();
+            },
+
+            validateForm() {
+                const values = this.getFormValues();
+                const totalEntradas = (parseFloat(values.dinheiroEntrada) || 0) + (parseFloat(values.pixEntrada) || 0) + (parseFloat(values.cartaoEntrada) || 0);
+                if (!values.funcionario || !values.data) return Utils.showToast("Preencha Funcionário e Data.", 'error');
+                if (totalEntradas <= 0) return Utils.showToast("Pelo menos uma entrada deve ser maior que zero.", 'error');
+                if (!values.climaLoja) return Utils.showToast("Selecione o 'Termômetro da Loja'.", 'error');
+                // ADICIONADO
+                if (values.fidelidade === 'sim' && (!values.fidelidadeQuantidade || parseInt(values.fidelidadeQuantidade) <= 0)) {
+                    return Utils.showToast("Informe a quantidade de cartões fidelidade.", 'error');
+                }
+                return true;
+            },
+            
+            review() {
+                if (!this.validateForm()) return;
+                this.dadosParaEnvio = this.getFormValues();
+                document.getElementById('resumo').innerHTML = this.generateSummaryHTML(this.dadosParaEnvio);
+                this.form.classList.add('hidden');
+                document.getElementById('confirmacao').classList.remove('hidden');
+            },
+
+            generateSummaryHTML(data) {
+                const { totalEntradas, totalSaidas, totalGeral } = this.calculateTotals(data);
+                
+                let html = `<strong>REGISTRO DIÁRIO - AÇAÍ SABOR DA TERRA</strong>\n` +
+                           `-------------------------------------\n` +
+                           `<strong>Funcionário(a):</strong> ${data.funcionario}\n` +
+                           `<strong>Data:</strong> ${Utils.formatDate(data.data)}\n` +
+                           `-------------------------------------\n` +
+                           `<strong>ENTRADAS:</strong>\n` +
+                           `💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroEntrada)}\n` +
+                           `📱 PIX: ${Utils.formatCurrency(data.pixEntrada)}\n` +
+                           `💳 Cartão: ${Utils.formatCurrency(data.cartaoEntrada)}\n` +
+                           `<span class="feedback-elevado">Total Entradas: ${Utils.formatCurrency(totalEntradas)}</span>\n` +
+                           `-------------------------------------`;
+                if(data.saida === 'sim' && totalSaidas > 0) {
+                    html += `\n<strong>SAÍDAS:</strong>\n` +
+                            `Motivo: ${data.motivoSaida || 'Não informado'}\n` +
+                            `💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroSaida)}\n` +
+                            `📱 PIX: ${Utils.formatCurrency(data.pixSaida)}\n` +
+                            `<span class="feedback-negativo">Total Saídas: ${Utils.formatCurrency(totalSaidas)}</span>\n` +
+                            `-------------------------------------`;
+                }
+                // ADICIONADO
+                if(data.fidelidade === 'sim' && (parseInt(data.fidelidadeQuantidade) || 0) > 0) {
+                    html += `\n<strong>FIDELIDADE:</strong>\n` +
+                            `🎁 Cartões Utilizados: ${data.fidelidadeQuantidade}\n` +
+                            `-------------------------------------`;
+                }
+
+                html += `\n<span class="feedback-positivo"><strong>TOTAL GERAL: ${Utils.formatCurrency(totalGeral)}</strong></span>\n` +
+                        `-------------------------------------\n` +
+                        `<strong>Termômetro da Loja:</strong> ${data.climaLoja}\n` +
+                        `<strong>Observações:</strong> ${data.observacoesDia || 'Nenhuma'}\n` +
+                        `<strong>Frase do Dia:</strong> "${data.fraseMotivacionalArea || 'Nenhuma'}"`;
+                return html;
+            },
+
+            generateSummaryText(data) {
+                const { totalEntradas, totalSaidas, totalGeral } = this.calculateTotals(data);
+                let text = `*REGISTRO DIÁRIO - AÇAÍ SABOR DA TERRA*\n\n` +
+                           `*Funcionário(a):* ${data.funcionario}\n` +
+                           `*Data:* ${Utils.formatDate(data.data)}\n\n` +
+                           `*ENTRADAS:*\n` +
+                           `💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroEntrada)}\n` +
+                           `📱 PIX: ${Utils.formatCurrency(data.pixEntrada)}\n` +
+                           `💳 Cartão: ${Utils.formatCurrency(data.cartaoEntrada)}\n` +
+                           `*Total Entradas:* ${Utils.formatCurrency(totalEntradas)}\n`;
+                if(data.saida === 'sim' && totalSaidas > 0) {
+                    text += `\n*SAÍDAS:*\n` +
+                            `Motivo: ${data.motivoSaida || 'Não informado'}\n` +
+                            `💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroSaida)}\n` +
+                            `📱 PIX: ${Utils.formatCurrency(data.pixSaida)}\n` +
+                            `*Total Saídas:* ${Utils.formatCurrency(totalSaidas)}\n`;
+                }
+                // ADICIONADO
+                if(data.fidelidade === 'sim' && (parseInt(data.fidelidadeQuantidade) || 0) > 0) {
+                    text += `\n*FIDELIDADE:*\n` +
+                            `🎁 Cartões Utilizados: ${data.fidelidadeQuantidade}\n`;
+                }
+
+                text += `\n*TOTAL GERAL:* ${Utils.formatCurrency(totalGeral)}\n\n` +
+                        `*Termômetro da Loja:* ${data.climaLoja}\n` +
+                        `*Observações:* ${data.observacoesDia || 'Nenhuma'}\n` +
+                        `*Frase do Dia:* "${data.fraseMotivacionalArea || 'Nenhuma'}"`;
+                return text;
+            },
+
+            calculateTotals(data) {
+                const totalEntradas = (parseFloat(data.dinheiroEntrada) || 0) + (parseFloat(data.pixEntrada) || 0) + (parseFloat(data.cartaoEntrada) || 0);
+                const totalSaidas = (parseFloat(data.dinheiroSaida) || 0) + (parseFloat(data.pixSaida) || 0);
+                const totalGeral = totalEntradas - totalSaidas;
+                return { totalEntradas, totalSaidas, totalGeral };
+            },
+            
+            edit() {
+                this.form.classList.remove('hidden');
+                document.getElementById('confirmacao').classList.add('hidden');
+            },
+
+            confirm() {
+                this.clearDraft();
+                document.getElementById('confirmacao').classList.add('hidden');
+                document.getElementById('envio').classList.remove('hidden');
+                Utils.showToast("Registro salvo com sucesso!", 'success');
+            },
+            
+            reset() {
+                this.form.reset();
+                document.getElementById('fraseMotivacionalArea').innerText = '';
+                document.getElementById('data').value = Utils.getTodayDateString();
+                this.saveDraft();
+                this.showHideSaidas();
+                this.showHideFidelidade(); // ADICIONADO
+                this.updateMoodOptionsStyle();
+                document.getElementById('envio').classList.add('hidden');
+                this.form.classList.remove('hidden');
+            },
+            
+            sendToWhatsApp() {
+                const mensagem = this.generateSummaryText(this.dadosParaEnvio);
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensagem)}`, '_blank');
+            }
+        };
+        
+        /***************************************************
+         * MÓDULO DE CONTROLE DE FIADOS
+         ***************************************************/
+        const FiadosModule = {
+            LISTA_KEY: 'listaFiados_AcaiSaborDaTerra',
+            RASCUNHO_KEY: 'fiadoRascunho_AcaiSaborDaTerra',
+            form: document.getElementById('formFiado'),
+            fiados: [],
+
+            init() {
+                this.fiados = StorageModule.get(this.LISTA_KEY) || [];
+                this.loadDraft();
+                this.renderList();
+                this.setupEventListeners();
+                document.getElementById('dataFiado').value = Utils.getTodayDateString();
+            },
+
+            setupEventListeners() {
+                this.form.addEventListener('submit', (e) => this.addFiado(e));
+                this.form.addEventListener('input', () => this.saveDraft());
+                document.getElementById('listaFiados').addEventListener('click', (e) => this.handleListActions(e));
+                document.getElementById('btnCopiarLembrete').addEventListener('click', () => this.copyReminder());
+            },
+
+            saveDraft() {
+                const draft = {
+                    nomeCliente: document.getElementById('nomeCliente').value,
+                    valorFiado: document.getElementById('valorFiado').value,
+                    dataFiado: document.getElementById('dataFiado').value,
+                    previsaoPagamento: document.getElementById('previsaoPagamento').value,
+                    funcionarioFiado: document.getElementById('funcionarioFiado').value,
+                };
+                StorageModule.set(this.RASCUNHO_KEY, draft);
+            },
+            
+            loadDraft() {
+                const draft = StorageModule.get(this.RASCUNHO_KEY);
+                if (draft) {
+                    Object.keys(draft).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element) element.value = draft[key];
+                    });
+                }
+            },
+            
+            clearDraft() {
+                this.form.reset();
+                document.getElementById('dataFiado').value = Utils.getTodayDateString();
+                StorageModule.remove(this.RASCUNHO_KEY);
+            },
+            
+            saveList() {
+                StorageModule.set(this.LISTA_KEY, this.fiados);
+            },
+            
+            renderList() {
+                const tbody = document.querySelector('#fiadosTable tbody');
+                tbody.innerHTML = '';
+                if (this.fiados.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum fiado registrado.</td></tr>';
+                    return;
+                }
+                this.fiados.sort((a, b) => b.id - a.id).forEach(fiado => {
+                    const tr = document.createElement('tr');
+                    tr.dataset.fiadoId = fiado.id;
+                    const statusClass = fiado.status === 'Pago' ? 'status-pago' : 'status-aberto';
+                    tr.innerHTML = `
+                        <td>${fiado.nomeCliente}</td>
+                        <td>${Utils.formatCurrency(fiado.valorFiado)}</td>
+                        <td>${Utils.formatDate(fiado.dataFiado)}</td>
+                        <td>${Utils.formatDate(fiado.previsaoPagamento)}</td>
+                        <td><span class="status ${statusClass}">${fiado.status}</span></td>
+                        <td class="acoes-fiado">
+                            ${fiado.status !== 'Pago' ? `<button class="btn btn-success btn-sm btn-marcar-pago" data-id="${fiado.id}">✔ Pagar</button>` : ''}
+                            ${fiado.status !== 'Pago' ? `<button class="btn btn-info btn-sm btn-lembrete-ia" data-id="${fiado.id}">🤖 Lembrete</button>` : ''}
+                            <button class="btn btn-secondary btn-sm btn-excluir" data-id="${fiado.id}">✖ Excluir</button>
+                        </td>`;
+                    tbody.appendChild(tr);
+                });
+            },
+            
+            addFiado(event) {
+                event.preventDefault();
+                const values = {
+                    nomeCliente: document.getElementById('nomeCliente').value,
+                    valorFiado: document.getElementById('valorFiado').value,
+                    dataFiado: document.getElementById('dataFiado').value,
+                    previsaoPagamento: document.getElementById('previsaoPagamento').value,
+                    funcionarioFiado: document.getElementById('funcionarioFiado').value,
+                };
+                if (!values.nomeCliente || !values.valorFiado || !values.funcionarioFiado) {
+                    return Utils.showToast("Preencha nome, valor e funcionário.", "error");
+                }
+                const newFiado = {
+                    ...values,
+                    id: Date.now(),
+                    dataRegistro: new Date().toISOString(),
+                    status: 'Aberto'
+                };
+                this.fiados.unshift(newFiado);
+                this.saveList();
+                this.renderList();
+                this.clearDraft();
+                Utils.showToast("Fiado registrado!", 'success');
+                this.sendWhatsAppNotification(newFiado);
+            },
+
+            handleListActions(event) {
+                const button = event.target.closest('button');
+                if (!button) return;
+                const id = parseFloat(button.dataset.id);
+                if (button.classList.contains('btn-marcar-pago')) this.markAsPaid(id);
+                if (button.classList.contains('btn-lembrete-ia')) this.generateReminder(id);
+                if (button.classList.contains('btn-excluir')) {
+                    if (button.classList.contains('confirm-delete')) {
+                        this.delete(id);
+                    } else {
+                        this.requestDeleteConfirmation(button);
+                    }
+                }
+            },
+            
+            requestDeleteConfirmation(button) {
+                // Remove a confirmação de outros botões
+                document.querySelectorAll('.btn-excluir.confirm-delete').forEach(btn => {
+                    btn.classList.remove('confirm-delete');
+                    btn.textContent = '✖ Excluir';
+                });
+                button.classList.add('confirm-delete');
+                button.textContent = 'Confirmar?';
+            },
+
+            markAsPaid(id) {
+                const fiado = this.fiados.find(f => f.id === id);
+                if (fiado) {
+                    fiado.status = 'Pago';
+                    this.saveList();
+                    this.renderList();
+                    Utils.showToast(`${fiado.nomeCliente} marcado como pago.`, 'success');
+                }
+            },
+            
+            delete(id) {
+                const fiadoIndex = this.fiados.findIndex(f => f.id === id);
+                if (fiadoIndex > -1) {
+                    const nomeCliente = this.fiados[fiadoIndex].nomeCliente;
+                    this.fiados.splice(fiadoIndex, 1);
+                    this.saveList();
+                    this.renderList();
+                    Utils.showToast(`Registro de ${nomeCliente} excluído.`, 'info');
+                }
+            },
+            
+            async generateReminder(id) {
+                const fiado = this.fiados.find(f => f.id === id);
+                if (!fiado) return;
+                const area = document.getElementById('areaLembreteIA');
+                const lembreteDiv = document.getElementById('lembreteGerado');
+                area.classList.remove('hidden');
+                lembreteDiv.classList.add('loading');
+                lembreteDiv.scrollIntoView({ behavior: 'smooth' });
+                const prompt = `Você é um assistente de cobrança amigável para a loja 'Açaí Sabor da Terra'. Crie uma mensagem de lembrete de cobrança para WhatsApp. Seja educado e claro. Dados: Cliente: ${fiado.nomeCliente}, Valor: ${Utils.formatCurrency(fiado.valorFiado)}, Data: ${Utils.formatDate(fiado.dataFiado)}. Retorne apenas o texto da mensagem.`;
+                const mensagem = await AIModule.generateText(prompt);
+                lembreteDiv.innerText = mensagem;
+                lembreteDiv.classList.remove('loading');
+            },
+
+            copyReminder() {
+                const textToCopy = document.getElementById('lembreteGerado').innerText;
+                if (!textToCopy) return;
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => Utils.showToast("Mensagem copiada!", "success"))
+                    .catch(() => Utils.showToast("Falha ao copiar.", "error"));
+            },
+            
+            sendWhatsAppNotification(fiado) {
+                const previsao = fiado.previsaoPagamento ? Utils.formatDate(fiado.previsaoPagamento) : 'Não informada';
+                const mensagem = `*NOVO FIADO REGISTRADO - AÇAÍ SABOR DA TERRA* �\n\n` +
+                                 `📅 *Data do Registro:* ${Utils.formatDate(fiado.dataRegistro)}\n` +
+                                 `👤 *Cliente:* ${fiado.nomeCliente}\n` +
+                                 `💰 *Valor:* ${Utils.formatCurrency(fiado.valorFiado)}\n` +
+                                 `🗓️ *Data do Fiado:* ${Utils.formatDate(fiado.dataFiado)}\n` +
+                                 `📅 *Previsão de Pagamento:* ${previsao}\n` +
+                                 `✍️ *Funcionário Responsável:* ${fiado.funcionarioFiado}`;
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(mensagem)}`, '_blank');
+            }
+        };
+
+        /***************************************************
+         * MÓDULO DA CALCULADORA DE BOLSO
+         ***************************************************/
+        const CalculatorModule = {
+            KEY: 'calculatorLastValue_AcaiSaborDaTerra',
+            init() {
+                this.panel = document.getElementById('pocket-calculator');
+                this.display = document.getElementById('calculator-display');
+                this.currentInput = '0';
+                this.shouldResetDisplay = false;
+                this.loadLastValue();
+                this.setupEventListeners();
+            },
+
+            setupEventListeners() {
+                document.getElementById('calculator-toggle').addEventListener('click', () => this.toggle(true));
+                document.getElementById('calculator-close').addEventListener('click', () => this.toggle(false));
+                document.getElementById('calculator-buttons').addEventListener('click', (e) => this.handleButtonClick(e));
+            },
+            
+            loadLastValue() {
+                const lastValue = StorageModule.get(this.KEY);
+                if (lastValue) {
+                    this.currentInput = String(lastValue);
+                    this.updateDisplay();
+                }
+            },
+
+            toggle(open) {
+                this.panel.classList.toggle('open', open);
+            },
+
+            handleButtonClick(event) {
+                const button = event.target.closest('button');
+                if (!button) return;
+                const { action, value } = button.dataset;
+                if (action === 'clear') this.clear();
+                else if (action === 'calculate') this.calculate();
+                else if (value) this.appendValue(value);
+            },
+
+            appendValue(value) {
+                const operators = ['/', '*', '-', '+'];
+                const lastChar = this.currentInput.slice(-1);
+
+                if (this.shouldResetDisplay || this.currentInput === '0' || this.currentInput === 'Erro') {
+                    this.currentInput = '';
+                    this.shouldResetDisplay = false;
+                }
+                // Previne múltiplos operadores
+                if (operators.includes(value) && operators.includes(lastChar)) {
+                    this.currentInput = this.currentInput.slice(0, -1);
+                }
+                // Previne múltiplos pontos decimais em uma sequência de números
+                const currentNumber = this.currentInput.split(/[/+*-]/).pop();
+                if (value === '.' && currentNumber.includes('.')) return;
+
+                this.currentInput += value;
+                this.updateDisplay();
+            },
+
+            clear() {
+                this.currentInput = '0';
+                this.updateDisplay();
+            },
+
+            calculate() {
+                if (this.currentInput === 'Erro') return;
+                try {
+                    const result = new Function('return ' + this.currentInput)();
+                    // Arredonda para evitar problemas com ponto flutuante
+                    this.currentInput = String(parseFloat(result.toFixed(10)));
+                    StorageModule.set(this.KEY, this.currentInput);
+                } catch (error) {
+                    this.currentInput = 'Erro';
+                }
+                this.shouldResetDisplay = true;
+                this.updateDisplay();
+            },
+
+            updateDisplay() {
+                this.display.textContent = this.currentInput;
+            }
+        };
+
+        App.init();
+    });
+    </script>
+</body>
+</html>
