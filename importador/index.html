@@ -109,7 +109,6 @@
                         const paymentMethod = parts[1] ? parts[1].trim() : '';
                         const valueStr = parts[2] ? parts[2].trim() : '0';
                         
-                        // **CORREÇÃO APLICADA AQUI**
                         const cleanValueStr = valueStr.replace(/R\$|\s/g, '').replace(/\./g, '').replace(',', '.');
                         const value = parseFloat(cleanValueStr) || 0;
 
