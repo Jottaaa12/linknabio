@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Fiados - Açaí Sabor da Terra</title>
+    <title>Histórico de Registros - Açaí Sabor da Terra</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,141 +14,103 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; background-color: var(--background-light); color: var(--text-color); display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 1rem; }
-        .app-container { width: 100%; max-width: 900px; background-color: var(--white); border-radius: var(--border-radius-lg); box-shadow: 0 8px 24px var(--shadow-color); overflow: hidden; }
-        .tabs { display: flex; background-color: var(--background-very-light); border-bottom: 1px solid var(--border-color); }
-        .tab-button, .nav-link { flex-grow: 1; padding: 1rem 1.5rem; border: none; background-color: transparent; cursor: pointer; font-size: 1rem; font-weight: 600; color: var(--primary-light); transition: all 0.3s ease; border-bottom: 3px solid transparent; text-decoration: none; text-align: center; display: inline-block; }
-        .nav-link:hover { background-color: var(--background-light); }
-        .tab-button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+        .app-container { width: 100%; max-width: 1200px; background-color: var(--white); border-radius: var(--border-radius-lg); box-shadow: 0 8px 24px var(--shadow-color); overflow: hidden; }
         .content { padding: 1.5rem; }
-        .form-section, .card { background-color: var(--background-very-light); padding: 1.5rem; border-radius: var(--border-radius-lg); border: 1px solid var(--border-color); margin-bottom: 1.5rem; box-shadow: 0 4px 12px var(--shadow-color); }
-        h2 { color: var(--primary-color); margin-bottom: 1.5rem; font-size: 1.5rem; text-align: center; }
+        h2, h3 { color: var(--primary-color); text-align: center; }
+        h2 { margin-bottom: 1.5rem; font-size: 1.8rem; }
+        h3 { margin-bottom: 1rem; font-size: 1.5rem; }
+        
+        #password-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); z-index: 2000; display: flex; justify-content: center; align-items: center; }
+        #password-box { background: var(--white); padding: 2rem; border-radius: var(--border-radius-lg); text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        #password-box input { font-size: 1.2rem; padding: 0.8rem; border-radius: var(--border-radius-md); border: 1px solid var(--border-color); margin: 1rem 0; }
+        #password-box button { font-size: 1.1rem; padding: 0.8rem 1.5rem; background-color: var(--primary-color); color: var(--white); border: none; border-radius: var(--border-radius-md); cursor: pointer; }
+        #password-error { color: var(--danger-color); display: none; }
+
+        #main-content { display: none; }
+
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .kpi-card { background-color: var(--background-very-light); padding: 1.5rem; border-radius: var(--border-radius-lg); text-align: center; border: 1px solid var(--border-color); }
+        .kpi-card h4 { font-size: 1rem; color: var(--primary-light); margin-bottom: 0.5rem; }
+        .kpi-card p { font-size: 1.8rem; font-weight: 700; color: var(--primary-color); }
+
+        .filters { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; background-color: var(--background-very-light); padding: 1rem; border-radius: var(--border-radius-lg); margin-bottom: 2rem; }
+        .filters .form-group { flex-direction: row; align-items: center; gap: 0.5rem; }
+        .filters label { margin-bottom: 0; }
+        .filters input, .filters select { padding: 0.5rem; }
+
+        #history-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        .history-card { background: #fff; padding: 1.5rem; border-radius: var(--border-radius-lg); box-shadow: 0 4px 12px var(--shadow-color); border: 1px solid var(--border-color); display: flex; flex-direction: column; }
+        .history-card h4 { text-align: left; font-size: 1.2rem; }
+        .history-card p { margin: 0.5rem 0; }
+        .history-card .total { font-size: 1.5rem; font-weight: bold; color: var(--success-color); margin-top: auto; }
+        .history-card button { background-color: var(--primary-light); color: white; border: none; padding: 8px 12px; border-radius: var(--border-radius-md); cursor: pointer; align-self: flex-end; margin-top: 1rem; }
+
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 1000; display: none; justify-content: center; align-items: center; }
+        .modal-content { background: var(--white); padding: 2rem; border-radius: var(--border-radius-lg); width: 90%; max-width: 900px; max-height: 90vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .modal-header h3 { margin: 0; }
+        .modal-close { font-size: 2rem; background: none; border: none; cursor: pointer; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
         .form-group { display: flex; flex-direction: column; }
         .form-group.full-width { grid-column: 1 / -1; }
-        label { margin-bottom: 0.5rem; font-weight: 600; color: var(--primary-color); }
-        input[type="text"], input[type="number"], input[type="date"], select, textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); font-size: 1rem; transition: all 0.2s ease; }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px var(--focus-shadow); }
-        .btn { padding: 0.75rem 1.5rem; border-radius: var(--border-radius-md); border: none; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .btn { padding: 0.75rem 1.5rem; border-radius: var(--border-radius-md); border: none; font-size: 1rem; font-weight: 600; cursor: pointer; }
         .btn-primary { background-color: var(--primary-color); color: var(--white); }
-        .btn-primary:hover { background-color: #3a0b54; }
-        .btn-secondary { background-color: var(--primary-lighter); color: var(--primary-color); }
-        .btn-secondary:hover { background-color: #c9b6d8; }
-        .btn-success { background-color: var(--success-color); color: var(--white); }
-        .btn-success:hover { background-color: #218838; }
         .btn-danger { background-color: var(--danger-color); color: var(--white); }
-        .btn-danger:hover { background-color: #c82333; }
-        .btn-info { background-color: var(--info-color); color: var(--white); }
-        .btn-info:hover { background-color: #138496; }
-        .button-group { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
-        #listaFiados { margin-top: 2rem; overflow-x: auto; }
-        #fiadosTable { width: 100%; border-collapse: collapse; text-align: left; }
-        #fiadosTable th, #fiadosTable td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); }
-        #fiadosTable th { background-color: var(--background-very-light); color: var(--primary-color); }
-        #fiadosTable tr:hover { background-color: var(--background-light); }
-        .status { padding: 0.25rem 0.5rem; border-radius: var(--border-radius-md); color: var(--white); font-weight: 600; font-size: 0.8rem; text-align: center; }
-        .status-aberto { background-color: var(--warning-color); }
-        .status-pago { background-color: var(--success-color); }
-        .acoes-fiado button { padding: 0.4rem 0.6rem; font-size: 0.9rem; margin-right: 0.5rem; }
-        .btn-excluir.confirm-delete { background-color: var(--danger-color); color: white; }
-        #areaLembreteIA { margin-top: 1rem; }
-        #lembreteGerado { background-color: #fff; padding: 1rem; border-radius: var(--border-radius-md); border: 1px dashed var(--info-color); min-height: 100px; white-space: pre-wrap; }
-        #lembreteGerado.loading::after { content: 'Gerando lembrete com IA...'; color: var(--primary-light); }
-        .toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); padding: 1rem 2rem; border-radius: var(--border-radius-md); box-shadow: 0 4px 15px rgba(0,0,0,0.2); color: var(--white); font-weight: 600; transition: bottom 0.5s ease-in-out; z-index: 1000; }
-        .toast.show { bottom: 30px; }
-        .toast.success { background-color: var(--success-color); }
-        .toast.error { background-color: var(--danger-color); }
-        .toast.info { background-color: var(--primary-color); }
-        .hidden { display: none !important; }
-        .justify-center { justify-content: center; }
-        .mt-1 { margin-top: 1rem; }
-        #loading-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255, 255, 255, 0.8); display: flex; justify-content: center; align-items: center; z-index: 10; font-weight: bold; color: var(--primary-color); }
-        @media (max-width: 600px) { body { padding: 0.5rem; } .app-container { border-radius: 0; } .content { padding: 1rem; } .form-grid { grid-template-columns: 1fr; } .tab-button, .nav-link { padding: 0.8rem 0.5rem; font-size: 0.9rem; } }
+        .button-group { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
     </style>
 </head>
 <body>
+    <div id="password-overlay">
+        <div id="password-box">
+            <h3>Acesso Restrito</h3>
+            <p>Digite a senha para acessar o histórico.</p>
+            <input type="password" id="password-input" placeholder="Senha">
+            <button id="password-submit">Entrar</button>
+            <p id="password-error">Senha incorreta.</p>
+        </div>
+    </div>
 
-    <div class="app-container">
-        <!-- Navegação -->
-        <nav class="tabs">
-            <a href="/registrardiario/" class="nav-link">📊 Registro Diário</a>
-            <button class="tab-button active">👥 Controle de Fiados</button>
-        </nav>
-
-        <!-- Conteúdo Principal -->
+    <div id="main-content" class="app-container">
         <main class="content">
-            <form id="formFiado" class="form-section">
-                <h2>Registrar Novo Fiado</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="nomeCliente">Nome do Cliente</label>
-                        <input type="text" id="nomeCliente" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="valorFiado">Valor (R$)</label>
-                        <input type="number" id="valorFiado" step="0.01" min="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="dataFiado">Data do Fiado</label>
-                        <input type="date" id="dataFiado" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="previsaoPagamento">Previsão de Pagamento</label>
-                        <input type="date" id="previsaoPagamento">
-                    </div>
-                    <div class="form-group full-width">
-                        <label for="funcionarioFiado">Registrado por</label>
-                        <input type="text" id="funcionarioFiado" placeholder="Seu nome" required>
-                    </div>
-                </div>
-                <div class="button-group justify-center">
-                    <button type="submit" class="btn btn-primary">Registrar Fiado e Abrir WhatsApp 🟢</button>
-                </div>
-            </form>
+            <h2>Painel de Controle Gerencial</h2>
+            
+            <section class="kpi-grid">
+                <div class="kpi-card"><h4>Faturamento Bruto (Mês)</h4><p id="kpi-faturamento">R$ 0,00</p></div>
+                <div class="kpi-card"><h4>Total de Saídas (Mês)</h4><p id="kpi-saidas">R$ 0,00</p></div>
+                <div class="kpi-card"><h4>Saldo Líquido (Mês)</h4><p id="kpi-saldo">R$ 0,00</p></div>
+                <div class="kpi-card"><h4>Média Diária (Mês)</h4><p id="kpi-media">R$ 0,00</p></div>
+            </section>
 
-            <div id="areaLembreteIA" class="card hidden">
-                <h3>Lembrete de Cobrança (Sugestão da IA)</h3>
-                <div id="lembreteGerado" class="loading"></div>
-                <div class="button-group justify-center mt-1">
-                   <button type="button" class="btn btn-secondary" id="btnCopiarLembrete">Copiar Mensagem</button>
-                </div>
-            </div>
+            <section class="filters">
+                <div class="form-group"><label for="filter-start-date">De:</label><input type="date" id="filter-start-date"></div>
+                <div class="form-group"><label for="filter-end-date">Até:</label><input type="date" id="filter-end-date"></div>
+                <div class="form-group"><label for="filter-employee">Funcionário:</label><select id="filter-employee"><option value="">Todos</option></select></div>
+            </section>
 
-            <div id="listaFiados" class="card">
-                <h2>Fiados Atuais</h2>
-                <div id="loading-overlay">Carregando dados...</div>
-                <table id="fiadosTable">
-                    <thead>
-                        <tr>
-                            <th>Cliente</th>
-                            <th>Valor</th>
-                            <th>Data</th>
-                            <th>Previsão Pgt.</th>
-                            <th>Status</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Linhas inseridas via JS com Firebase -->
-                    </tbody>
-                </table>
-            </div>
+            <section id="history-container">
+                <p>Carregando registros...</p>
+            </section>
         </main>
     </div>
-    
-    <!-- Elemento Toast para Notificações -->
-    <div id="toast" class="toast"></div>
 
-    <!-- Firebase SDKs -->
+    <div id="details-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Detalhes do Registro</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div id="modal-body">
+                <!-- O formulário de edição será injetado aqui pelo JS -->
+            </div>
+        </div>
+    </div>
+
     <script type="module">
-        // Importações do Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, collection, addDoc, onSnapshot, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Módulo principal da Aplicação
         document.addEventListener('DOMContentLoaded', async () => {
-            
-            // Suas chaves do Firebase que você acabou de criar
             const firebaseConfig = {
               apiKey: "AIzaSyCyzA-QWhXZTUahk13tKhMEAt8AqLpCzDc",
               authDomain: "acai-sabordaterra-fiados.firebaseapp.com",
@@ -158,286 +120,292 @@
               appId: "1:95507357232:web:22d0264b98bd5ab0ff57f5"
             };
 
-            // Inicializa o Firebase com suas chaves
             const app = initializeApp(firebaseConfig);
             const auth = getAuth(app);
             const db = getFirestore(app);
 
-            // Listener de estado de autenticação
             onAuthStateChanged(auth, (user) => {
                 if (user) {
-                    // Se o usuário está logado, inicializa o módulo de fiados
-                    console.log("Usuário conectado anonimamente:", user.uid);
-                    FiadosModule.init(db);
+                    HistoricoModule.init(db);
                 }
             });
-            
-            // Tenta fazer login anônimo. Essencial para o app funcionar.
+
             try {
                 await signInAnonymously(auth);
             } catch (error) {
                 console.error("Falha na autenticação anônima:", error);
-                Utils.showToast("Falha crítica na conexão. O app não funcionará.", "error");
             }
-
-            App.init();
+            
+            PasswordModule.init();
         });
 
-        // Módulos da aplicação
-        const App = {
-            init() {}
-        };
-
         const Utils = {
-            showToast(message, type = 'info', duration = 3000) {
-                const toast = document.getElementById('toast');
-                toast.textContent = message;
-                toast.className = 'toast show';
-                toast.classList.add(type);
-                setTimeout(() => { toast.className = 'toast'; }, duration);
-            },
             formatCurrency(value) { return parseFloat(value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); },
             formatDate(dateString) {
                 if (!dateString) return 'N/A';
-                // Converte timestamp do Firebase para Data se necessário
                 if (dateString.seconds) {
                     dateString = new Date(dateString.seconds * 1000).toISOString();
                 }
                 const date = new Date(dateString);
                 const userTimezoneOffset = date.getTimezoneOffset() * 60000;
-                return new Date(date.getTime() + userTimezoneOffset).toLocaleDateString('pt-BR');
-            },
-            getTodayDateString() { return new Date().toISOString().split('T')[0]; }
+                return new Date(date.getTime() + userTimezoneOffset).toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            }
         };
-        
-        const AIModule = {
-            apiKey: "", // Opcional: se quiser usar a IA para lembretes
-            endpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
-            async generateText(prompt) {
-                const url = `${this.endpoint}?key=${this.apiKey}`;
-                const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
-                try {
-                    const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                    if (!response.ok) { throw new Error(`API Error: ${response.statusText}`); }
-                    const result = await response.json();
-                    if (result.candidates && result.candidates.length > 0) {
-                        return result.candidates[0].content.parts[0].text.trim();
-                    } else {
-                        return "Não foi possível gerar uma resposta.";
-                    }
-                } catch (error) {
-                    console.error("Erro ao chamar a API Gemini:", error);
-                    return "Falha na comunicação com a IA.";
+
+        const PasswordModule = {
+            CORRECT_PASSWORD: "sabordaterra2025",
+            init() {
+                document.getElementById('password-submit').addEventListener('click', () => this.checkPassword());
+                document.getElementById('password-input').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.checkPassword();
+                });
+            },
+            checkPassword() {
+                const input = document.getElementById('password-input');
+                const errorEl = document.getElementById('password-error');
+                if (input.value === this.CORRECT_PASSWORD) {
+                    document.getElementById('password-overlay').style.display = 'none';
+                    document.getElementById('main-content').style.display = 'block';
+                } else {
+                    errorEl.style.display = 'block';
+                    input.value = '';
                 }
             }
         };
-        
-        const LocalStorageModule = {
-            set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (error) { console.error("Erro ao salvar no localStorage:", error); } },
-            get(key) { try { const item = localStorage.getItem(key); return item ? JSON.parse(item) : null; } catch (error) { console.error("Erro ao carregar do localStorage:", error); localStorage.removeItem(key); return null; } },
-            remove(key) { localStorage.removeItem(key); }
-        };
-        
-        const FiadosModule = {
-            RASCUNHO_KEY: 'fiadoRascunho_AcaiSaborDaTerra',
-            form: document.getElementById('formFiado'),
+
+        const HistoricoModule = {
             db: null,
-            fiadosCollectionRef: null,
+            allRecords: [],
             
             init(db) {
                 this.db = db;
-                // O nome da coleção no seu banco de dados será "fiados"
-                this.fiadosCollectionRef = collection(db, "fiados");
-                
-                this.loadDraft();
-                this.setupEventListeners();
-                this.listenForFiados();
-                document.getElementById('dataFiado').value = Utils.getTodayDateString();
+                this.listenForRecords();
+                this.setupFilters();
+                document.querySelector('.modal-close').addEventListener('click', () => this.closeModal());
             },
 
-            setupEventListeners() {
-                this.form.addEventListener('submit', (e) => this.addFiado(e));
-                this.form.addEventListener('input', () => this.saveDraft());
-                document.getElementById('listaFiados').addEventListener('click', (e) => this.handleListActions(e));
-                document.getElementById('btnCopiarLembrete').addEventListener('click', () => this.copyReminder());
-            },
-
-            listenForFiados() {
-                const loadingOverlay = document.getElementById('loading-overlay');
-                onSnapshot(this.fiadosCollectionRef, (snapshot) => {
-                    const fiados = [];
+            listenForRecords() {
+                const recordsRef = collection(this.db, "registrosDiarios");
+                onSnapshot(recordsRef, (snapshot) => {
+                    this.allRecords = [];
                     snapshot.forEach(doc => {
-                        fiados.push({ id: doc.id, ...doc.data() });
+                        this.allRecords.push({ id: doc.id, ...doc.data() });
                     });
-                    this.renderList(fiados);
-                    loadingOverlay.classList.add('hidden');
-                }, (error) => {
-                    console.error("Erro ao ouvir os fiados:", error);
-                    Utils.showToast("Erro ao carregar dados.", "error");
-                    loadingOverlay.innerText = "Erro ao carregar dados.";
+                    this.allRecords.sort((a, b) => b.dataDeRegistro.seconds - a.dataDeRegistro.seconds);
+                    this.applyFilters();
+                    this.updateKPIs(this.allRecords);
+                    this.populateEmployeeFilter(this.allRecords);
                 });
             },
-            
-            renderList(fiados) {
-                const tbody = document.querySelector('#fiadosTable tbody');
-                tbody.innerHTML = '';
-                if (fiados.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum fiado registrado.</td></tr>';
+
+            setupFilters() {
+                document.getElementById('filter-start-date').addEventListener('change', () => this.applyFilters());
+                document.getElementById('filter-end-date').addEventListener('change', () => this.applyFilters());
+                document.getElementById('filter-employee').addEventListener('change', () => this.applyFilters());
+            },
+
+            populateEmployeeFilter(records) {
+                const employeeFilter = document.getElementById('filter-employee');
+                const employees = [...new Set(records.map(r => r.funcionario))];
+                
+                const selectedValue = employeeFilter.value;
+                
+                employeeFilter.innerHTML = '<option value="">Todos</option>';
+                employees.forEach(employee => {
+                    if(employee) {
+                        const option = document.createElement('option');
+                        option.value = employee;
+                        option.textContent = employee;
+                        employeeFilter.appendChild(option);
+                    }
+                });
+
+                employeeFilter.value = selectedValue;
+            },
+
+            applyFilters() {
+                let filteredRecords = [...this.allRecords];
+                const startDate = document.getElementById('filter-start-date').value;
+                const endDate = document.getElementById('filter-end-date').value;
+                const employee = document.getElementById('filter-employee').value;
+
+                if (startDate) {
+                    const startTimestamp = new Date(startDate).getTime() / 1000;
+                    filteredRecords = filteredRecords.filter(r => r.dataDeRegistro.seconds >= startTimestamp);
+                }
+                if (endDate) {
+                    const endTimestamp = new Date(endDate).setHours(23, 59, 59, 999) / 1000;
+                    filteredRecords = filteredRecords.filter(r => r.dataDeRegistro.seconds <= endTimestamp);
+                }
+                if (employee) {
+                    filteredRecords = filteredRecords.filter(r => r.funcionario === employee);
+                }
+                
+                this.renderHistory(filteredRecords);
+            },
+
+            updateKPIs(records) {
+                const now = new Date();
+                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime() / 1000;
+                const monthRecords = records.filter(r => r.dataDeRegistro.seconds >= startOfMonth);
+
+                let faturamentoBruto = 0;
+                let totalSaidas = 0;
+
+                monthRecords.forEach(r => {
+                    faturamentoBruto += (parseFloat(r.dinheiroEntrada) || 0) + (parseFloat(r.pixEntrada) || 0) + (parseFloat(r.cartaoEntrada) || 0);
+                    totalSaidas += (parseFloat(r.dinheiroSaida) || 0) + (parseFloat(r.pixSaida) || 0);
+                });
+
+                const saldoLiquido = faturamentoBruto - totalSaidas;
+                const mediaDiaria = monthRecords.length > 0 ? saldoLiquido / monthRecords.length : 0;
+
+                document.getElementById('kpi-faturamento').textContent = Utils.formatCurrency(faturamentoBruto);
+                document.getElementById('kpi-saidas').textContent = Utils.formatCurrency(totalSaidas);
+                document.getElementById('kpi-saldo').textContent = Utils.formatCurrency(saldoLiquido);
+                document.getElementById('kpi-media').textContent = Utils.formatCurrency(mediaDiaria);
+            },
+
+            renderHistory(records) {
+                const container = document.getElementById('history-container');
+                container.innerHTML = '';
+                if (records.length === 0) {
+                    container.innerHTML = '<p>Nenhum registro encontrado para os filtros selecionados.</p>';
                     return;
                 }
-                
-                fiados.sort((a, b) => (b.dataRegistro?.seconds || 0) - (a.dataRegistro?.seconds || 0));
+                records.forEach(record => {
+                    const faturamentoBruto = (parseFloat(record.dinheiroEntrada) || 0) + (parseFloat(record.pixEntrada) || 0) + (parseFloat(record.cartaoEntrada) || 0);
+                    const card = document.createElement('div');
+                    card.className = 'history-card';
+                    card.innerHTML = `
+                        <h4>${Utils.formatDate(record.dataDeRegistro)}</h4>
+                        <p><strong>Funcionário(a):</strong> ${record.funcionario || 'N/A'}</p>
+                        <p><strong>Termômetro:</strong> ${record.climaLoja || 'N/A'}</p>
+                        <p class="total">${Utils.formatCurrency(faturamentoBruto)}</p>
+                        <button data-id="${record.id}">Ver Detalhes</button>
+                    `;
+                    container.appendChild(card);
+                });
 
-                fiados.forEach(fiado => {
-                    const tr = document.createElement('tr');
-                    tr.dataset.fiadoId = fiado.id;
-                    const statusClass = fiado.status === 'Pago' ? 'status-pago' : 'status-aberto';
-                    tr.innerHTML = `
-                        <td>${fiado.nomeCliente}</td>
-                        <td>${Utils.formatCurrency(fiado.valorFiado)}</td>
-                        <td>${Utils.formatDate(fiado.dataFiado)}</td>
-                        <td>${Utils.formatDate(fiado.previsaoPagamento)}</td>
-                        <td><span class="status ${statusClass}">${fiado.status}</span></td>
-                        <td class="acoes-fiado">
-                            ${fiado.status !== 'Pago' ? `<button class="btn btn-success btn-sm btn-marcar-pago" data-id="${fiado.id}">✔ Pagar</button>` : ''}
-                            ${fiado.status !== 'Pago' ? `<button class="btn btn-info btn-sm btn-lembrete-ia" data-id="${fiado.id}" data-nome="${fiado.nomeCliente}" data-valor="${fiado.valorFiado}" data-data="${fiado.dataFiado}">🤖 Lembrete</button>` : ''}
-                            <button class="btn btn-danger btn-sm btn-excluir" data-id="${fiado.id}">✖ Excluir</button>
-                        </td>`;
-                    tbody.appendChild(tr);
+                container.querySelectorAll('button').forEach(button => {
+                    button.addEventListener('click', (e) => this.openModal(e.target.dataset.id));
                 });
             },
 
-            async addFiado(event) {
-                event.preventDefault();
-                const values = {
-                    nomeCliente: document.getElementById('nomeCliente').value,
-                    valorFiado: document.getElementById('valorFiado').value,
-                    dataFiado: document.getElementById('dataFiado').value,
-                    previsaoPagamento: document.getElementById('previsaoPagamento').value,
-                    funcionarioFiado: document.getElementById('funcionarioFiado').value,
-                };
-                if (!values.nomeCliente || !values.valorFiado || !values.funcionarioFiado) {
-                    return Utils.showToast("Preencha nome, valor e funcionário.", "error");
-                }
-                const newFiadoData = {
-                    ...values,
-                    dataRegistro: new Date(),
-                    status: 'Aberto'
+            openModal(recordId) {
+                const record = this.allRecords.find(r => r.id === recordId);
+                if (!record) return;
+
+                const modalBody = document.getElementById('modal-body');
+                modalBody.innerHTML = `
+                    <form id="edit-form" data-id="${record.id}">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Funcionário(a)</label>
+                                <input type="text" id="edit-funcionario" value="${record.funcionario || ''}">
+                            </div>
+                            <div class="form-group">
+                                <label>Data</label>
+                                <input type="date" id="edit-data" value="${record.data || ''}">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Entradas</label>
+                                <div class="form-grid">
+                                    <div class="form-group"><label>💰 Dinheiro</label><input type="number" id="edit-dinheiroEntrada" value="${record.dinheiroEntrada || 0}"></div>
+                                    <div class="form-group"><label>📱 PIX</label><input type="number" id="edit-pixEntrada" value="${record.pixEntrada || 0}"></div>
+                                    <div class="form-group"><label>💳 Cartão</label><input type="number" id="edit-cartaoEntrada" value="${record.cartaoEntrada || 0}"></div>
+                                </div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Saídas</label>
+                                <div class="form-grid">
+                                    <div class="form-group full-width"><label>Motivo</label><input type="text" id="edit-motivoSaida" value="${record.motivoSaida || ''}"></div>
+                                    <div class="form-group"><label>💰 Dinheiro</label><input type="number" id="edit-dinheiroSaida" value="${record.dinheiroSaida || 0}"></div>
+                                    <div class="form-group"><label>📱 PIX</label><input type="number" id="edit-pixSaida" value="${record.pixSaida || 0}"></div>
+                                </div>
+                            </div>
+                             <div class="form-group full-width">
+                                <label>Cartões Fidelidade Utilizados</label>
+                                <input type="number" id="edit-fidelidadeQuantidade" value="${record.fidelidadeQuantidade || 0}">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Ajuste de Caixa</label>
+                                <div class="form-grid">
+                                    <div class="form-group"><label>Real Dinheiro</label><input type="number" id="edit-realDinheiro" value="${record.ajuste?.realDinheiro || 0}"></div>
+                                    <div class="form-group"><label>Real PIX</label><input type="number" id="edit-realPix" value="${record.ajuste?.realPix || 0}"></div>
+                                    <div class="form-group full-width"><label>Motivo Ajuste</label><textarea id="edit-motivoAjuste">${record.ajuste?.motivo || ''}</textarea></div>
+                                </div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Observações do Dia</label>
+                                <textarea id="edit-observacoesDia">${record.observacoesDia || ''}</textarea>
+                            </div>
+                        </div>
+                        <div class="button-group">
+                            <button type="button" id="btn-delete" class="btn btn-danger">Excluir Registro</button>
+                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                        </div>
+                    </form>
+                `;
+                document.getElementById('details-modal').style.display = 'flex';
+                
+                document.getElementById('edit-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.saveChanges(record.id);
+                });
+                document.getElementById('btn-delete').addEventListener('click', () => {
+                    if(confirm('Tem certeza que deseja excluir este registro permanentemente? Esta ação não pode ser desfeita.')) {
+                        this.deleteRecord(record.id);
+                    }
+                });
+            },
+
+            closeModal() {
+                document.getElementById('details-modal').style.display = 'none';
+            },
+
+            async saveChanges(recordId) {
+                const form = document.getElementById('edit-form');
+                const updatedData = {
+                    funcionario: form.querySelector('#edit-funcionario').value,
+                    data: form.querySelector('#edit-data').value,
+                    dinheiroEntrada: form.querySelector('#edit-dinheiroEntrada').value,
+                    pixEntrada: form.querySelector('#edit-pixEntrada').value,
+                    cartaoEntrada: form.querySelector('#edit-cartaoEntrada').value,
+                    motivoSaida: form.querySelector('#edit-motivoSaida').value,
+                    dinheiroSaida: form.querySelector('#edit-dinheiroSaida').value,
+                    pixSaida: form.querySelector('#edit-pixSaida').value,
+                    fidelidadeQuantidade: form.querySelector('#edit-fidelidadeQuantidade').value,
+                    observacoesDia: form.querySelector('#edit-observacoesDia').value,
+                    ajuste: {
+                        realDinheiro: parseFloat(form.querySelector('#edit-realDinheiro').value) || 0,
+                        realPix: parseFloat(form.querySelector('#edit-realPix').value) || 0,
+                        motivo: form.querySelector('#edit-motivoAjuste').value,
+                    }
                 };
                 
+                const recordRef = doc(this.db, "registrosDiarios", recordId);
                 try {
-                    const docRef = await addDoc(this.fiadosCollectionRef, newFiadoData);
-                    this.clearDraft();
-                    Utils.showToast("Fiado registrado online!", 'success');
-                    this.sendWhatsAppNotification({ ...newFiadoData, id: docRef.id });
+                    await updateDoc(recordRef, updatedData);
+                    alert('Registro atualizado com sucesso!');
+                    this.closeModal();
                 } catch (error) {
-                    console.error("Erro ao adicionar fiado: ", error);
-                    Utils.showToast("Falha ao registrar o fiado.", "error");
-                }
-            },
-            
-            async handleListActions(event) {
-                const button = event.target.closest('button');
-                if (!button) return;
-
-                const id = button.dataset.id;
-                if (!id) return;
-
-                const fiadoDocRef = doc(this.db, "fiados", id);
-
-                if (button.classList.contains('btn-marcar-pago')) {
-                    try {
-                        await updateDoc(fiadoDocRef, { status: 'Pago' });
-                        Utils.showToast("Marcado como pago.", 'success');
-                    } catch (e) {
-                        console.error("Erro ao marcar como pago:", e);
-                        Utils.showToast("Erro ao atualizar status.", "error");
-                    }
-                }
-                if (button.classList.contains('btn-lembrete-ia')) {
-                    const { nome, valor, data } = button.dataset;
-                    this.generateReminder(nome, valor, data);
-                }
-                if (button.classList.contains('btn-excluir')) {
-                    if (button.classList.contains('confirm-delete')) {
-                        try {
-                            await deleteDoc(fiadoDocRef);
-                            Utils.showToast("Registro excluído.", 'info');
-                        } catch (e) {
-                            console.error("Erro ao excluir:", e);
-                            Utils.showToast("Erro ao excluir registro.", "error");
-                        }
-                    } else {
-                        this.requestDeleteConfirmation(button);
-                    }
+                    console.error("Erro ao atualizar:", error);
+                    alert('Falha ao atualizar o registro.');
                 }
             },
 
-            requestDeleteConfirmation(button) {
-                document.querySelectorAll('.btn-excluir.confirm-delete').forEach(btn => {
-                    btn.classList.remove('confirm-delete');
-                    btn.textContent = '✖ Excluir';
-                });
-                button.classList.add('confirm-delete');
-                button.textContent = 'Confirmar?';
-            },
-            
-            async generateReminder(nome, valor, data) {
-                const area = document.getElementById('areaLembreteIA');
-                const lembreteDiv = document.getElementById('lembreteGerado');
-                area.classList.remove('hidden');
-                lembreteDiv.classList.add('loading');
-                lembreteDiv.scrollIntoView({ behavior: 'smooth' });
-                const prompt = `Você é um assistente de cobrança amigável para a loja 'Açaí Sabor da Terra'. Crie uma mensagem de lembrete de cobrança para WhatsApp. Seja educado e claro. Dados: Cliente: ${nome}, Valor: ${Utils.formatCurrency(valor)}, Data: ${Utils.formatDate(data)}. Retorne apenas o texto da mensagem.`;
-                const mensagem = await AIModule.generateText(prompt);
-                lembreteDiv.innerText = mensagem;
-                lembreteDiv.classList.remove('loading');
-            },
-
-            copyReminder() {
-                const textToCopy = document.getElementById('lembreteGerado').innerText;
-                if (!textToCopy) return;
-                navigator.clipboard.writeText(textToCopy)
-                    .then(() => Utils.showToast("Mensagem copiada!", "success"))
-                    .catch(() => Utils.showToast("Falha ao copiar.", "error"));
-            },
-
-            sendWhatsAppNotification(fiado) {
-                const previsao = fiado.previsaoPagamento ? Utils.formatDate(fiado.previsaoPagamento) : 'Não informada';
-                const mensagem = `*NOVO FIADO REGISTRADO - AÇAÍ SABOR DA TERRA* �\n\n` +
-                                 `📅 *Data do Registro:* ${new Date().toLocaleDateString('pt-BR')}\n` +
-                                 `👤 *Cliente:* ${fiado.nomeCliente}\n` +
-                                 `💰 *Valor:* ${Utils.formatCurrency(fiado.valorFiado)}\n` +
-                                 `🗓️ *Data do Fiado:* ${Utils.formatDate(fiado.dataFiado)}\n` +
-                                 `📅 *Previsão de Pagamento:* ${previsao}\n` +
-                                 `✍️ *Funcionário Responsável:* ${fiado.funcionarioFiado}`;
-                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(mensagem)}`, '_blank');
-            },
-
-            saveDraft() {
-                const draft = {
-                    nomeCliente: document.getElementById('nomeCliente').value,
-                    valorFiado: document.getElementById('valorFiado').value,
-                    dataFiado: document.getElementById('dataFiado').value,
-                    previsaoPagamento: document.getElementById('previsaoPagamento').value,
-                    funcionarioFiado: document.getElementById('funcionarioFiado').value,
-                };
-                LocalStorageModule.set(this.RASCUNHO_KEY, draft);
-            },
-            loadDraft() {
-                const draft = LocalStorageModule.get(this.RASCUNHO_KEY);
-                if (draft) {
-                    Object.keys(draft).forEach(key => {
-                        const element = document.getElementById(key);
-                        if (element) element.value = draft[key];
-                    });
+            async deleteRecord(recordId) {
+                const recordRef = doc(this.db, "registrosDiarios", recordId);
+                try {
+                    await deleteDoc(recordRef);
+                    alert('Registro excluído com sucesso!');
+                    this.closeModal();
+                } catch (error) {
+                    console.error("Erro ao excluir:", error);
+                    alert('Falha ao excluir o registro.');
                 }
-            },
-            clearDraft() {
-                this.form.reset();
-                document.getElementById('dataFiado').value = Utils.getTodayDateString();
-                LocalStorageModule.remove(this.RASCUNHO_KEY);
-            },
+            }
         };
     </script>
 </body>
