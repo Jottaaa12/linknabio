@@ -66,6 +66,58 @@
         </main>
     </div>
 
+    <!-- Estrutura do Modal de Edição -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2>Editar Registro</h2>
+                <button id="closeModalBtn" class="close-button">&times;</button>
+            </header>
+            <form id="formEdicao">
+                <input type="hidden" id="editRecordId">
+                
+                <div class="form-group">
+                    <label for="editData">Data</label>
+                    <input type="date" id="editData" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editFuncionario">Funcionário</label>
+                    <select id="editFuncionario" required>
+                        <option value="Manoela">Manoela</option>
+                        <option value="Nayara">Nayara</option>
+                        <option value="João Pedro (gerente)">João Pedro (gerente)</option>
+                    </select>
+                </div>
+
+                <h4>Entradas</h4>
+                <div class="form-group">
+                    <label for="editDinheiroEntrada">Dinheiro</label>
+                    <input type="number" id="editDinheiroEntrada" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="editPixEntrada">Pix</label>
+                    <input type="number" id="editPixEntrada" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="editCartaoEntrada">Cartão</label>
+                    <input type="number" id="editCartaoEntrada" step="0.01" placeholder="0.00">
+                </div>
+                
+                <h4>Saídas</h4>
+                <div class="form-group">
+                    <label for="editTotalSaidas">Total Saídas</label>
+                    <input type="number" id="editTotalSaidas" step="0.01" placeholder="0.00">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="btnCancelarEdicao" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script type="module" src="app.js"></script>
 </body>
 </html>
