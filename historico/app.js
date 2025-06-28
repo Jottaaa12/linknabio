@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+// Importações atualizadas para incluir doc e updateDoc
+import { getFirestore, collection, getDocs, doc, updateDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 const PainelControleModule = {
     db: null,
@@ -18,12 +19,33 @@ const PainelControleModule = {
         this.carregarRegistros();
     },
 
-    // Configura os listeners dos filtros
+    // Configura os listeners de eventos
     setupEventListeners() {
+        // Filtros
         document.getElementById('dataInicio').addEventListener('change', () => this.aplicarFiltros());
         document.getElementById('dataFim').addEventListener('change', () => this.aplicarFiltros());
         document.getElementById('filtroFuncionario').addEventListener('change', () => this.aplicarFiltros());
-        // Adicionar listener para o botão de exportar CSV aqui se necessário
+        
+        // Delegação de evento para os botões de editar na lista
+        document.getElementById('listaRegistros').addEventListener('click', (event) => {
+            if (event.target.classList.contains('btn-editar')) {
+                const recordId = event.target.dataset.id;
+                this.abrirModalEdicao(recordId);
+            }
+        });
+
+        // Listeners do Modal
+        document.getElementById('closeModalBtn').addEventListener('click', () => this.fecharModalEdicao());
+        document.getElementById('btnCancelarEdicao').addEventListener('click', () => this.fecharModalEdicao());
+        document.getElementById('editModal').addEventListener('click', (event) => {
+            // Fecha o modal se clicar no overlay (fundo)
+            if (event.target.id === 'editModal') {
+                this.fecharModalEdicao();
+            }
+        });
+        document.getElementById('formEdicao').addEventListener('submit', (event) => {
+            this.salvarAlteracoes(event);
+        });
     },
 
     // Carrega os registros do Firestore
@@ -32,19 +54,15 @@ const PainelControleModule = {
             const querySnapshot = await getDocs(collection(this.db, "registrosDiarios"));
             this.todosOsRegistros = querySnapshot.docs;
             
-            // Ordena os registros de forma segura, tratando registros antigos e novos
             this.todosOsRegistros.sort((a, b) => {
                 const dataA = a.data();
                 const dataB = b.data();
-
-                // Pega o timestamp em segundos se existir, senão, tenta converter a data antiga para um valor numérico
                 const timeA = dataA.timestamp?.seconds || new Date(dataA.data).getTime() / 1000 || 0;
                 const timeB = dataB.timestamp?.seconds || new Date(dataB.data).getTime() / 1000 || 0;
-
-                return timeB - timeA; // Ordena do mais recente para o mais antigo
+                return timeB - timeA;
             });
 
-            this.aplicarFiltros(); // Aplica os filtros (que inicialmente mostrarão tudo)
+            this.aplicarFiltros();
             document.getElementById('statusCarregamento').style.display = 'none';
 
         } catch (error) {
@@ -53,7 +71,7 @@ const PainelControleModule = {
         }
     },
 
-    // Aplica os filtros de data e funcionário
+    // Aplica os filtros e renderiza a lista
     aplicarFiltros() {
         const dataInicio = document.getElementById('dataInicio').value;
         const dataFim = document.getElementById('dataFim').value;
@@ -61,12 +79,10 @@ const PainelControleModule = {
 
         let registrosFiltrados = this.todosOsRegistros;
 
-        // Filtra por funcionário
         if (funcionario !== "Todos") {
             registrosFiltrados = registrosFiltrados.filter(doc => doc.data().funcionario === funcionario);
         }
 
-        // Filtra por data
         if (dataInicio) {
             const inicio = new Date(dataInicio + "T00:00:00");
             registrosFiltrados = registrosFiltrados.filter(doc => {
@@ -107,10 +123,10 @@ const PainelControleModule = {
         document.getElementById('mediaDiaria').textContent = this.formatCurrency(mediaDiaria);
     },
 
-    // Renderiza a lista de registros na tela (MODIFICADA)
+    // Renderiza a lista de registros na tela
     renderizarLista(registros) {
         const listaEl = document.getElementById('listaRegistros');
-        listaEl.innerHTML = ''; // Limpa a lista
+        listaEl.innerHTML = '';
 
         if (registros.length === 0) {
             listaEl.innerHTML = '<p>Nenhum registro encontrado para os filtros selecionados.</p>';
@@ -119,16 +135,16 @@ const PainelControleModule = {
 
         registros.forEach(doc => {
             const data = doc.data();
-            const dataFormatada = data.timestamp ? data.timestamp.toDate().toLocaleDateString('pt-BR') : new Date(data.data + "T00:00:00").toLocaleDateString('pt-BR');
+            const dataObj = data.timestamp ? data.timestamp.toDate() : new Date(data.data + "T00:00:00");
+            const dataFormatada = dataObj.toLocaleDateString('pt-BR', {timeZone: 'UTC'});
             
             const cardEl = document.createElement('div');
-            cardEl.className = 'registro-card'; // Usa a nova classe para o card
+            cardEl.className = 'registro-card';
             
             const entradas = (parseFloat(data.dinheiroEntrada) || 0) + (parseFloat(data.pixEntrada) || 0) + (parseFloat(data.cartaoEntrada) || 0);
             const saidas = data.totalSaidas || (parseFloat(data.dinheiroSaida) || 0) + (parseFloat(data.pixSaida) || 0);
             const saldo = entradas - saidas;
 
-            // Estrutura HTML interna do card, mais organizada e semântica
             cardEl.innerHTML = `
                 <div class="card-header">
                     <h4>${dataFormatada}</h4>
@@ -145,12 +161,81 @@ const PainelControleModule = {
                     </div>
                 </div>
                 <div class="card-footer">
-                    <span>Saldo do Dia</span>
-                    <strong>${this.formatCurrency(saldo)}</strong>
+                    <div class="card-footer-total">
+                        <span>Saldo do Dia</span>
+                        <strong>${this.formatCurrency(saldo)}</strong>
+                    </div>
+                    <button class="btn-editar" data-id="${doc.id}">Ver Detalhes / Editar</button>
                 </div>
             `;
             listaEl.appendChild(cardEl);
         });
+    },
+
+    // --- NOVAS FUNÇÕES PARA O MODAL DE EDIÇÃO ---
+
+    abrirModalEdicao(id) {
+        const registroDoc = this.todosOsRegistros.find(doc => doc.id === id);
+        if (!registroDoc) {
+            console.error("Registro não encontrado!");
+            alert("Erro: Registro não encontrado.");
+            return;
+        }
+        const data = registroDoc.data();
+        
+        // Converte data do Firestore (timestamp ou string) para o formato YYYY-MM-DD
+        const dataObj = data.timestamp ? data.timestamp.toDate() : new Date(data.data + "T00:00:00");
+        const dataISO = dataObj.toISOString().split('T')[0];
+
+        // Preenche os campos do formulário
+        document.getElementById('editRecordId').value = id;
+        document.getElementById('editData').value = dataISO;
+        document.getElementById('editFuncionario').value = data.funcionario || '';
+        document.getElementById('editDinheiroEntrada').value = data.dinheiroEntrada || 0;
+        document.getElementById('editPixEntrada').value = data.pixEntrada || 0;
+        document.getElementById('editCartaoEntrada').value = data.cartaoEntrada || 0;
+        document.getElementById('editTotalSaidas').value = data.totalSaidas || 0;
+
+        // Exibe o modal
+        document.getElementById('editModal').style.display = 'flex';
+    },
+
+    fecharModalEdicao() {
+        document.getElementById('editModal').style.display = 'none';
+        document.getElementById('formEdicao').reset(); // Limpa o formulário
+    },
+
+    async salvarAlteracoes(event) {
+        event.preventDefault(); // Impede o recarregamento da página
+        const id = document.getElementById('editRecordId').value;
+
+        // Coleta os dados do formulário
+        const dataString = document.getElementById('editData').value;
+        const [year, month, day] = dataString.split('-');
+        const dataUTC = new Date(Date.UTC(year, month - 1, day));
+
+        const dadosAtualizados = {
+            data: dataString, // Mantém o formato YYYY-MM-DD para consistência
+            timestamp: Timestamp.fromDate(dataUTC), // Usa o timestamp para ordenação
+            funcionario: document.getElementById('editFuncionario').value,
+            dinheiroEntrada: parseFloat(document.getElementById('editDinheiroEntrada').value) || 0,
+            pixEntrada: parseFloat(document.getElementById('editPixEntrada').value) || 0,
+            cartaoEntrada: parseFloat(document.getElementById('editCartaoEntrada').value) || 0,
+            totalSaidas: parseFloat(document.getElementById('editTotalSaidas').value) || 0,
+        };
+
+        try {
+            const docRef = doc(this.db, "registrosDiarios", id);
+            await updateDoc(docRef, dadosAtualizados);
+            
+            alert("Registro atualizado com sucesso!"); // Substituir por um toast/notificação melhor no futuro
+            this.fecharModalEdicao();
+            await this.carregarRegistros(); // Recarrega os dados para refletir a alteração
+
+        } catch (error) {
+            console.error("Erro ao atualizar o documento: ", error);
+            alert("Falha ao salvar as alterações. Verifique o console para mais detalhes.");
+        }
     },
 
     // Função utilitária para formatar moeda
