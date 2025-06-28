@@ -130,6 +130,11 @@
                                 <label>Termômetro da Loja (Como foi o dia?)</label>
                                 <div class="mood-options"><label class="mood-option">😴<input type="radio" name="climaLoja" value="Muito Fraco"></label><label class="mood-option">😐<input type="radio" name="climaLoja" value="Fraco"></label><label class="mood-option">🙂<input type="radio" name="climaLoja" value="Bom"></label><label class="mood-option">😄<input type="radio" name="climaLoja" value="Ótimo"></label><label class="mood-option">🚀<input type="radio" name="climaLoja" value="Excepcional"></label></div>
                             </div>
+                            <!-- SEÇÃO CORRIGIDA/ADICIONADA -->
+                            <div class="form-group full-width">
+                                <label>Frase do Dia (Opcional)</label>
+                                <div id="fraseMotivacionalArea" contenteditable="true" placeholder="Clique para editar ou cole uma frase aqui..."></div>
+                            </div>
                         </div>
                     </div>
                     <div class="button-group justify-center"><button type="button" id="btnRevisar" class="btn btn-primary">Revisar Registro</button></div>
@@ -319,7 +324,6 @@
                 document.getElementById('sistemaDinheiro').textContent = Utils.formatCurrency(saldoDinheiro);
                 document.getElementById('sistemaPix').textContent = Utils.formatCurrency(saldoPix);
                 
-                // Limpa campos de ajuste anteriores
                 document.getElementById('realDinheiro').value = '';
                 document.getElementById('realPix').value = '';
                 document.getElementById('motivoAjuste').value = '';
@@ -401,7 +405,6 @@
                     }
                 };
                 
-                // Atualiza os dados para envio do WhatsApp com os valores ajustados
                 this.dadosParaEnvio.ajuste = registroParaSalvar.ajuste;
 
 
