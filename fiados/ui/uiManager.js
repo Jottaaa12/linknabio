@@ -323,16 +323,19 @@ export class UIManager {
     }
 
     formatWhatsappMessage(fiado) {
-        let msg = `Olá, ${fiado.cliente}!\n`;
-        msg += `Fiado: R$ ${parseFloat(fiado.valor).toFixed(2)}\n`;
-        msg += `Status: ${fiado.status}`;
+        let msg = `🆕 NOVO FIADO REGISTRADO - AÇAÍ SABOR DA TERRA 🌿\n\n`;
+        msg += `👤 CLIENTE: ${fiado.cliente}\n`;
+        msg += `💰 VALOR: R$ ${parseFloat(fiado.valor).toFixed(2)}\n`;
+        msg += `📅 DATA: ${this.formatDate(fiado.data)}\n`;
+        if (fiado.telefone) msg += `📱 TELEFONE: ${fiado.telefone}\n`;
+        if (fiado.produto) msg += `🛒 PRODUTO: ${fiado.produto}\n`;
+        if (fiado.observacoes) msg += `📝 OBSERVAÇÕES: ${fiado.observacoes}\n`;
+        msg += `✅ STATUS: ${fiado.status}`;
         if (fiado.status === 'Pago' && fiado.dataPagamento) {
             msg += ` (Pago em ${this.formatDate(fiado.dataPagamento)})`;
         }
-        msg += `\nData: ${this.formatDate(fiado.data)}`;
-        if (fiado.produto) msg += `\nProduto/Serviço: ${fiado.produto}`;
-        if (fiado.observacoes) msg += `\nObs: ${fiado.observacoes}`;
-        return msg;
+        // Remove qualquer caractere estranho
+        return msg.normalize('NFKC').replace(/[^\x00-\x7F\u00A0-\uFFFF]/g, '');
     }
 
     async handleDeleteConfirm() {
