@@ -702,16 +702,6 @@
              </button>
         </div>
 
-        <!-- Botão para App (quando disponível) -->
-        <div class="mt-6 fade-in-up delay-4" id="app-section" style="display: none;">
-            <a href="#" id="app-download-btn" 
-               class="flex items-center justify-center w-full p-4 rounded-full font-medium btn-secondary hover-lift"
-               onclick="gtag('event', 'click', { 'custom_parameter_1': 'app_download' })">
-                <i class="fa-solid fa-mobile-alt w-6 mr-3 text-[var(--accent-green)]"></i>
-                <span>Baixar nosso App</span>
-            </a>
-        </div>
-
         <!-- Pedido Rápido Modal -->
         <div id="quick-order-modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50">
             <div class="modal-content p-6 rounded-2xl shadow-2xl text-center relative max-w-md w-full">
@@ -804,6 +794,15 @@
             <input type="text" id="chatbot-input" placeholder="Digite sua dúvida..." autocomplete="off" required />
             <button type="submit">Enviar</button>
         </form>
+    </div>
+
+    <div class="mt-6 fade-in-up delay-4" id="app-section">
+        <a href="https://play.google.com/store/apps/details?id=v002.app.deeliv.acaisabordaterra" 
+           class="flex items-center justify-center w-full p-4 rounded-full font-medium btn-secondary hover-lift"
+           target="_blank">
+            <i class="fa-solid fa-mobile-alt w-6 mr-3 text-[var(--accent-green)]"></i>
+            <span>Baixar nosso App</span>
+        </a>
     </div>
 
     <script>
@@ -918,7 +917,7 @@
             function botReply(userMsg) {
                 const msg = userMsg.toLowerCase().normalize('NFD').replace(/[^a-z0-9\s]/gi, '');
                 if (/endereco|localizacao|loja|como chegar|mapa|estacionamento/.test(msg)) {
-                    addMessage('📍 Nossa loja fica em <b>Bitupitá</b>!<br>Veja no Google Maps: <a href="https://maps.app.goo.gl/bzaGzygRZ4emagVk8" target="_blank" class="chatbot-link">Abrir no Maps</a><br><button onclick="window.open(\'https://maps.app.goo.gl/bzaGzygRZ4emagVk8\', '_blank')" class="chatbot-btn-link">Ver rota no Google Maps</button>');
+                    addMessage('📍 Nossa loja fica em <b>Bitupitá</b>!<br>Veja no Google Maps: <a href="https://maps.app.goo.gl/bzaGzygRZ4emagVk8" target="_blank" class="chatbot-link">Abrir no Maps</a>');
                 } else if (/pagamento|aceita|cartao|credito|debito|dinheiro/.test(msg)) {
                     addMessage('💳 Aceitamos <b>PIX</b>, <b>cartão de crédito</b>, <b>cartão de débito</b> e <b>dinheiro</b>!');
                 } else if (/delivery|entrega|entregam|taxa|bairro|regiao|onde entregam|tempo entrega/.test(msg)) {
