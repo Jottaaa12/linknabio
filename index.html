@@ -917,14 +917,36 @@
 
             function botReply(userMsg) {
                 const msg = userMsg.toLowerCase().normalize('NFD').replace(/[^a-z0-9\s]/gi, '');
-                if (/horario|funcionamento|abre|fecha|hora|dias|domingo|feriado/.test(msg)) {
-                    addMessage('⏰ Nosso horário de funcionamento é das 14h às 22h, todos os dias!');
+                if (/endereco|localizacao|loja|como chegar|mapa|estacionamento/.test(msg)) {
+                    addMessage('📍 Nossa loja fica em <b>Bitupitá</b>!<br>Veja no Google Maps: <a href="https://maps.app.goo.gl/bzaGzygRZ4emagVk8" target="_blank" class="chatbot-link">Abrir no Maps</a><br><button onclick="window.open(\'https://maps.app.goo.gl/bzaGzygRZ4emagVk8\', '_blank')" class="chatbot-btn-link">Ver rota no Google Maps</button>');
+                } else if (/pagamento|aceita|cartao|credito|debito|dinheiro/.test(msg)) {
+                    addMessage('💳 Aceitamos <b>PIX</b>, <b>cartão de crédito</b>, <b>cartão de débito</b> e <b>dinheiro</b>!');
+                } else if (/delivery|entrega|entregam|taxa|bairro|regiao|onde entregam|tempo entrega/.test(msg)) {
+                    addMessage('🚚 Fazemos delivery em toda a região de <b>Bitupitá</b>! Consulte a taxa e o tempo estimado no momento do pedido.');
+                } else if (/retirada|buscar|pegar na loja|pickup/.test(msg)) {
+                    addMessage('🏪 Fazemos retirada! Basta pedir pelo nosso site e selecionar a opção de retirada.');
+                } else if (/cardapio|produtos|menu|tem o que|sabores|tamanhos|valores/.test(msg)) {
+                    addMessage('🍨 Nosso cardápio está disponível no nosso site:<br><a href="https://acaisabordaterra.deeliv.app" target="_blank" class="chatbot-link">acaisabordaterra.deeliv.app</a>');
+                } else if (/fidelidade|selo|cartao fidelidade|promo/.test(msg)) {
+                    addMessage('🎁 Temos um <b>cartão fidelidade</b>: a cada 9 selos, você ganha um copo totalmente grátis! Peça o seu!');
+                } else if (/whatsapp|instagram|contato|rede social/.test(msg)) {
+                    addMessage('📱 WhatsApp: <a href="https://wa.me/5588988229312" target="_blank" class="chatbot-link">Clique aqui</a><br>Instagram: <a href="https://www.instagram.com/acaisabordaterra_" target="_blank" class="chatbot-link">@acaisabordaterra_</a>');
+                } else if (/horario|funcionamento|abre|fecha|hora|dias|domingo|feriado/.test(msg)) {
+                    addMessage('⏰ Nosso horário de funcionamento é das <b>16h às 23h</b>, todos os dias!');
                 } else if (/pix|chave pix|pagar pix/.test(msg)) {
-                    addMessage('💰 Nossa chave PIX é: <b>acaisabordaterra@gmail.com</b>');
+                    addMessage('💰 Nossa chave PIX é: <b>88981905006</b><br>Nome: João Pedro Carvalho Torres');
+                } else if (/alergia|alergico|restricao|gluten|lactose|vegano|ingrediente/.test(msg)) {
+                    addMessage('⚠️ Se você tem alguma restrição alimentar, por favor, informe no pedido! Consulte ingredientes com o atendente para sua segurança.');
+                } else if (/evento|festa|carrinho|personalizado|aniversario|casamento/.test(msg)) {
+                    addMessage('🎉 Temos carrinho de açaí para eventos! Fale com nosso time para orçamentos e disponibilidade.');
+                } else if (/app|aplicativo|baixar app|play store/.test(msg)) {
+                    addMessage('📱 Baixe nosso app para uma experiência ainda melhor! <a href="https://play.google.com/store/apps/details?id=v002.app.deeliv.acaisabordaterra" target="_blank" class="chatbot-link">Clique aqui para baixar na Play Store</a>');
+                } else if (/pedido|quero pedir|fazer pedido|como pedir/.test(msg)) {
+                    addMessage('🛒 Para fazer seu pedido, acesse nosso cardápio digital:<br><a href="https://acaisabordaterra.deeliv.app" target="_blank" class="chatbot-link">Clique aqui para pedir!</a>');
                 } else if (/promo|desconto|cupom/.test(msg)) {
                     addMessage('🎁 Consulte nossas promoções e cupons no Instagram ou pergunte ao atendente!');
                 } else {
-                    addMessage('🤖 Sou uma assistente virtual! Posso te ajudar com dúvidas sobre horário, PIX, promoções e mais.');
+                    addMessage('🤖 Sou uma assistente virtual! Posso te ajudar com dúvidas sobre endereço, horário, cardápio, promoções, fidelidade, delivery, formas de pagamento e mais!');
                 }
             }
 
