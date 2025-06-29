@@ -1157,7 +1157,7 @@
                 trackEvent('engagement', 'time_on_page', `${timeSpent}s`);
             });
 
-            // Lógica do Chatbot
+            // Chatbot
             const chatbotBtn = document.getElementById('chatbot-btn');
             const chatbotModal = document.getElementById('chatbot-modal');
             const closeChatbot = document.getElementById('close-chatbot');
@@ -1224,12 +1224,19 @@
                 }
             }
 
-            chatbotBtn.onclick = () => {
+            function openChatbot() {
                 chatbotModal.classList.remove('hidden');
                 if (chatbotMessages.childElementCount === 0) {
                     addMessage('Olá! Eu sou a assistente virtual do Açaí Sabor da Terra. 🍇<br>Veja nosso <a href=\"#menu-container\">cardápio digital</a> ou pergunte sobre valores, complementos, fidelidade, horário, PIX e mais!');
                 }
-            };
+            }
+
+            chatbotBtn.addEventListener('click', openChatbot);
+            chatbotBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                openChatbot();
+            });
+
             closeChatbot.onclick = () => chatbotModal.classList.add('hidden');
             chatbotForm.onsubmit = e => {
                 e.preventDefault();
