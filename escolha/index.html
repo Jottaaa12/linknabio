@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão - Açaí Sabor da Terra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥤</text></svg>">
+</head>
+<body>
+    <div class="app-container">
+        <header class="main-header">
+            <div class="logo-container">
+                <div class="logo-icon">🥤</div>
+                <div class="logo-text">
+                    <h1>Açaí Sabor da Terra</h1>
+                    <p>Sistema de Gestão</p>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="welcome-section">
+                <h2>Bem-vindo ao Sistema</h2>
+                <p>Escolha a opção desejada para continuar</p>
+            </div>
+
+            <div class="options-container">
+                <a href="../fiados/" class="option-card fiado-card">
+                    <div class="card-icon">📝</div>
+                    <div class="card-content">
+                        <h3>Registrar Fiado</h3>
+                        <p>Gerenciar vendas a fiado e controle de pagamentos</p>
+                        <div class="card-features">
+                            <span class="feature">• Adicionar novos fiados</span>
+                            <span class="feature">• Registrar pagamentos</span>
+                            <span class="feature">• Consultar histórico</span>
+                        </div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+
+                <a href="../registrardiario/" class="option-card registro-card">
+                    <div class="card-icon">💰</div>
+                    <div class="card-content">
+                        <h3>Registrar Saldo Diário</h3>
+                        <p>Controle financeiro e registro de vendas diárias</p>
+                        <div class="card-features">
+                            <span class="feature">• Registrar entradas</span>
+                            <span class="feature">• Controlar saídas</span>
+                            <span class="feature">• Acompanhar saldo</span>
+                        </div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
+            </div>
+
+            <div class="quick-stats">
+                <div class="stats-card">
+                    <div class="stats-icon">📅</div>
+                    <div class="stats-info">
+                        <span class="stats-label">Hoje</span>
+                        <span class="stats-value" id="dataAtual">--</span>
+                    </div>
+                </div>
+                <div class="stats-card">
+                    <div class="stats-icon">⏰</div>
+                    <div class="stats-info">
+                        <span class="stats-label">Horário</span>
+                        <span class="stats-value" id="horarioAtual">--</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="main-footer">
+            <p>&copy; 2024 Açaí Sabor da Terra. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Atualizar data e horário em tempo real
+        function atualizarDataHora() {
+            const agora = new Date();
+            
+            // Formatar data
+            const dataFormatada = agora.toLocaleDateString('pt-BR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            // Formatar horário
+            const horarioFormatado = agora.toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            document.getElementById('dataAtual').textContent = dataFormatada;
+            document.getElementById('horarioAtual').textContent = horarioFormatado;
+        }
+
+        // Atualizar a cada segundo
+        atualizarDataHora();
+        setInterval(atualizarDataHora, 1000);
+
+        // Adicionar efeito de hover nos cards
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Adicionar efeito de clique
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Criar efeito de ripple
+                const ripple = document.createElement('div');
+                ripple.classList.add('ripple');
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+    </script>
+</body>
+</html> 
