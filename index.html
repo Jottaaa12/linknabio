@@ -822,26 +822,13 @@
                 const modal = document.getElementById(modalId);
                 const button = document.getElementById(buttonId);
                 if (!modal || !button) return;
-                
                 const closeButtons = modal.querySelectorAll(`[data-close-modal="${modalId}"]`);
-                
-                const openModal = () => { 
-                    modal.classList.remove('hidden'); 
-                    trackEvent('modal', 'open', modalId);
-                };
-                
-                const closeModal = () => { 
-                    modal.classList.add('hidden'); 
-                    trackEvent('modal', 'close', modalId);
-                };
-                
+                const openModal = () => { modal.classList.remove('hidden'); trackEvent('modal', 'open', modalId); };
+                const closeModal = () => { modal.classList.add('hidden'); trackEvent('modal', 'close', modalId); };
                 button.addEventListener('click', openModal);
                 closeButtons.forEach(btn => btn.addEventListener('click', closeModal));
-                modal.addEventListener('click', (e) => { 
-                    if (e.target === modal) closeModal(); 
-                });
+                modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
             };
-
             setupModal('qr-code-button', 'qr-modal');
             setupModal('wifi-button', 'wifi-modal');
 
@@ -857,13 +844,11 @@
                 const passwordSpan = document.getElementById('wifi-password');
                 const copyTextSpan = document.getElementById('copy-text');
                 const wifiPassword = 'cliente25';
-                
                 copyPasswordBtn.addEventListener('click', () => {
                     navigator.clipboard.writeText(wifiPassword).then(() => {
                         passwordSpan.textContent = wifiPassword;
                         copyTextSpan.textContent = 'Copiado!';
                         trackEvent('wifi', 'copy_password', 'success');
-                        
                         setTimeout(() => {
                             passwordSpan.textContent = '••••••••';
                             copyTextSpan.textContent = 'Copiar';
@@ -901,7 +886,6 @@
                         const url = window.location.href;
                         const text = 'Confira os links do Açaí Sabor da Terra!';
                         const shareText = `${text}\n\n${url}`;
-                        
                         if (navigator.clipboard) {
                             navigator.clipboard.writeText(shareText).then(() => {
                                 alert('Link copiado para a área de transferência!');
@@ -915,187 +899,7 @@
                 });
             }
 
-            // Mascote interativo
-            const mascot = document.getElementById('mascot');
-            if (mascot) {
-                let clickCount = 0;
-                const messages = [
-                    'Oi! Tudo bem?',
-                    'Precisa de ajuda?',
-                    'Que tal um açaí?',
-                    'Obrigado pela visita!',
-                    'Volte sempre!'
-                ];
-
-                mascot.addEventListener('click', () => {
-                    clickCount++;
-                    const message = messages[clickCount % messages.length];
-                    const messageEl = mascot.querySelector('.mascot-message');
-                    messageEl.textContent = message;
-                    
-                    // Animação de clique
-                    mascot.style.transform = 'scale(0.9)';
-                    setTimeout(() => {
-                        mascot.style.transform = 'scale(1)';
-                    }, 100);
-                    
-                    trackEvent('mascot', 'click', `click_${clickCount}`);
-                });
-            }
-
-            // Atualizar botão do app
-            function showAppButton() {
-                const appSection = document.getElementById('app-section');
-                const appButton = document.getElementById('app-download-btn');
-                setTimeout(() => {
-                    appSection.style.display = 'block';
-                    appButton.href = 'https://play.google.com/store/apps/details?id=v002.app.deeliv.acaisabordaterra';
-                    appButton.target = '_blank';
-                    appButton.innerHTML = '<i class="fa-solid fa-mobile-alt w-6 mr-3 text-[var(--accent-green)]"></i><span>Baixar nosso App</span>';
-                }, 5000);
-            }
-
-            // --- BANCO DE DADOS LOCAL DO CARDÁPIO ---
-            const menuData = [
-                { id: 'acai-200', title: 'Copo de Açaí', description: '200g', price: 'R$ 10,00' },
-                { id: 'acai-240', title: 'Copo de Açaí', description: '240g', price: 'R$ 12,00' },
-                { id: 'acai-300', title: 'Copo de Açaí', description: '300g', price: 'R$ 15,00' },
-                { id: 'acai-360', title: 'Copo de Açaí', description: '360g', price: 'R$ 18,00' },
-                { id: 'acai-400', title: 'Copo de Açaí', description: '400g', price: 'R$ 20,00' },
-                { id: 'acai-440', title: 'Copo de Açaí', description: '440g', price: 'R$ 22,00' },
-                { id: 'acai-500', title: 'Copo de Açaí', description: '500g', price: 'R$ 25,00' },
-                { id: 'acai-600', title: 'Copo de Açaí', description: '600g', price: 'R$ 30,00' },
-                { id: 'acai-700', title: 'Copo de Açaí', description: '700g', price: 'R$ 35,00' },
-                { id: 'acai-760', title: 'Copo de Açaí', description: '760g', price: 'R$ 38,00' },
-                { id: 'acai-800', title: 'Copo de Açaí', description: '800g', price: 'R$ 40,00' },
-                { id: 'acai-900', title: 'Copo de Açaí', description: '900g', price: 'R$ 45,00' },
-                { id: 'acai-1000', title: 'Copo de Açaí', description: '1kg', price: 'R$ 49,99' }
-            ];
-
-            const coberturas = [
-                'Sem cobertura',
-                'Cobertura de Morango',
-                'Cobertura de Maracujá',
-                'Cobertura de Chocolate',
-                'Cobertura de Caramelo'
-            ];
-            const acompanhamentos = [
-                'Leite em Pó', 'Castanha Caramelizada', 'Granola', 'Castanha', 'Gotas de Chocolate', 'Kit Kat', 'Paçoquita', 'Amendoim', 'Chocoball', 'Canudinho Biju Wafer', 'Cereja', 'Sucrilhos', 'Mel', 'M&M', 'Ovomaltine', 'Cookies Branco', 'Cookies Preto', 'Disqueti Mini', 'Jujuba', 'Farinha de tapioca'
-            ];
-            const frutas = [
-                'Morango', 'Banana', 'Kiwi', 'Uva', 'Manga', 'Abacaxi'
-            ];
-            const cremes = [
-                'Creme de Ninho', 'Creme de Cupuaçu', 'Creme de Morango', 'Creme de Maracujá', 'Leite Condensado'
-            ];
-
-            // --- RENDERIZAÇÃO DO CARDÁPIO ---
-            function renderMenu() {
-                const container = document.getElementById('menu-container');
-                if (!container) return;
-
-                let html = `<div class='menu-tamanhos'><h4>🍨 Tamanhos e Valores</h4><div class='menu-tamanhos-lista'>`;
-                menuData.forEach(item => {
-                    html += `<div class='menu-item'><div class='menu-item-content'><div class='menu-item-info'><div class='menu-item-title'>${item.title}</div><div class='menu-item-description'>${item.description}</div><div class='menu-item-price'>${item.price}</div></div></div></div>`;
-                });
-                html += `</div></div>`;
-
-                html += `<div class='menu-complementos'><h4>🍭 Complementos Gratuitos</h4><div class='menu-complementos-grupo'><strong>Coberturas:</strong> <span>${coberturas.join(', ')}</span></div>`;
-                html += `<div class='menu-complementos-grupo'><strong>Acompanhamentos:</strong> <span>${acompanhamentos.join(', ')}</span></div>`;
-                html += `<div class='menu-complementos-grupo'><strong>Frutas:</strong> <span>${frutas.join(', ')}</span></div>`;
-                html += `<div class='menu-complementos-grupo'><strong>Cremes:</strong> <span>${cremes.join(', ')}</span></div></div>`;
-
-                html += `<div class='menu-info'><p>🤑 Todos os nossos complementos são gratuitos.<br>🤑 <strong>O valor do açaí é definido pelo tamanho do copo!</strong></p></div>`;
-
-                container.innerHTML = html;
-            }
-
-            // Inicializar cardápio local
-            document.addEventListener('DOMContentLoaded', function() {
-                renderMenu();
-                // Corrige clique do chatbot no mobile
-                const chatbotBtn = document.getElementById('chatbot-btn');
-                const chatbotModal = document.getElementById('chatbot-modal');
-                chatbotBtn.addEventListener('touchstart', function(e) {
-                    e.preventDefault();
-                    chatbotModal.classList.remove('hidden');
-                    if (chatbotMessages.childElementCount === 0) {
-                        addMessage('Olá! Eu sou a assistente virtual do Açaí Sabor da Terra. 🍇<br>Veja nosso <a href=\"#menu-container\">cardápio digital</a> ou pergunte sobre valores, complementos, fidelidade, horário, PIX e mais!');
-                    }
-                });
-            });
-
-            // Pedido Rápido
-            function setupQuickOrder() {
-                const form = document.getElementById('quick-order-form');
-                if (form) {
-                    form.addEventListener('submit', handleQuickOrder);
-                }
-            }
-
-            function handleQuickOrder(e) {
-                e.preventDefault();
-                
-                if (!selectedProduct) {
-                    alert('Por favor, selecione um produto primeiro.');
-                    return;
-                }
-
-                const customerName = document.getElementById('customer-name').value;
-                const pickupTime = document.getElementById('pickup-time').value;
-                const specialNotes = document.getElementById('special-notes').value;
-
-                const message = formatOrderMessage(customerName, selectedProduct, pickupTime, specialNotes);
-                
-                // Abre WhatsApp com mensagem formatada
-                const whatsappUrl = `https://wa.me/5588988229312?text=${encodeURIComponent(message)}`;
-                window.open(whatsappUrl, '_blank');
-                
-                // Fecha modal
-                document.getElementById('quick-order-modal').classList.add('hidden');
-                
-                // Limpa formulário
-                form.reset();
-                selectedProduct = null;
-                
-                trackEvent('order', 'quick_order', selectedProduct.title);
-            }
-
-            function formatOrderMessage(name, product, pickupTime, notes) {
-                let message = `🍇 *PEDIDO RÁPIDO - Açaí Sabor da Terra*\n\n`;
-                message += `👤 *Nome:* ${name}\n`;
-                message += `🍽️ *Produto:* ${product.title}\n`;
-                message += `💰 *Preço:* ${product.price}\n`;
-                message += `⏰ *Retirada:* ${pickupTime}\n`;
-                
-                if (notes.trim()) {
-                    message += `📝 *Observações:* ${notes}\n`;
-                }
-                
-                message += `\n📱 *Pedido feito via Link na Bio*\n`;
-                message += `🔗 ${window.location.href}`;
-                
-                return message;
-            }
-
-            // Setup do modal de pedido rápido
-            setupModal('quick-order-modal', 'quick-order-modal');
-
-            // Inicializar
-            document.getElementById('current-year').textContent = new Date().getFullYear();
-            showAppButton();
-            showMenuLoading(); // Mostra loading antes de carregar
-            loadMenu(); // Carrega o cardápio
-            setupQuickOrder();
-
-            // Tracking de tempo na página
-            let startTime = Date.now();
-            window.addEventListener('beforeunload', () => {
-                const timeSpent = Math.round((Date.now() - startTime) / 1000);
-                trackEvent('engagement', 'time_on_page', `${timeSpent}s`);
-            });
-
-            // Chatbot ÚNICO
+            // --- Chatbot ÚNICO ---
             const chatbotBtn = document.getElementById('chatbot-btn');
             const chatbotModal = document.getElementById('chatbot-modal');
             const closeChatbot = document.getElementById('close-chatbot');
@@ -1112,60 +916,22 @@
             }
 
             function botReply(userMsg) {
-                const msg = userMsg.toLowerCase().normalize('NFD').replace(/[^\w\s]/gi, '');
-                // Temas e respostas
-                if (/valor|preco|copo|quanto custa|tabela|preços|tamanhos?/.test(msg)) {
-                    addMessage(`<b>🍨 Tamanhos e valores:</b><br>${menuData.map(i => `${i.description} - <b>${i.price}</b>`).join('<br>')}<br>🤑 O valor do açaí é definido pelo tamanho do copo!`);
-                } else if (/complemento|acompanhamento|cobertura|fruta|creme|tem cereja|tem kit kat|tem granola/.test(msg)) {
-                    addMessage(`<b>🍭 Complementos gratuitos:</b><br><b>Coberturas:</b> ${coberturas.join(', ')}<br><b>Acompanhamentos:</b> ${acompanhamentos.join(', ')}<br><b>Frutas:</b> ${frutas.join(', ')}<br><b>Cremes:</b> ${cremes.join(', ')}`);
-                } else if (/fidelidade|selo|cartao fidelidade|promo/.test(msg)) {
-                    addMessage(`6️⃣ <b>CARTÃO FIDELIDADE – AÇAÍ SABOR DA TERRA</b><br>✨ Com nosso Cartão Fidelidade, cada compra vale muito mais!<br>A cada pedido a partir de R$10,00, você ganha 1️⃣ SELO<br>Com 9️⃣ selos, você troca por 1 AÇAÍ GRÁTIS!<br>Na 1ª compra válida, você já recebe seu cartão com 1 selo!<br>Importante: Só pode ganhar 1 selo por dia, mesmo comprando vários!<br><a href='https://drive.google.com/file/d/1JJwFD3OviK9Pa_jyGe97dqnYWPWK-vr-/view?usp=drivesdk' target='_blank'>Termos completos do Cartão Fidelidade</a>`);
-                } else if (/horario|funcionamento|abre|fecha|hora|dias|domingo|feriado/.test(msg)) {
+                const msg = userMsg.toLowerCase().normalize('NFD').replace(/[^a-z0-9\s]/gi, '');
+                if (/horario|funcionamento|abre|fecha|hora|dias|domingo|feriado/.test(msg)) {
                     addMessage('⏰ Nosso horário de funcionamento é das 14h às 22h, todos os dias!');
                 } else if (/pix|chave pix|pagar pix/.test(msg)) {
                     addMessage('💰 Nossa chave PIX é: <b>acaisabordaterra@gmail.com</b>');
-                } else if (/cartao|credito|debito|dinheiro|vale|pagamento|aceita/.test(msg)) {
-                    addMessage('💳 Aceitamos PIX, dinheiro e cartões de crédito/débito.');
-                } else if (/entrega|delivery|entregam|taxa|bairro|regiao|onde entregam|tempo entrega/.test(msg)) {
-                    addMessage('🚚 Fazemos entregas em toda a região! Consulte a taxa e o tempo estimado no momento do pedido.');
-                } else if (/retirada|buscar|pegar na loja|pickup/.test(msg)) {
-                    addMessage('🏪 Você pode retirar seu pedido na loja! Informe no pedido se prefere retirada.');
-                } else if (/desconto|cupom|promo/.test(msg)) {
+                } else if (/promo|desconto|cupom/.test(msg)) {
                     addMessage('🎁 Consulte nossas promoções e cupons no Instagram ou pergunte ao atendente!');
-                } else if (/localizacao|endereco|mapa|como chegar|estacionamento|acessibilidade/.test(msg)) {
-                    addMessage('📍 Estamos na Rua Maria de Lourdes Abibe Aranha, 42, Jardim Julita, Porto Feliz - SP. Veja no Google Maps: <a href="https://maps.app.goo.gl/bzaGzygRZ4emagVk8" target="_blank">Clique aqui</a>');
-                } else if (/alergia|alergico|restricao|gluten|lactose|vegano|ingrediente/.test(msg)) {
-                    addMessage('⚠️ Se você tem alguma restrição alimentar, por favor, informe no pedido! Consulte ingredientes com o atendente para sua segurança.');
-                } else if (/evento|festa|carrinho|personalizado|aniversario|casamento/.test(msg)) {
-                    addMessage('🎉 Temos carrinho de açaí para eventos! Fale com nosso time para orçamentos e disponibilidade.');
-                } else if (/contato|telefone|whatsapp|instagram|rede social/.test(msg)) {
-                    addMessage('📱 Nosso WhatsApp: <a href="https://wa.me/5588988229312" target="_blank">Clique aqui</a><br>Instagram: <a href="https://www.instagram.com/acaisabordaterra/" target="_blank">@acaisabordaterra</a>');
-                } else if (/pontos|cashback|programa de pontos/.test(msg)) {
-                    addMessage('💜 Nosso programa de pontos está ativo! Consulte saldo e regras no app ou com o atendente.');
-                } else if (/atendente|humano|falar com atendente|pessoa/.test(msg)) {
-                    addMessage('👩‍💼 Vou chamar um atendente para te ajudar! Aguarde um instante...');
-                } else if (/app|aplicativo|baixar app|play store/.test(msg)) {
-                    addMessage('📱 Baixe nosso app para uma experiência ainda melhor! <a href="https://play.google.com/store/apps/details?id=v002.app.deeliv.acaisabordaterra" target="_blank">Clique aqui para baixar na Play Store</a>');
-                } else if (/pedido|quero pedir|fazer pedido|como pedir/.test(msg)) {
-                    addMessage('🛒 Para fazer seu pedido, acesse nosso <a href="#menu-container">cardápio digital</a> ou clique em "Peça por aqui"!');
                 } else {
-                    addMessage('🤖 Sou uma assistente virtual! Posso te ajudar com dúvidas sobre cardápio, promoções, fidelidade, entrega, pagamento, eventos e mais. Veja exemplos abaixo ou clique em uma sugestão!<br><br>' +
-                    '<b>Perguntas populares:</b><br>' +
-                    '<ul style="margin:0 0 0 1em;padding:0;list-style:disc;">' +
-                    '<li>Qual o valor do açaí?</li>' +
-                    '<li>Quais os complementos?</li>' +
-                    '<li>Como funciona o cartão fidelidade?</li>' +
-                    '<li>Qual o horário de funcionamento?</li>' +
-                    '<li>Vocês entregam na minha região?</li>' +
-                    '<li>Como faço para pedir?</li>' +
-                    '</ul>');
+                    addMessage('🤖 Sou uma assistente virtual! Posso te ajudar com dúvidas sobre horário, PIX, promoções e mais.');
                 }
             }
 
             function openChatbot() {
                 chatbotModal.classList.remove('hidden');
                 if (chatbotMessages.childElementCount === 0) {
-                    addMessage('Olá! Eu sou a assistente virtual do Açaí Sabor da Terra. 🍇<br>Veja nosso cardápio digital ou pergunte sobre valores, complementos, fidelidade, horário, PIX e mais!');
+                    addMessage('Olá! Eu sou a assistente virtual do Açaí Sabor da Terra. 🍇<br>Pergunte sobre horário, PIX, promoções e mais!');
                 }
             }
 
@@ -1184,6 +950,17 @@
                 setTimeout(() => botReply(userMsg), 500);
                 chatbotInput.value = '';
             };
+
+            // Inicializar
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            // showAppButton(); // Se quiser ativar o botão do app, descomente
+            // Removido: showMenuLoading, loadMenu, setupQuickOrder, menuData, renderMenu, etc
+            // Tracking de tempo na página
+            let startTime = Date.now();
+            window.addEventListener('beforeunload', () => {
+                const timeSpent = Math.round((Date.now() - startTime) / 1000);
+                trackEvent('engagement', 'time_on_page', `${timeSpent}s`);
+            });
         });
     </script>
 </body>
