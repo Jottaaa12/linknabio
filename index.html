@@ -520,6 +520,10 @@
                 bottom: 60px;
                 width: 98vw;
                 max-width: 98vw;
+                max-height: 90vh;
+            }
+            .chatbot-messages {
+                max-height: 40vh;
             }
         }
 
@@ -535,6 +539,7 @@
             bottom: 100px;
             width: 340px;
             max-width: 95vw;
+            max-height: 80vh;
             background: #fff;
             color: #222;
             border-radius: 18px;
@@ -553,6 +558,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
         .close-chatbot {
             background: none;
@@ -560,6 +566,7 @@
             color: #fff;
             font-size: 1.5rem;
             cursor: pointer;
+            flex-shrink: 0;
         }
         .chatbot-messages {
             flex: 1;
@@ -567,11 +574,14 @@
             overflow-y: auto;
             background: #faf7fd;
             font-size: 1rem;
+            min-height: 80px;
+            max-height: 45vh;
         }
         .chatbot-form {
             display: flex;
             border-top: 1px solid #eee;
             background: #faf7fd;
+            flex-shrink: 0;
         }
         .chatbot-form input {
             flex: 1;
@@ -675,6 +685,12 @@
                     class="flex items-center justify-center w-full p-4 rounded-full font-medium btn-secondary hover-lift"
                     onclick="gtag('event', 'click', { 'custom_parameter_1': 'location' })">
                     <i class="fa-solid fa-map-location-dot w-6 mr-3 text-[var(--accent-green)]"></i><span>Encontre nossa Loja</span>
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=v002.app.deeliv.acaisabordaterra" 
+                   class="flex items-center justify-center w-full p-4 rounded-full font-medium btn-secondary hover-lift"
+                   target="_blank">
+                    <i class="fa-solid fa-mobile-alt w-6 mr-3 text-[var(--accent-green)]"></i>
+                    <span>Baixar nosso App</span>
                 </a>
             </div>
         </div>
