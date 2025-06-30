@@ -35,6 +35,13 @@
                 </div>
             </div>
 
+            <div class="detalhamento-toggle-container">
+                <button id="btnToggleDetalhamento" class="btn btn-secondary">Ver Detalhamento</button>
+            </div>
+            <div id="detalhamentoContainer" class="detalhamento-container" style="display: none;">
+                <!-- Cards detalhados serão renderizados aqui pelo JS -->
+            </div>
+
             <div class="filters-container card">
                 <h4>Filtros</h4>
                 <div class="filter-item">
@@ -250,6 +257,14 @@
                         <option value="Manoela">Manoela</option>
                         <option value="Nayara">Nayara</option>
                         <option value="João Pedro (gerente)">João Pedro (gerente)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="saidaTipo">Tipo de Saída</label>
+                    <select id="saidaTipo" required>
+                        <option value="dinheiro">Dinheiro</option>
+                        <option value="pix">Pix</option>
                     </select>
                 </div>
 
