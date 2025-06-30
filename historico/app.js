@@ -106,6 +106,26 @@ class PainelControleApp {
         this.uiManager.findRecordById = (id) => {
             return this.todosOsRegistros.find(registro => registro.id === id);
         };
+
+        // Callback para entrada individual
+        this.uiManager.onCreateEntradaIndividual = async (formData) => {
+            try {
+                await this.firestoreService.createIndividualEntry(formData);
+                this.uiManager.showToast('Entrada individual registrada com sucesso!', 'success');
+            } catch (error) {
+                throw error;
+            }
+        };
+
+        // Callback para saída individual
+        this.uiManager.onCreateSaidaIndividual = async (formData) => {
+            try {
+                await this.firestoreService.createIndividualExit(formData);
+                this.uiManager.showToast('Saída individual registrada com sucesso!', 'success');
+            } catch (error) {
+                throw error;
+            }
+        };
     }
 
     setupRealtimeListener() {
