@@ -7,6 +7,7 @@ export class UIManager {
         this.currentRecordId = null;
         this.isCreating = false;
         this.setupEventListeners();
+        this.setupDetalhamentoToggle();
     }
 
     setupEventListeners() {
@@ -80,6 +81,20 @@ export class UIManager {
         document.getElementById('formSaidaIndividual').addEventListener('submit', (event) => this.handleSaidaIndividualSubmit(event));
     }
 
+    setupDetalhamentoToggle() {
+        const btn = document.getElementById('btnToggleDetalhamento');
+        const container = document.getElementById('detalhamentoContainer');
+        let aberto = false;
+        btn.addEventListener('click', () => {
+            aberto = !aberto;
+            container.style.display = aberto ? 'grid' : 'none';
+            btn.textContent = aberto ? 'Ocultar Detalhamento' : 'Ver Detalhamento';
+            if (aberto) {
+                this.renderDetalhamento(this.ultimoDetalhamentoRegistros || []);
+            }
+        });
+    }
+
     // Sistema de Toasts
     showToast(message, type = 'success') {
         const toastContainer = document.getElementById('toastContainer');
@@ -141,6 +156,11 @@ export class UIManager {
         document.getElementById('totalSaidas').textContent = this.formatCurrency(totalSaidas);
         document.getElementById('saldoLiquido').textContent = this.formatCurrency(saldoLiquido);
         document.getElementById('mediaDiaria').textContent = this.formatCurrency(mediaDiaria);
+
+        // Atualiza detalhamento se estiver aberto
+        if (this.ultimoDetalhamentoRegistros !== undefined) {
+            this.renderDetalhamento(registros);
+        }
     }
 
     // Renderização da Lista de Registros
@@ -676,6 +696,7 @@ export class UIManager {
         const formData = {
             data: document.getElementById('saidaData').value,
             funcionario: document.getElementById('saidaFuncionario').value,
+            tipo: document.getElementById('saidaTipo').value,
             valor: parseFloat(document.getElementById('saidaValor').value) || 0,
             observacao: document.getElementById('saidaObservacao').value
         };
@@ -695,5 +716,80 @@ export class UIManager {
         } finally {
             this.setButtonLoading('btnSalvarSaida', false);
         }
+    }
+
+    // Chame esta função sempre que atualizar os cards principais
+    renderDetalhamento(registros) {
+        this.ultimoDetalhamentoRegistros = registros;
+        const container = document.getElementById('detalhamentoContainer');
+        if (!container) return;
+
+        // Cálculo dos totais
+        let totalDinheiroEntrada = 0;
+        let totalPixEntrada = 0;
+        let totalCartaoEntrada = 0;
+        let totalDinheiroSaida = 0;
+        let totalPixSaida = 0;
+        let totalEntradas = 0;
+        let totalSaidas = 0;
+
+        registros.forEach(registro => {
+            totalDinheiroEntrada += parseFloat(registro.dinheiroEntrada) || 0;
+            totalPixEntrada += parseFloat(registro.pixEntrada) || 0;
+            totalCartaoEntrada += parseFloat(registro.cartaoEntrada) || 0;
+            totalEntradas += (parseFloat(registro.dinheiroEntrada) || 0) + (parseFloat(registro.pixEntrada) || 0) + (parseFloat(registro.cartaoEntrada) || 0);
+            totalSaidas += parseFloat(registro.totalSaidas) || 0;
+            // Saídas detalhadas só para registros individuais
+            if (registro.tipoLancamento === 'individual' && registro.tipoSaida) {
+                if (registro.tipoSaida === 'dinheiro') {
+                    totalDinheiroSaida += parseFloat(registro.totalSaidas) || 0;
+                } else if (registro.tipoSaida === 'pix') {
+                    totalPixSaida += parseFloat(registro.totalSaidas) || 0;
+                }
+            }
+        });
+
+        // Percentuais
+        const percent = (v, t) => t > 0 ? ((v / t) * 100).toFixed(1) + '%' : '-';
+
+        container.innerHTML = `
+            <div class="detalhe-card">
+                <h5>Entradas em Dinheiro</h5>
+                <p>${this.formatCurrency(totalDinheiroEntrada)}</p>
+                <div class="detalhe-percentual">${percent(totalDinheiroEntrada, totalEntradas)} das entradas</div>
+            </div>
+            <div class="detalhe-card">
+                <h5>Entradas em Pix</h5>
+                <p>${this.formatCurrency(totalPixEntrada)}</p>
+                <div class="detalhe-percentual">${percent(totalPixEntrada, totalEntradas)} das entradas</div>
+            </div>
+            <div class="detalhe-card">
+                <h5>Entradas em Cartão</h5>
+                <p>${this.formatCurrency(totalCartaoEntrada)}</p>
+                <div class="detalhe-percentual">${percent(totalCartaoEntrada, totalEntradas)} das entradas</div>
+            </div>
+            <div class="detalhe-card">
+                <h5>Saídas em Dinheiro</h5>
+                <p>${this.formatCurrency(totalDinheiroSaida)}</p>
+                <div class="detalhe-percentual">${percent(totalDinheiroSaida, totalSaidas)} das saídas</div>
+            </div>
+            <div class="detalhe-card">
+                <h5>Saídas em Pix</h5>
+                <p>${this.formatCurrency(totalPixSaida)}</p>
+                <div class="detalhe-percentual">${percent(totalPixSaida, totalSaidas)} das saídas</div>
+            </div>
+            <div class="detalhe-card">
+                <h5>Total de Entradas</h5>
+                <p>${this.formatCurrency(totalEntradas)}</p>
+            </div>
+            <div class="detalhe-card">
+                <h5>Total de Saídas</h5>
+                <p>${this.formatCurrency(totalSaidas)}</p>
+            </div>
+            <div class="detalhe-card">
+                <h5>Saldo Líquido</h5>
+                <p>${this.formatCurrency(totalEntradas - totalSaidas)}</p>
+            </div>
+        `;
     }
 }
