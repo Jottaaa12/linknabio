@@ -165,6 +165,9 @@ export class UIManager {
             const saidas = parseFloat(registro.totalSaidas) || 0;
             const saldo = entradas - saidas;
 
+            const cardEl = document.createElement('div');
+            cardEl.className = 'registro-card';
+
             cardEl.innerHTML = `
                 <div class="card-header">
                     <h4>${dataFormatada}</h4>
