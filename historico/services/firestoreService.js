@@ -178,7 +178,8 @@ export class FirestoreService {
             const [year, month, day] = dataString.split('-');
             const dataUTC = new Date(Date.UTC(year, month - 1, day));
 
-            const recordData = {
+            // Prepara os dados baseados no tipo de saída
+            let recordData = {
                 data: dataString,
                 timestamp: Timestamp.fromDate(dataUTC),
                 funcionario: data.funcionario,
@@ -187,8 +188,21 @@ export class FirestoreService {
                 cartaoEntrada: 0,
                 totalSaidas: parseFloat(data.valor) || 0,
                 observacao: data.observacao || '',
-                tipoLancamento: 'individual'
+                tipoLancamento: 'individual',
+                tipoSaida: data.tipo
             };
+
+            // Define o valor no campo correto baseado no tipo
+            switch (data.tipo) {
+                case 'dinheiro':
+                    recordData.dinheiroEntrada = parseFloat(data.valor) || 0;
+                    break;
+                case 'pix':
+                    recordData.pixEntrada = parseFloat(data.valor) || 0;
+                    break;
+                default:
+                    throw new Error('Tipo de saída inválido');
+            }
 
             const docRef = await addDoc(collection(this.db, this.collectionName), recordData);
             return { success: true, id: docRef.id };
