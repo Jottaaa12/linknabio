@@ -21,6 +21,13 @@ export class UIManager {
         // Botão exportar CSV
         document.getElementById('btnExportarCsv').addEventListener('click', () => this.exportToCSV());
         
+        // Botão limpar filtros
+        document.getElementById('btnLimparFiltros').addEventListener('click', () => this.limparFiltros());
+        
+        // Botões de lançamento individual
+        document.getElementById('btnLancarEntrada').addEventListener('click', () => this.openEntradaIndividualModal());
+        document.getElementById('btnLancarSaida').addEventListener('click', () => this.openSaidaIndividualModal());
+        
         // Delegação de eventos para os botões na lista
         document.getElementById('listaRegistros').addEventListener('click', (event) => {
             if (event.target.classList.contains('btn-editar')) {
@@ -51,6 +58,26 @@ export class UIManager {
             }
         });
         document.getElementById('btnConfirmarExclusao').addEventListener('click', () => this.handleDeleteConfirm());
+
+        // Listeners do Modal de Entrada Individual
+        document.getElementById('closeEntradaModalBtn').addEventListener('click', () => this.closeEntradaIndividualModal());
+        document.getElementById('btnCancelarEntrada').addEventListener('click', () => this.closeEntradaIndividualModal());
+        document.getElementById('entradaIndividualModal').addEventListener('click', (event) => {
+            if (event.target.id === 'entradaIndividualModal') {
+                this.closeEntradaIndividualModal();
+            }
+        });
+        document.getElementById('formEntradaIndividual').addEventListener('submit', (event) => this.handleEntradaIndividualSubmit(event));
+
+        // Listeners do Modal de Saída Individual
+        document.getElementById('closeSaidaModalBtn').addEventListener('click', () => this.closeSaidaIndividualModal());
+        document.getElementById('btnCancelarSaida').addEventListener('click', () => this.closeSaidaIndividualModal());
+        document.getElementById('saidaIndividualModal').addEventListener('click', (event) => {
+            if (event.target.id === 'saidaIndividualModal') {
+                this.closeSaidaIndividualModal();
+            }
+        });
+        document.getElementById('formSaidaIndividual').addEventListener('submit', (event) => this.handleSaidaIndividualSubmit(event));
     }
 
     // Sistema de Toasts
@@ -132,9 +159,6 @@ export class UIManager {
                 new Date(registro.data + "T00:00:00");
             const dataFormatada = dataObj.toLocaleDateString('pt-BR', {timeZone: 'UTC'});
             
-            const cardEl = document.createElement('div');
-            cardEl.className = 'registro-card';
-            
             const entradas = (parseFloat(registro.dinheiroEntrada) || 0) + 
                            (parseFloat(registro.pixEntrada) || 0) + 
                            (parseFloat(registro.cartaoEntrada) || 0);
@@ -145,6 +169,7 @@ export class UIManager {
                 <div class="card-header">
                     <h4>${dataFormatada}</h4>
                     <p class="funcionario">${registro.funcionario}</p>
+                    ${registro.tipoLancamento === 'individual' ? '<span class="badge-individual">Individual</span>' : ''}
                 </div>
                 <div class="card-body">
                     <div class="info-row">
@@ -155,6 +180,12 @@ export class UIManager {
                         <span>Saídas</span>
                         <span class="valor-negativo">${this.formatCurrency(saidas)}</span>
                     </div>
+                    ${registro.observacao ? `
+                    <div class="info-row observacao">
+                        <span>Observação</span>
+                        <span class="observacao-texto">${registro.observacao}</span>
+                    </div>
+                    ` : ''}
                 </div>
                 <div class="card-footer">
                     <div class="card-footer-total">
@@ -347,6 +378,9 @@ export class UIManager {
         const hoje = new Date().toISOString().split('T')[0];
         document.getElementById('editData').value = hoje;
         
+        // Limpa o campo de observação
+        document.getElementById('editObservacao').value = '';
+        
         document.getElementById('editModal').style.display = 'flex';
     }
 
@@ -371,6 +405,7 @@ export class UIManager {
         document.getElementById('editPixEntrada').value = registro.pixEntrada || 0;
         document.getElementById('editCartaoEntrada').value = registro.cartaoEntrada || 0;
         document.getElementById('editTotalSaidas').value = registro.totalSaidas || 0;
+        document.getElementById('editObservacao').value = registro.observacao || '';
 
         document.getElementById('editModal').style.display = 'flex';
     }
@@ -424,7 +459,8 @@ export class UIManager {
             dinheiroEntrada: document.getElementById('editDinheiroEntrada').value,
             pixEntrada: document.getElementById('editPixEntrada').value,
             cartaoEntrada: document.getElementById('editCartaoEntrada').value,
-            totalSaidas: document.getElementById('editTotalSaidas').value
+            totalSaidas: document.getElementById('editTotalSaidas').value,
+            observacao: document.getElementById('editObservacao').value
         };
 
         this.setButtonLoading('btnSalvar', true);
@@ -462,6 +498,8 @@ export class UIManager {
     onUpdateRecord = null;
     onDeleteRecord = null;
     onFiltersChanged = null;
+    onCreateEntradaIndividual = null;
+    onCreateSaidaIndividual = null;
 
     // Funções auxiliares
     findRecordById(id) {
@@ -552,6 +590,107 @@ export class UIManager {
         }
         if (this.charts.entradasChart) {
             this.charts.entradasChart.destroy();
+        }
+    }
+
+    // Limpar Filtros
+    limparFiltros() {
+        document.getElementById('dataInicio').value = '';
+        document.getElementById('dataFim').value = '';
+        document.getElementById('filtroFuncionario').value = 'Todos';
+        
+        // Dispara evento de mudança de filtros
+        if (this.onFiltersChanged) {
+            this.onFiltersChanged();
+        }
+        
+        this.showToast('Filtros limpos com sucesso!', 'success');
+    }
+
+    // Modal de Entrada Individual
+    openEntradaIndividualModal() {
+        document.getElementById('formEntradaIndividual').reset();
+        
+        // Define data atual como padrão
+        const hoje = new Date().toISOString().split('T')[0];
+        document.getElementById('entradaData').value = hoje;
+        
+        document.getElementById('entradaIndividualModal').style.display = 'flex';
+    }
+
+    closeEntradaIndividualModal() {
+        document.getElementById('entradaIndividualModal').style.display = 'none';
+        document.getElementById('formEntradaIndividual').reset();
+    }
+
+    async handleEntradaIndividualSubmit(event) {
+        event.preventDefault();
+        
+        const formData = {
+            data: document.getElementById('entradaData').value,
+            funcionario: document.getElementById('entradaFuncionario').value,
+            tipo: document.getElementById('entradaTipo').value,
+            valor: parseFloat(document.getElementById('entradaValor').value) || 0,
+            observacao: document.getElementById('entradaObservacao').value
+        };
+
+        if (!formData.data || !formData.funcionario || formData.valor <= 0) {
+            this.showToast('Por favor, preencha todos os campos obrigatórios', 'error');
+            return;
+        }
+
+        this.setButtonLoading('btnSalvarEntrada', true);
+
+        try {
+            await this.onCreateEntradaIndividual(formData);
+            this.closeEntradaIndividualModal();
+        } catch (error) {
+            this.showToast(error.message, 'error');
+        } finally {
+            this.setButtonLoading('btnSalvarEntrada', false);
+        }
+    }
+
+    // Modal de Saída Individual
+    openSaidaIndividualModal() {
+        document.getElementById('formSaidaIndividual').reset();
+        
+        // Define data atual como padrão
+        const hoje = new Date().toISOString().split('T')[0];
+        document.getElementById('saidaData').value = hoje;
+        
+        document.getElementById('saidaIndividualModal').style.display = 'flex';
+    }
+
+    closeSaidaIndividualModal() {
+        document.getElementById('saidaIndividualModal').style.display = 'none';
+        document.getElementById('formSaidaIndividual').reset();
+    }
+
+    async handleSaidaIndividualSubmit(event) {
+        event.preventDefault();
+        
+        const formData = {
+            data: document.getElementById('saidaData').value,
+            funcionario: document.getElementById('saidaFuncionario').value,
+            valor: parseFloat(document.getElementById('saidaValor').value) || 0,
+            observacao: document.getElementById('saidaObservacao').value
+        };
+
+        if (!formData.data || !formData.funcionario || formData.valor <= 0) {
+            this.showToast('Por favor, preencha todos os campos obrigatórios', 'error');
+            return;
+        }
+
+        this.setButtonLoading('btnSalvarSaida', true);
+
+        try {
+            await this.onCreateSaidaIndividual(formData);
+            this.closeSaidaIndividualModal();
+        } catch (error) {
+            this.showToast(error.message, 'error');
+        } finally {
+            this.setButtonLoading('btnSalvarSaida', false);
         }
     }
 }
