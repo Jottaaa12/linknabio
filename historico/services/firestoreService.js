@@ -68,6 +68,8 @@ export class FirestoreService {
                 pixEntrada: parseFloat(data.pixEntrada) || 0,
                 cartaoEntrada: parseFloat(data.cartaoEntrada) || 0,
                 totalSaidas: parseFloat(data.totalSaidas) || 0,
+                observacao: data.observacao || '',
+                tipoLancamento: 'regular'
             };
 
             const docRef = await addDoc(collection(this.db, this.collectionName), recordData);
@@ -93,6 +95,8 @@ export class FirestoreService {
                 pixEntrada: parseFloat(data.pixEntrada) || 0,
                 cartaoEntrada: parseFloat(data.cartaoEntrada) || 0,
                 totalSaidas: parseFloat(data.totalSaidas) || 0,
+                observacao: data.observacao || '',
+                tipoLancamento: 'regular'
             };
 
             const docRef = doc(this.db, this.collectionName, id);
@@ -121,6 +125,76 @@ export class FirestoreService {
         if (this.unsubscribe) {
             this.unsubscribe();
             this.unsubscribe = null;
+        }
+    }
+
+    // Cria uma entrada individual
+    async createIndividualEntry(data) {
+        try {
+            const dataString = data.data;
+            const [year, month, day] = dataString.split('-');
+            const dataUTC = new Date(Date.UTC(year, month - 1, day));
+
+            // Prepara os dados baseados no tipo de entrada
+            let recordData = {
+                data: dataString,
+                timestamp: Timestamp.fromDate(dataUTC),
+                funcionario: data.funcionario,
+                dinheiroEntrada: 0,
+                pixEntrada: 0,
+                cartaoEntrada: 0,
+                totalSaidas: 0,
+                observacao: data.observacao || '',
+                tipoLancamento: 'individual'
+            };
+
+            // Define o valor no campo correto baseado no tipo
+            switch (data.tipo) {
+                case 'dinheiro':
+                    recordData.dinheiroEntrada = parseFloat(data.valor) || 0;
+                    break;
+                case 'pix':
+                    recordData.pixEntrada = parseFloat(data.valor) || 0;
+                    break;
+                case 'cartao':
+                    recordData.cartaoEntrada = parseFloat(data.valor) || 0;
+                    break;
+                default:
+                    throw new Error('Tipo de entrada inválido');
+            }
+
+            const docRef = await addDoc(collection(this.db, this.collectionName), recordData);
+            return { success: true, id: docRef.id };
+        } catch (error) {
+            console.error("Erro ao criar entrada individual:", error);
+            throw new Error("Falha ao criar entrada individual. Tente novamente.");
+        }
+    }
+
+    // Cria uma saída individual
+    async createIndividualExit(data) {
+        try {
+            const dataString = data.data;
+            const [year, month, day] = dataString.split('-');
+            const dataUTC = new Date(Date.UTC(year, month - 1, day));
+
+            const recordData = {
+                data: dataString,
+                timestamp: Timestamp.fromDate(dataUTC),
+                funcionario: data.funcionario,
+                dinheiroEntrada: 0,
+                pixEntrada: 0,
+                cartaoEntrada: 0,
+                totalSaidas: parseFloat(data.valor) || 0,
+                observacao: data.observacao || '',
+                tipoLancamento: 'individual'
+            };
+
+            const docRef = await addDoc(collection(this.db, this.collectionName), recordData);
+            return { success: true, id: docRef.id };
+        } catch (error) {
+            console.error("Erro ao criar saída individual:", error);
+            throw new Error("Falha ao criar saída individual. Tente novamente.");
         }
     }
 } 
