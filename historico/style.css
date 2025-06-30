@@ -619,3 +619,49 @@ input[type="date"], select {
 .btn-danger:hover {
     background-color: #c82333;
 }
+
+.detalhamento-toggle-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.detalhamento-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+    background: var(--white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 4px 12px var(--shadow-color);
+    padding: 1.5rem 1rem;
+    transition: all 0.3s;
+}
+
+.detalhe-card {
+    background: var(--primary-lighter);
+    border-radius: var(--border-radius-md);
+    padding: 1.2rem 1rem;
+    text-align: center;
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.detalhe-card h5 {
+    margin: 0 0 0.5rem 0;
+    color: var(--primary-color);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.detalhe-card p {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.detalhe-card .detalhe-percentual {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.2rem;
+}
