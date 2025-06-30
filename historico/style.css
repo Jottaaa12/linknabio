@@ -82,6 +82,12 @@ header h1 {
     font-weight: 500;
 }
 
+.filter-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
 input[type="date"], select {
     padding: 0.5rem;
     border: 1px solid var(--border-color);
@@ -220,6 +226,16 @@ input[type="date"], select {
     font-weight: 500;
 }
 
+.badge-individual {
+    background-color: var(--primary-lighter);
+    color: var(--primary-color);
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
 .registro-card .info-row {
     display: flex;
     justify-content: space-between;
@@ -228,8 +244,21 @@ input[type="date"], select {
     border-bottom: 1px solid var(--border-color);
 }
 
+.registro-card .info-row.observacao {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+}
+
 .registro-card .info-row:last-child {
     border-bottom: none;
+}
+
+.registro-card .observacao-texto {
+    font-size: 0.85rem;
+    color: #666;
+    font-style: italic;
+    word-break: break-word;
 }
 
 .registro-card .info-row span:first-child {
@@ -386,6 +415,19 @@ input[type="date"], select {
     box-sizing: border-box;
 }
 
+#formEdicao textarea,
+#formEntradaIndividual textarea,
+#formSaidaIndividual textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+}
+
 #formEdicao h4 {
     color: var(--primary-light);
     margin-top: 1.5rem;
@@ -534,4 +576,46 @@ input[type="date"], select {
         min-width: auto;
         max-width: none;
     }
+
+    .filter-actions {
+        margin-left: 0;
+        margin-top: 1rem;
+        justify-content: center;
+    }
+
+    .lancamentos-buttons {
+        justify-content: center;
+    }
+
+    .badge-individual {
+        margin-left: 0;
+        margin-top: 0.25rem;
+        display: inline-block;
+    }
+}
+
+.lancamentos-container {
+    margin-bottom: 2rem;
+}
+
+.lancamentos-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-success {
+    background-color: var(--success-color);
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
 }
