@@ -54,7 +54,23 @@
                         <option value="João Pedro (gerente)">João Pedro (gerente)</option>
                     </select>
                 </div>
-                <button id="btnExportarCsv" class="btn">Exportar para CSV</button>
+                <div class="filter-actions">
+                    <button id="btnLimparFiltros" class="btn btn-secondary">Limpar Filtros</button>
+                    <button id="btnExportarCsv" class="btn">Exportar para CSV</button>
+                </div>
+            </div>
+
+            <!-- Botões de Lançamento Individual -->
+            <div class="lancamentos-container card">
+                <h4>Lançamentos Individuais</h4>
+                <div class="lancamentos-buttons">
+                    <button id="btnLancarEntrada" class="btn btn-success">
+                        <span>➕</span> Lançar Entrada
+                    </button>
+                    <button id="btnLancarSaida" class="btn btn-danger">
+                        <span>➖</span> Lançar Saída
+                    </button>
+                </div>
             </div>
 
             <!-- Seção de Gráficos -->
@@ -126,6 +142,11 @@
                     <input type="number" id="editTotalSaidas" step="0.01" placeholder="0.00">
                 </div>
 
+                <div class="form-group">
+                    <label for="editObservacao">Observação (opcional)</label>
+                    <textarea id="editObservacao" placeholder="Observações sobre este registro" rows="3"></textarea>
+                </div>
+
                 <div class="modal-footer">
                     <button type="button" id="btnCancelarEdicao" class="btn btn-secondary">Cancelar</button>
                     <button type="submit" id="btnSalvar" class="btn">
@@ -155,6 +176,101 @@
                     <span class="btn-spinner" style="display: none;">⏳</span>
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal de Lançamento Individual de Entrada -->
+    <div id="entradaIndividualModal" class="modal-overlay">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2>Lançar Entrada Individual</h2>
+                <button id="closeEntradaModalBtn" class="close-button">&times;</button>
+            </header>
+            <form id="formEntradaIndividual">
+                <div class="form-group">
+                    <label for="entradaData">Data</label>
+                    <input type="date" id="entradaData" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entradaFuncionario">Funcionário</label>
+                    <select id="entradaFuncionario" required>
+                        <option value="Manoela">Manoela</option>
+                        <option value="Nayara">Nayara</option>
+                        <option value="João Pedro (gerente)">João Pedro (gerente)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="entradaTipo">Tipo de Entrada</label>
+                    <select id="entradaTipo" required>
+                        <option value="dinheiro">Dinheiro</option>
+                        <option value="pix">Pix</option>
+                        <option value="cartao">Cartão</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="entradaValor">Valor</label>
+                    <input type="number" id="entradaValor" step="0.01" placeholder="0.00" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="entradaObservacao">Observação (opcional)</label>
+                    <textarea id="entradaObservacao" placeholder="Ex: Venda fora do horário, cliente específico, etc." rows="3"></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="btnCancelarEntrada" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" id="btnSalvarEntrada" class="btn btn-success">
+                        <span class="btn-text">Lançar Entrada</span>
+                        <span class="btn-spinner" style="display: none;">⏳</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Lançamento Individual de Saída -->
+    <div id="saidaIndividualModal" class="modal-overlay">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2>Lançar Saída Individual</h2>
+                <button id="closeSaidaModalBtn" class="close-button">&times;</button>
+            </header>
+            <form id="formSaidaIndividual">
+                <div class="form-group">
+                    <label for="saidaData">Data</label>
+                    <input type="date" id="saidaData" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="saidaFuncionario">Funcionário</label>
+                    <select id="saidaFuncionario" required>
+                        <option value="Manoela">Manoela</option>
+                        <option value="Nayara">Nayara</option>
+                        <option value="João Pedro (gerente)">João Pedro (gerente)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="saidaValor">Valor</label>
+                    <input type="number" id="saidaValor" step="0.01" placeholder="0.00" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="saidaObservacao">Observação (opcional)</label>
+                    <textarea id="saidaObservacao" placeholder="Ex: Compra de ingredientes, manutenção, etc." rows="3"></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="btnCancelarSaida" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" id="btnSalvarSaida" class="btn btn-danger">
+                        <span class="btn-text">Lançar Saída</span>
+                        <span class="btn-spinner" style="display: none;">⏳</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
