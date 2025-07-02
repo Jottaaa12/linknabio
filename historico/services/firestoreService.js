@@ -192,17 +192,8 @@ export class FirestoreService {
                 tipoSaida: data.tipo
             };
 
-            // Define o valor no campo correto baseado no tipo
-            switch (data.tipo) {
-                case 'dinheiro':
-                    recordData.dinheiroEntrada = parseFloat(data.valor) || 0;
-                    break;
-                case 'pix':
-                    recordData.pixEntrada = parseFloat(data.valor) || 0;
-                    break;
-                default:
-                    throw new Error('Tipo de saída inválido');
-            }
+            // Não preenche nenhum campo de entrada para saída individual
+            // Apenas totalSaidas recebe o valor
 
             const docRef = await addDoc(collection(this.db, this.collectionName), recordData);
             return { success: true, id: docRef.id };
