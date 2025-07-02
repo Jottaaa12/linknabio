@@ -248,8 +248,12 @@ export class UIManager {
 
         // Prepara os dados para o gráfico
         const sortedRegistros = [...registros].sort((a, b) => {
-            const dateA = a.timestamp ? new Date(a.timestamp.seconds * 1000) : new Date(a.data);
-            const dateB = b.timestamp ? new Date(b.timestamp.seconds * 1000) : new Date(b.data);
+            const dateA = a.timestamp ? 
+                new Date(a.timestamp.seconds * 1000) : 
+                new Date(a.data + "T00:00:00");
+            const dateB = b.timestamp ? 
+                new Date(b.timestamp.seconds * 1000) : 
+                new Date(b.data + "T00:00:00");
             return dateA - dateB;
         });
 
@@ -454,6 +458,10 @@ export class UIManager {
     validateForm() {
         const data = document.getElementById('editData').value;
         const funcionario = document.getElementById('editFuncionario').value;
+        const dinheiroEntrada = parseFloat(document.getElementById('editDinheiroEntrada').value) || 0;
+        const pixEntrada = parseFloat(document.getElementById('editPixEntrada').value) || 0;
+        const cartaoEntrada = parseFloat(document.getElementById('editCartaoEntrada').value) || 0;
+        const totalSaidas = parseFloat(document.getElementById('editTotalSaidas').value) || 0;
 
         if (!data) {
             this.showToast('Por favor, selecione uma data', 'error');
@@ -462,6 +470,16 @@ export class UIManager {
 
         if (!funcionario) {
             this.showToast('Por favor, selecione um funcionário', 'error');
+            return false;
+        }
+
+        if (dinheiroEntrada < 0 || pixEntrada < 0 || cartaoEntrada < 0) {
+            this.showToast('Os valores de entrada não podem ser negativos', 'error');
+            return false;
+        }
+
+        if (totalSaidas < 0) {
+            this.showToast('O valor de saída não pode ser negativo', 'error');
             return false;
         }
 
@@ -657,8 +675,13 @@ export class UIManager {
             observacao: document.getElementById('entradaObservacao').value
         };
 
-        if (!formData.data || !formData.funcionario || formData.valor <= 0) {
+        if (!formData.data || !formData.funcionario) {
             this.showToast('Por favor, preencha todos os campos obrigatórios', 'error');
+            return;
+        }
+
+        if (formData.valor <= 0) {
+            this.showToast('O valor da entrada deve ser maior que zero', 'error');
             return;
         }
 
@@ -701,8 +724,13 @@ export class UIManager {
             observacao: document.getElementById('saidaObservacao').value
         };
 
-        if (!formData.data || !formData.funcionario || formData.valor <= 0) {
+        if (!formData.data || !formData.funcionario) {
             this.showToast('Por favor, preencha todos os campos obrigatórios', 'error');
+            return;
+        }
+
+        if (formData.valor <= 0) {
+            this.showToast('O valor da saída deve ser maior que zero', 'error');
             return;
         }
 
@@ -730,22 +758,33 @@ export class UIManager {
         let totalCartaoEntrada = 0;
         let totalDinheiroSaida = 0;
         let totalPixSaida = 0;
+        let totalOutrasSaidas = 0;
         let totalEntradas = 0;
         let totalSaidas = 0;
 
         registros.forEach(registro => {
+            // Entradas
             totalDinheiroEntrada += parseFloat(registro.dinheiroEntrada) || 0;
             totalPixEntrada += parseFloat(registro.pixEntrada) || 0;
             totalCartaoEntrada += parseFloat(registro.cartaoEntrada) || 0;
-            totalEntradas += (parseFloat(registro.dinheiroEntrada) || 0) + (parseFloat(registro.pixEntrada) || 0) + (parseFloat(registro.cartaoEntrada) || 0);
-            totalSaidas += parseFloat(registro.totalSaidas) || 0;
-            // Saídas detalhadas só para registros individuais
+            totalEntradas += (parseFloat(registro.dinheiroEntrada) || 0) + 
+                           (parseFloat(registro.pixEntrada) || 0) + 
+                           (parseFloat(registro.cartaoEntrada) || 0);
+
+            // Saídas
+            const saidaValor = parseFloat(registro.totalSaidas) || 0;
+            totalSaidas += saidaValor;
+
+            // Categoriza saídas
             if (registro.tipoLancamento === 'individual' && registro.tipoSaida) {
                 if (registro.tipoSaida === 'dinheiro') {
-                    totalDinheiroSaida += parseFloat(registro.totalSaidas) || 0;
+                    totalDinheiroSaida += saidaValor;
                 } else if (registro.tipoSaida === 'pix') {
-                    totalPixSaida += parseFloat(registro.totalSaidas) || 0;
+                    totalPixSaida += saidaValor;
                 }
+            } else {
+                // Saídas regulares vão para "Outras Saídas"
+                totalOutrasSaidas += saidaValor;
             }
         });
 
@@ -777,6 +816,11 @@ export class UIManager {
                 <h5>Saídas em Pix</h5>
                 <p>${this.formatCurrency(totalPixSaida)}</p>
                 <div class="detalhe-percentual">${percent(totalPixSaida, totalSaidas)} das saídas</div>
+            </div>
+            <div class="detalhe-card">
+                <h5>Outras Saídas</h5>
+                <p>${this.formatCurrency(totalOutrasSaidas)}</p>
+                <div class="detalhe-percentual">${percent(totalOutrasSaidas, totalSaidas)} das saídas</div>
             </div>
             <div class="detalhe-card">
                 <h5>Total de Entradas</h5>
