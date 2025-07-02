@@ -470,6 +470,7 @@ input[type="date"], select {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    pointer-events: none;
 }
 
 .toast {
@@ -485,6 +486,7 @@ input[type="date"], select {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    pointer-events: auto;
 }
 
 .toast.error {
