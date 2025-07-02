@@ -2,6 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { FirestoreService } from "./services/firestoreService.js";
+import { LogService } from "./services/logService.js";
 import { UIManager } from "./ui/uiManager.js";
 
 // Constantes da aplicação
@@ -20,6 +21,7 @@ const CONSTANTS = {
 class PainelControleApp {
     constructor() {
         this.firestoreService = null;
+        this.logService = null;
         this.uiManager = null;
         this.todosOsRegistros = [];
         this.registrosFiltrados = [];
@@ -35,10 +37,14 @@ class PainelControleApp {
 
             // Inicializa serviços
             this.firestoreService = new FirestoreService(db);
+            this.logService = new LogService(db);
             this.uiManager = new UIManager();
 
             // Configura callbacks do UIManager
             this.setupUIManagerCallbacks();
+
+            // Configura o painel de logs
+            this.setupLogsPanel();
 
             // Carrega filtros salvos
             this.uiManager.loadFilters();
@@ -50,12 +56,65 @@ class PainelControleApp {
             await this.setupAuthentication(auth);
 
             this.isInitialized = true;
-            console.log("Painel de Controle inicializado com sucesso");
+            await this.logService.addLog(
+                'Inicialização',
+                'Painel de Controle inicializado com sucesso',
+                'success'
+            );
 
         } catch (error) {
             console.error("Erro na inicialização:", error);
+            await this.logService.addLog(
+                'Erro de Inicialização',
+                error.message,
+                'error'
+            );
             document.getElementById('statusCarregamento').textContent = "Erro crítico na inicialização.";
         }
+    }
+
+    setupLogsPanel() {
+        const btnShowLogs = document.getElementById('btnShowLogs');
+        const btnCloseLogs = document.getElementById('btnCloseLogs');
+        const btnRefreshLogs = document.getElementById('btnRefreshLogs');
+        const btnClearLogs = document.getElementById('btnClearLogs');
+        const logsPanel = document.getElementById('logsPanel');
+        const logsContent = document.getElementById('logsContent');
+
+        btnShowLogs.addEventListener('click', () => {
+            logsPanel.classList.toggle('active');
+            this.refreshLogs();
+        });
+
+        btnCloseLogs.addEventListener('click', () => {
+            logsPanel.classList.remove('active');
+        });
+
+        btnRefreshLogs.addEventListener('click', () => {
+            this.refreshLogs();
+        });
+
+        btnClearLogs.addEventListener('click', () => {
+            logsContent.innerHTML = '';
+            this.logService.addLog(
+                'Limpeza de Logs',
+                'Logs limpos pelo usuário',
+                'warning'
+            );
+        });
+    }
+
+    async refreshLogs() {
+        const logsContent = document.getElementById('logsContent');
+        const logs = await this.logService.getLogs();
+        
+        logsContent.innerHTML = logs.map(log => `
+            <div class="log-entry ${log.status}">
+                <div class="log-timestamp">${this.logService.formatLogTimestamp(log.timestamp)}</div>
+                <div class="log-action">${log.action}</div>
+                <div class="log-details">${log.details}</div>
+            </div>
+        `).join('');
     }
 
     setupUIManagerCallbacks() {
@@ -63,11 +122,21 @@ class PainelControleApp {
         this.uiManager.onCreateRecord = async (formData) => {
             try {
                 await this.firestoreService.createRecord(formData);
+                await this.logService.addLog(
+                    'Criação de Registro',
+                    `Novo registro criado por ${formData.funcionario}`,
+                    'success'
+                );
                 this.uiManager.showToast('Registro criado com sucesso!', 'success');
                 this.uiManager.closeEditModal();
             } catch (error) {
                 console.error('Erro ao criar registro:', error);
-                this.uiManager.showToast('Erro ao criar registro: ' + (error.message || 'Erro desconhecido'), 'error');
+                await this.logService.addLog(
+                    'Erro na Criação',
+                    error.message,
+                    'error'
+                );
+                this.uiManager.showToast('Erro ao criar registro: ' + error.message, 'error');
             }
         };
 
@@ -75,11 +144,21 @@ class PainelControleApp {
         this.uiManager.onUpdateRecord = async (recordId, formData) => {
             try {
                 await this.firestoreService.updateRecord(recordId, formData);
+                await this.logService.addLog(
+                    'Atualização de Registro',
+                    `Registro ${recordId} atualizado por ${formData.funcionario}`,
+                    'success'
+                );
                 this.uiManager.showToast('Registro atualizado com sucesso!', 'success');
                 this.uiManager.closeEditModal();
             } catch (error) {
                 console.error('Erro ao atualizar registro:', error);
-                this.uiManager.showToast('Erro ao atualizar registro: ' + (error.message || 'Erro desconhecido'), 'error');
+                await this.logService.addLog(
+                    'Erro na Atualização',
+                    error.message,
+                    'error'
+                );
+                this.uiManager.showToast('Erro ao atualizar registro: ' + error.message, 'error');
             }
         };
 
@@ -87,10 +166,20 @@ class PainelControleApp {
         this.uiManager.onDeleteRecord = async (recordId) => {
             try {
                 await this.firestoreService.deleteRecord(recordId);
+                await this.logService.addLog(
+                    'Exclusão de Registro',
+                    `Registro ${recordId} excluído`,
+                    'warning'
+                );
                 this.uiManager.showToast('Registro excluído com sucesso!', 'success');
             } catch (error) {
                 console.error('Erro ao excluir registro:', error);
-                this.uiManager.showToast('Erro ao excluir registro: ' + (error.message || 'Erro desconhecido'), 'error');
+                await this.logService.addLog(
+                    'Erro na Exclusão',
+                    error.message,
+                    'error'
+                );
+                this.uiManager.showToast('Erro ao excluir registro: ' + error.message, 'error');
             }
         };
 
@@ -134,10 +223,20 @@ class PainelControleApp {
         this.uiManager.onCreateEntradaIndividual = async (formData) => {
             try {
                 await this.firestoreService.createIndividualEntry(formData);
+                await this.logService.addLog(
+                    'Entrada Individual',
+                    `Nova entrada de ${formData.valor} (${formData.tipo}) por ${formData.funcionario}`,
+                    'success'
+                );
                 this.uiManager.showToast('Entrada individual registrada com sucesso!', 'success');
             } catch (error) {
                 console.error('Erro ao registrar entrada:', error);
-                this.uiManager.showToast('Erro ao registrar entrada: ' + (error.message || 'Erro desconhecido'), 'error');
+                await this.logService.addLog(
+                    'Erro em Entrada Individual',
+                    error.message,
+                    'error'
+                );
+                this.uiManager.showToast('Erro ao registrar entrada: ' + error.message, 'error');
             }
         };
 
@@ -145,18 +244,33 @@ class PainelControleApp {
         this.uiManager.onCreateSaidaIndividual = async (formData) => {
             try {
                 await this.firestoreService.createIndividualExit(formData);
+                await this.logService.addLog(
+                    'Saída Individual',
+                    `Nova saída de ${formData.valor} (${formData.tipo}) por ${formData.funcionario}`,
+                    'warning'
+                );
                 this.uiManager.showToast('Saída individual registrada com sucesso!', 'success');
             } catch (error) {
                 console.error('Erro ao registrar saída:', error);
-                this.uiManager.showToast('Erro ao registrar saída: ' + (error.message || 'Erro desconhecido'), 'error');
+                await this.logService.addLog(
+                    'Erro em Saída Individual',
+                    error.message,
+                    'error'
+                );
+                this.uiManager.showToast('Erro ao registrar saída: ' + error.message, 'error');
             }
         };
     }
 
     setupRealtimeListener() {
-        this.firestoreService.setupRealtimeListener((registros, error) => {
+        this.firestoreService.setupRealtimeListener(async (registros, error) => {
             if (error) {
                 console.error("Erro no listener:", error);
+                await this.logService.addLog(
+                    'Erro no Listener',
+                    'Falha ao carregar dados em tempo real: ' + error.message,
+                    'error'
+                );
                 this.uiManager.showToast('Erro ao carregar dados', 'error');
                 return;
             }
@@ -164,7 +278,12 @@ class PainelControleApp {
             this.todosOsRegistros = registros;
             this.aplicarFiltros();
             
-            // Esconde o status de carregamento
+            await this.logService.addLog(
+                'Atualização de Dados',
+                `${registros.length} registros carregados`,
+                'info'
+            );
+            
             document.getElementById('statusCarregamento').style.display = 'none';
         });
     }
