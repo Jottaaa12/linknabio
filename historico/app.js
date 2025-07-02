@@ -66,7 +66,8 @@ class PainelControleApp {
                 this.uiManager.showToast('Registro criado com sucesso!', 'success');
                 this.uiManager.closeEditModal();
             } catch (error) {
-                throw error;
+                console.error('Erro ao criar registro:', error);
+                this.uiManager.showToast('Erro ao criar registro: ' + (error.message || 'Erro desconhecido'), 'error');
             }
         };
 
@@ -77,7 +78,8 @@ class PainelControleApp {
                 this.uiManager.showToast('Registro atualizado com sucesso!', 'success');
                 this.uiManager.closeEditModal();
             } catch (error) {
-                throw error;
+                console.error('Erro ao atualizar registro:', error);
+                this.uiManager.showToast('Erro ao atualizar registro: ' + (error.message || 'Erro desconhecido'), 'error');
             }
         };
 
@@ -87,24 +89,45 @@ class PainelControleApp {
                 await this.firestoreService.deleteRecord(recordId);
                 this.uiManager.showToast('Registro excluído com sucesso!', 'success');
             } catch (error) {
-                throw error;
+                console.error('Erro ao excluir registro:', error);
+                this.uiManager.showToast('Erro ao excluir registro: ' + (error.message || 'Erro desconhecido'), 'error');
             }
         };
 
         // Callback para mudança de filtros
         this.uiManager.onFiltersChanged = () => {
-            this.aplicarFiltros();
-            this.uiManager.saveFilters();
+            try {
+                this.aplicarFiltros();
+                this.uiManager.saveFilters();
+            } catch (error) {
+                console.error('Erro ao aplicar filtros:', error);
+                this.uiManager.showToast('Erro ao aplicar filtros', 'error');
+            }
         };
 
         // Callback para exportação CSV
         this.uiManager.exportToCSV = (registros) => {
-            this.uiManager.exportToCSV(this.registrosFiltrados);
+            try {
+                this.uiManager.exportToCSV(this.registrosFiltrados);
+            } catch (error) {
+                console.error('Erro ao exportar CSV:', error);
+                this.uiManager.showToast('Erro ao exportar dados', 'error');
+            }
         };
 
         // Callback para encontrar registro por ID
         this.uiManager.findRecordById = (id) => {
-            return this.todosOsRegistros.find(registro => registro.id === id);
+            try {
+                const registro = this.todosOsRegistros.find(registro => registro.id === id);
+                if (!registro) {
+                    throw new Error('Registro não encontrado');
+                }
+                return registro;
+            } catch (error) {
+                console.error('Erro ao buscar registro:', error);
+                this.uiManager.showToast('Erro ao buscar registro', 'error');
+                return null;
+            }
         };
 
         // Callback para entrada individual
@@ -113,7 +136,8 @@ class PainelControleApp {
                 await this.firestoreService.createIndividualEntry(formData);
                 this.uiManager.showToast('Entrada individual registrada com sucesso!', 'success');
             } catch (error) {
-                throw error;
+                console.error('Erro ao registrar entrada:', error);
+                this.uiManager.showToast('Erro ao registrar entrada: ' + (error.message || 'Erro desconhecido'), 'error');
             }
         };
 
@@ -123,7 +147,8 @@ class PainelControleApp {
                 await this.firestoreService.createIndividualExit(formData);
                 this.uiManager.showToast('Saída individual registrada com sucesso!', 'success');
             } catch (error) {
-                throw error;
+                console.error('Erro ao registrar saída:', error);
+                this.uiManager.showToast('Erro ao registrar saída: ' + (error.message || 'Erro desconhecido'), 'error');
             }
         };
     }
@@ -164,43 +189,82 @@ class PainelControleApp {
     }
 
     aplicarFiltros() {
-        const dataInicio = document.getElementById('dataInicio').value;
-        const dataFim = document.getElementById('dataFim').value;
-        const funcionario = document.getElementById('filtroFuncionario').value;
+        try {
+            const dataInicio = document.getElementById('dataInicio').value;
+            const dataFim = document.getElementById('dataFim').value;
+            const funcionario = document.getElementById('filtroFuncionario').value;
 
-        let registrosFiltrados = [...this.todosOsRegistros];
+            if (!this.todosOsRegistros) {
+                console.warn('Nenhum registro disponível para filtrar');
+                this.registrosFiltrados = [];
+                return;
+            }
 
-        // Filtro por funcionário
-        if (funcionario !== "Todos") {
-            registrosFiltrados = registrosFiltrados.filter(registro => 
-                registro.funcionario === funcionario
-            );
+            let registrosFiltrados = [...this.todosOsRegistros];
+
+            // Filtro por funcionário
+            if (funcionario && funcionario !== "Todos") {
+                registrosFiltrados = registrosFiltrados.filter(registro => 
+                    registro.funcionario === funcionario
+                );
+            }
+
+            // Filtro por data de início
+            if (dataInicio) {
+                try {
+                    const inicio = new Date(dataInicio + "T00:00:00");
+                    if (isNaN(inicio.getTime())) {
+                        throw new Error('Data de início inválida');
+                    }
+                    registrosFiltrados = registrosFiltrados.filter(registro => {
+                        const dataRegistro = registro.timestamp ? 
+                            new Date(registro.timestamp.seconds * 1000) : 
+                            new Date(registro.data + "T00:00:00");
+                        return dataRegistro >= inicio;
+                    });
+                } catch (error) {
+                    console.error('Erro ao filtrar por data de início:', error);
+                    this.uiManager.showToast('Data de início inválida', 'error');
+                }
+            }
+
+            // Filtro por data de fim
+            if (dataFim) {
+                try {
+                    const fim = new Date(dataFim + "T23:59:59");
+                    if (isNaN(fim.getTime())) {
+                        throw new Error('Data de fim inválida');
+                    }
+                    registrosFiltrados = registrosFiltrados.filter(registro => {
+                        const dataRegistro = registro.timestamp ? 
+                            new Date(registro.timestamp.seconds * 1000) : 
+                            new Date(registro.data + "T00:00:00");
+                        return dataRegistro <= fim;
+                    });
+                } catch (error) {
+                    console.error('Erro ao filtrar por data de fim:', error);
+                    this.uiManager.showToast('Data de fim inválida', 'error');
+                }
+            }
+
+            // Validação de período
+            if (dataInicio && dataFim) {
+                const inicio = new Date(dataInicio);
+                const fim = new Date(dataFim);
+                if (fim < inicio) {
+                    this.uiManager.showToast('A data final não pode ser menor que a data inicial', 'error');
+                    return;
+                }
+            }
+
+            this.registrosFiltrados = registrosFiltrados;
+            this.atualizarUI();
+        } catch (error) {
+            console.error('Erro ao aplicar filtros:', error);
+            this.uiManager.showToast('Erro ao aplicar filtros', 'error');
+            this.registrosFiltrados = [];
+            this.atualizarUI();
         }
-
-        // Filtro por data de início
-        if (dataInicio) {
-            const inicio = new Date(dataInicio + "T00:00:00");
-            registrosFiltrados = registrosFiltrados.filter(registro => {
-                const dataRegistro = registro.timestamp ? 
-                    new Date(registro.timestamp.seconds * 1000) : 
-                    new Date(registro.data + "T00:00:00");
-                return dataRegistro >= inicio;
-            });
-        }
-
-        // Filtro por data de fim
-        if (dataFim) {
-            const fim = new Date(dataFim + "T23:59:59");
-            registrosFiltrados = registrosFiltrados.filter(registro => {
-                const dataRegistro = registro.timestamp ? 
-                    new Date(registro.timestamp.seconds * 1000) : 
-                    new Date(registro.data + "T00:00:00");
-                return dataRegistro <= fim;
-            });
-        }
-
-        this.registrosFiltrados = registrosFiltrados;
-        this.atualizarUI();
     }
 
     atualizarUI() {
@@ -215,11 +279,31 @@ class PainelControleApp {
     }
 
     cleanup() {
-        if (this.firestoreService) {
-            this.firestoreService.cleanup();
-        }
-        if (this.uiManager) {
-            this.uiManager.cleanup();
+        try {
+            // Limpa serviço do Firestore
+            if (this.firestoreService) {
+                this.firestoreService.cleanup();
+                this.firestoreService = null;
+            }
+
+            // Limpa UI Manager
+            if (this.uiManager) {
+                this.uiManager.cleanup();
+                this.uiManager = null;
+            }
+
+            // Limpa arrays de dados
+            this.todosOsRegistros = [];
+            this.registrosFiltrados = [];
+            
+            // Remove event listeners
+            window.removeEventListener('beforeunload', this.cleanup);
+            
+            this.isInitialized = false;
+            
+            console.log('Recursos limpos com sucesso');
+        } catch (error) {
+            console.error('Erro ao limpar recursos:', error);
         }
     }
 }
@@ -228,13 +312,24 @@ class PainelControleApp {
 let app = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    app = new PainelControleApp();
-    await app.init();
-});
-
-// Cleanup quando a página for fechada
-window.addEventListener('beforeunload', () => {
-    if (app) {
-        app.cleanup();
+    try {
+        if (app) {
+            console.warn('Aplicação já inicializada, limpando recursos...');
+            app.cleanup();
+        }
+        
+        app = new PainelControleApp();
+        await app.init();
+        
+        // Adiciona listener para limpeza ao fechar
+        window.addEventListener('beforeunload', () => {
+            if (app) {
+                app.cleanup();
+            }
+        });
+        
+    } catch (error) {
+        console.error('Erro fatal na inicialização:', error);
+        document.getElementById('statusCarregamento').textContent = 'Erro crítico na inicialização. Por favor, recarregue a página.';
     }
 });
