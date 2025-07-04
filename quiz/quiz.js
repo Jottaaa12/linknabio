@@ -57,8 +57,12 @@ class Quiz {
             btn.addEventListener('click', () => this.setMode(btn.dataset.mode));
         });
 
-        this.powerupFiftyFiftyBtn.addEventListener('click', () => this.useFiftyFifty());
-        this.powerupSkipBtn.addEventListener('click', () => this.useSkip());
+        if (this.powerupFiftyFiftyBtn) {
+            this.powerupFiftyFiftyBtn.addEventListener('click', () => this.useFiftyFifty());
+        }
+        if (this.powerupSkipBtn) {
+            this.powerupSkipBtn.addEventListener('click', () => this.useSkip());
+        }
     }
 
     resetState() {
@@ -100,7 +104,9 @@ class Quiz {
         this.resultContainer.classList.add('hidden');
         this.quizContainer.classList.remove('hidden');
         
-        this.updatePowerUpsUI();
+        if (this.powerupFiftyFiftyBtn) {
+            this.updatePowerUpsUI();
+        }
 
         const filteredQuestions = questionsDatabase.questions.filter(q => q.difficulty === this.currentDifficulty);
         const shuffled = [...filteredQuestions].sort(() => 0.5 - Math.random());
@@ -125,14 +131,11 @@ class Quiz {
             this.questionEl.textContent = question.question;
             this.answersContainer.innerHTML = '';
 
-            // Embaralhar as opções para que a resposta correta não esteja sempre na mesma posição
             const options = question.options.map((text, originalIndex) => ({ text, originalIndex }));
             const shuffledOptions = options.sort(() => Math.random() - 0.5);
 
             shuffledOptions.forEach(option => {
                 const button = document.createElement('button');
-                // CORREÇÃO PRINCIPAL APLICADA AQUI:
-                // Usando a classe 'btn' que já possui estilos no CSS.
                 button.className = 'btn'; 
                 button.textContent = option.text;
                 button.addEventListener('click', () => this.handleAnswer(option.originalIndex, button));
@@ -157,7 +160,6 @@ class Quiz {
         const question = this.selectedQuestions[this.currentQuestionIndex];
         const correctIndex = question.correctIndex;
 
-        // Encontra o botão que corresponde à resposta correta
         const correctButtonText = question.options[correctIndex];
         const correctButton = Array.from(this.answersContainer.children).find(btn => btn.textContent === correctButtonText);
 
@@ -184,8 +186,8 @@ class Quiz {
     }
 
     startTimer() {
-        if (this.mode === 'training') {
-            this.timerContainer.classList.add('hidden');
+        if (this.mode === 'training' || !this.timerContainer) {
+            if(this.timerContainer) this.timerContainer.classList.add('hidden');
             return;
         }
         this.timerContainer.classList.remove('hidden');
@@ -203,7 +205,7 @@ class Quiz {
 
             if (time === 0) {
                 clearInterval(this.timerId);
-                this.handleAnswer(-1, null); // Timeout é tratado como resposta errada
+                this.handleAnswer(-1, null);
             }
             time--;
         };
@@ -220,7 +222,7 @@ class Quiz {
     }
     
     useFiftyFifty() {
-        if (this.powerUps.fiftyFifty <= 0 || this.isAnswered) return;
+        if (!this.powerupFiftyFiftyBtn || this.powerUps.fiftyFifty <= 0 || this.isAnswered) return;
         this.powerUps.fiftyFifty--;
         this.updatePowerUpsUI();
 
@@ -229,12 +231,10 @@ class Quiz {
         let removedCount = 0;
         const buttons = Array.from(this.answersContainer.children);
         
-        // Mapeia os botões de volta para seus índices originais
         const buttonIndices = buttons.map(btn => question.options.indexOf(btn.textContent));
 
         while(removedCount < 2) {
             const randomIndex = Math.floor(Math.random() * buttons.length);
-            // Garante que não remove a resposta correta ou um botão já desabilitado
             if (buttonIndices[randomIndex] !== correctIndex && !buttons[randomIndex].disabled) {
                 buttons[randomIndex].disabled = true;
                 buttons[randomIndex].style.opacity = '0.3';
@@ -244,7 +244,7 @@ class Quiz {
     }
 
     useSkip() {
-        if (this.powerUps.skip <= 0 || this.isAnswered) return;
+        if (!this.powerupSkipBtn || this.powerUps.skip <= 0 || this.isAnswered) return;
         this.powerUps.skip--;
         this.updatePowerUpsUI();
         clearInterval(this.timerId);
@@ -280,14 +280,15 @@ class Quiz {
 
         let message = "";
         let icon = "";
+        // CORREÇÃO: Mensagem de vitória sem o cupom.
         if (this.score >= questionsDatabase.config.minCorrectForReward) {
             icon = '🏆';
-            message = `<h3>Parabéns, Embaixador(a) Sabor da Terra!</h3><p>Seu conhecimento é impressionante! Como recompensa, use o cupom <strong aria-hidden="true">BITUPITA15</strong> e ganhe 15% de desconto no seu próximo pedido!</p>`;
+            message = `<h3>Parabéns, Embaixador(a) Sabor da Terra!</h3><p>Seu conhecimento é impressionante! Você é um verdadeiro expert em nosso açaí!</p>`;
         } else if (this.score >= total / 2) {
             icon = '👍';
             message = `<h3>Você conhece bem a gente!</h3><p>Mandou bem! Que tal passar na nossa loja pra comemorar com o seu açaí preferido?</p>`;
         } else {
-            icon = '😉';
+            icon = '�';
             message = `<h3>Valeu a tentativa!</h3><p>Agora que você sabe mais sobre nós, venha viver a experiência Sabor da Terra e se tornar um expert!</p>`;
         }
         this.resultIconEl.textContent = icon;
@@ -304,40 +305,21 @@ class Quiz {
     }
     
     updateHighScoreDisplay() {
-        this.highScoreEl.textContent = `Melhor pontuação: ${this.getHighScore()}%`;
+        if(this.highScoreEl) {
+            this.highScoreEl.textContent = `Melhor pontuação: ${this.getHighScore()}%`;
+        }
     }
 }
 
 // Função global para reiniciar o quiz (usada pelo botão no HTML antigo)
 function restartQuiz() {
-    window.quiz.start();
+    if(window.quiz) {
+        window.quiz.start();
+    }
 }
 
 // Inicialização centralizada
 document.addEventListener('DOMContentLoaded', () => {
     // Inicializa o quiz
     window.quiz = new Quiz();
-
-    // Inicializa outros managers se existirem
-    if (typeof ThemeManager !== 'undefined') {
-        window.themeManager = new ThemeManager();
-    }
-    if (typeof SoundManager !== 'undefined') {
-        window.soundManager = new SoundManager();
-        // Vincula o botão de som ao manager
-        const soundButton = document.getElementById('sound-toggle');
-        if(soundButton) {
-            soundButton.onclick = () => window.soundManager.toggleMute();
-        }
-    }
-    if (typeof AchievementManager !== 'undefined') {
-        window.achievementManager = new AchievementManager();
-        // Vincula o botão de conquistas ao manager
-        const achievementsButton = document.getElementById('achievements-button');
-        if(achievementsButton) {
-             achievementsButton.addEventListener('click', () => {
-                window.achievementManager.showAchievementsModal();
-            });
-        }
-    }
 });
