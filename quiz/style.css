@@ -83,6 +83,7 @@ body::before {
     line-height: 1.2;
 }
 
+/* Estilo base para todos os botões de resposta, agora usando a classe .btn */
 .btn {
     display: block;
     width: 100%;
@@ -94,14 +95,9 @@ body::before {
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     background-color: var(--btn-bg);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--btn-bg);
     color: var(--btn-text);
     font-size: 1rem;
-}
-
-.btn:focus-visible {
-    outline: 2px solid var(--accent-green);
-    outline-offset: 2px;
 }
 
 .btn:hover:not(:disabled) {
@@ -110,16 +106,18 @@ body::before {
     transform: translateY(-2px);
 }
 
+/* Estado de resposta CORRETA */
 .btn.correct {
-    background-color: var(--correct-green);
-    border-color: var(--correct-green);
-    color: white;
+    background-color: var(--correct-green) !important;
+    border-color: var(--correct-green) !important;
+    color: white !important;
 }
 
+/* Estado de resposta INCORRETA */
 .btn.incorrect {
-    background-color: var(--incorrect-red);
-    border-color: var(--incorrect-red);
-    color: white;
+    background-color: var(--incorrect-red) !important;
+    border-color: var(--incorrect-red) !important;
+    color: white !important;
 }
 
 .btn:disabled {
@@ -1252,6 +1250,9 @@ body::before {
 }
 
 /* Feedback de Resposta */
+/* (Removido: .answer-btn.correct e .answer-btn.wrong) */
+
+/* Feedback de Resposta */
 .answer-btn.correct {
     background: #4CAF50 !important;
     color: white !important;
@@ -1260,4 +1261,57 @@ body::before {
 .answer-btn.wrong {
     background: #f44336 !important;
     color: white !important;
+}
+
+/* Modal genérico para UIManager */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 90vw;
+    width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 4px 24px var(--shadow);
+    animation: fadeInUp 0.3s;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: var(--accent-green);
+    text-align: center;
+}
+
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 0.5rem;
+    font-size: 2rem;
+    transition: transform 0.2s;
+    z-index: 10;
+}
+
+.close-modal:hover {
+    transform: scale(1.2);
 } 
