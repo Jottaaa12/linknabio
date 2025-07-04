@@ -770,10 +770,10 @@ class Quiz {
         const icon = document.createElement('i');
         icon.className = 'fas fa-check';
         
-        const text = document.createTextNode(' Link copiado para a área de transferência!');
+        const notificationText = document.createTextNode(' Link copiado para a área de transferência!');
         
         notification.appendChild(icon);
-        notification.appendChild(text);
+        notification.appendChild(notificationText);
         document.body.appendChild(notification);
         
         setTimeout(() => {
