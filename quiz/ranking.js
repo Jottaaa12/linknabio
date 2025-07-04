@@ -39,9 +39,6 @@ class RankingManager {
     }
 
     showModal() {
-        const modal = document.createElement('div');
-        modal.className = 'ranking-modal';
-        
         const content = document.createElement('div');
         content.className = 'ranking-content';
         
@@ -92,24 +89,10 @@ class RankingManager {
             list.appendChild(table);
         }
         
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'close-modal';
-        closeBtn.textContent = 'Fechar';
-        
         content.appendChild(title);
         content.appendChild(list);
-        content.appendChild(closeBtn);
-        modal.appendChild(content);
-        document.body.appendChild(modal);
 
-        // Animar entrada
-        setTimeout(() => modal.classList.add('show'), 100);
-
-        // Fechar modal
-        closeBtn.addEventListener('click', () => {
-            modal.classList.remove('show');
-            setTimeout(() => modal.remove(), 300);
-        });
+        UIManager.createModal('🏆 Ranking', content);
 
         // Tocar som
         if (window.soundManager) {
