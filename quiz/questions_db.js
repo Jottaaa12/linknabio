@@ -29,22 +29,6 @@ const questionsDatabase = {
     
     // Banco de perguntas
     questions: [
-        // MODELO PARA NOVAS PERGUNTAS:
-        /*
-        {
-            question: "Sua pergunta aqui?",
-            options: [
-                "Opção A",
-                "Opção B",
-                "Opção C",
-                "Opção D"
-            ],
-            correctIndex: 1, // índice da opção correta (0 a 3)
-            category: "Categoria", // (opcional)
-            explanation: "Explicação opcional para a resposta correta.",
-            difficulty: "facil"
-        },
-        */
         // Categoria: Marca e Posicionamento
         {
             category: "brand",
@@ -393,22 +377,5 @@ const questionsDatabase = {
             category: "producao",
             difficulty: "dificil"
         },
-        
-        // Você pode continuar adicionando mais perguntas aqui...
-        // Basta seguir o mesmo formato:
-        /*
-        {
-            category: "categoria",
-            question: "Sua pergunta aqui?",
-            options: [
-                "Opção A",
-                "Opção B", 
-                "Opção C",
-                "Opção D"
-            ],
-            correctIndex: 1, // índice da opção correta (0 a 3)
-            explanation: "Explicação opcional para a resposta correta."
-        },
-        */
     ]
 }; 
