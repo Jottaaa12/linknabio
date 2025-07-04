@@ -41,7 +41,8 @@ const questionsDatabase = {
             ],
             correctIndex: 1, // índice da opção correta (0 a 3)
             category: "Categoria", // (opcional)
-            explanation: "Explicação opcional para a resposta correta."
+            explanation: "Explicação opcional para a resposta correta.",
+            difficulty: "facil"
         },
         */
         // Categoria: Marca e Posicionamento
