@@ -1,325 +1,522 @@
-// Configuração do Quiz
-const TRANSITION_DELAY = 1000; // Tempo de transição entre perguntas em ms
-const HIGH_SCORE_KEY = 'quiz_high_score';
-
-// Classe principal do Quiz
-class Quiz {
-    constructor() {
-        this.initializeElements();
-        this.bindEvents();
-        this.resetState();
-        this.highScore = this.getHighScore();
-        this.updateHighScoreDisplay();
-
-        // Define as configurações iniciais
-        this.setDifficulty('facil');
-        this.setMode('competition');
-    }
-
-    initializeElements() {
-        // Elementos principais
-        this.introScreen = document.getElementById('intro-screen');
-        this.quizContainer = document.getElementById('quiz-container');
-        this.resultContainer = document.getElementById('result-container');
-        this.questionEl = document.getElementById('question');
-        this.answersContainer = document.getElementById('answers-container');
-        this.scoreEl = document.getElementById('score');
-        this.resultIconEl = document.getElementById('result-icon');
-        this.resultMessageEl = document.getElementById('result-message');
-        this.progressBar = document.getElementById('progress-bar');
-        this.progressText = document.getElementById('progress-text');
-        this.highScoreEl = document.getElementById('high-score');
-
-        // Elementos do timer
-        this.timerContainer = document.getElementById('timer-container');
-        this.timerBar = document.getElementById('timer-bar');
-        this.timerCount = document.getElementById('timer-count');
-
-        // Botões
-        this.startBtn = document.getElementById('start-btn');
-        this.restartBtn = document.querySelector('.btn-restart');
-        this.backToStartBtn = document.querySelector('.btn.text-center'); // Botão "Voltar ao Início"
-        this.difficultyButtons = document.querySelectorAll('.difficulty-btn');
-        this.modeButtons = document.querySelectorAll('.mode-btn');
-        this.powerupFiftyFiftyBtn = document.getElementById('powerup-fiftyfifty');
-        this.powerupSkipBtn = document.getElementById('powerup-skip');
-    }
-
-    bindEvents() {
-        this.startBtn.addEventListener('click', () => this.start());
-        this.restartBtn.addEventListener('click', () => this.start());
-        this.backToStartBtn.addEventListener('click', () => this.showIntroScreen());
-
-        this.difficultyButtons.forEach(btn => {
-            btn.addEventListener('click', () => this.setDifficulty(btn.dataset.difficulty));
-        });
-        this.modeButtons.forEach(btn => {
-            btn.addEventListener('click', () => this.setMode(btn.dataset.mode));
-        });
-
-        if (this.powerupFiftyFiftyBtn) {
-            this.powerupFiftyFiftyBtn.addEventListener('click', () => this.useFiftyFifty());
+// Banco de dados de perguntas do Quiz Sabor da Terra
+const questionsDatabase = {
+    // Configurações do quiz
+    config: {
+        questionsPerQuiz: 10, // Número de perguntas por quiz
+        minCorrectForReward: 8, // Mínimo de acertos para ganhar recompensa (80%)
+        difficulties: {
+            facil: { time: 30, points: 10 },
+            medio: { time: 20, points: 20 },
+            dificil: { time: 15, points: 30 }
         }
-        if (this.powerupSkipBtn) {
-            this.powerupSkipBtn.addEventListener('click', () => this.useSkip());
-        }
-    }
-
-    resetState() {
-        this.currentQuestionIndex = 0;
-        this.score = 0;
-        this.selectedQuestions = [];
-        if (this.timerId) clearInterval(this.timerId);
-        this.timerId = null;
-        this.isAnswered = false;
-        this.powerUps = { fiftyFifty: 1, skip: 1 };
-    }
+    },
     
-    showIntroScreen() {
-        this.resultContainer.classList.add('hidden');
-        this.quizContainer.classList.add('hidden');
-        this.introScreen.classList.remove('hidden');
-        this.resetState();
-    }
-
-    setDifficulty(difficulty) {
-        this.currentDifficulty = difficulty;
-        this.difficultyButtons.forEach(btn => {
-            btn.classList.toggle('selected', btn.dataset.difficulty === difficulty);
-            btn.setAttribute('aria-pressed', btn.dataset.difficulty === difficulty);
-        });
-    }
-
-    setMode(mode) {
-        this.mode = mode;
-        this.modeButtons.forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.mode === mode);
-             btn.setAttribute('aria-pressed', btn.dataset.mode === mode);
-        });
-    }
-
-    start() {
-        this.resetState();
-        this.introScreen.classList.add('hidden');
-        this.resultContainer.classList.add('hidden');
-        this.quizContainer.classList.remove('hidden');
-        
-        if (this.powerupFiftyFiftyBtn) {
-            this.updatePowerUpsUI();
-        }
-
-        const filteredQuestions = questionsDatabase.questions.filter(q => q.difficulty === this.currentDifficulty);
-        const shuffled = [...filteredQuestions].sort(() => 0.5 - Math.random());
-        this.selectedQuestions = shuffled.slice(0, questionsDatabase.config.questionsPerQuiz);
-        
-        if (this.selectedQuestions.length === 0) {
-            alert('Não há perguntas disponíveis para esta dificuldade.');
-            this.showIntroScreen();
-            return;
-        }
-
-        this.showQuestion();
-    }
-
-    showQuestion() {
-        this.isAnswered = false;
-        const question = this.selectedQuestions[this.currentQuestionIndex];
-        
-        this.quizContainer.classList.add('changing-question');
-        
-        setTimeout(() => {
-            this.questionEl.textContent = question.question;
-            this.answersContainer.innerHTML = '';
-
-            const options = question.options.map((text, originalIndex) => ({ text, originalIndex }));
-            const shuffledOptions = options.sort(() => Math.random() - 0.5);
-
-            shuffledOptions.forEach(option => {
-                const button = document.createElement('button');
-                button.className = 'btn'; 
-                button.textContent = option.text;
-                button.addEventListener('click', () => this.handleAnswer(option.originalIndex, button));
-                this.answersContainer.appendChild(button);
-            });
-            
-            this.updateProgress();
-            this.startTimer();
-            
-            this.quizContainer.classList.remove('changing-question');
-            this.quizContainer.classList.add('question-enter');
-            setTimeout(() => this.quizContainer.classList.remove('question-enter'), 300);
-
-        }, 300);
-    }
-
-    handleAnswer(selectedIndex, selectedButton) {
-        if (this.isAnswered) return;
-        this.isAnswered = true;
-        clearInterval(this.timerId);
-
-        const question = this.selectedQuestions[this.currentQuestionIndex];
-        const correctIndex = question.correctIndex;
-
-        const correctButtonText = question.options[correctIndex];
-        const correctButton = Array.from(this.answersContainer.children).find(btn => btn.textContent === correctButtonText);
-
-        if (selectedIndex === correctIndex) {
-            this.score++;
-            selectedButton.classList.add('correct');
-        } else {
-            if(selectedButton) selectedButton.classList.add('incorrect');
-            if(correctButton) correctButton.classList.add('correct');
-        }
-
-        Array.from(this.answersContainer.children).forEach(btn => {
-            btn.disabled = true;
-        });
-
-        setTimeout(() => {
-            this.currentQuestionIndex++;
-            if (this.currentQuestionIndex < this.selectedQuestions.length) {
-                this.showQuestion();
-            } else {
-                this.showResult();
-            }
-        }, 1500);
-    }
-
-    startTimer() {
-        if (this.mode === 'training' || !this.timerContainer) {
-            if(this.timerContainer) this.timerContainer.classList.add('hidden');
-            return;
-        }
-        this.timerContainer.classList.remove('hidden');
-        clearInterval(this.timerId);
-        let time = questionsDatabase.config.difficulties[this.currentDifficulty].time;
-        
-        const update = () => {
-            this.timerCount.textContent = time;
-            const percentage = (time / questionsDatabase.config.difficulties[this.currentDifficulty].time) * 100;
-            this.timerBar.style.width = `${percentage}%`;
-            
-            if (percentage < 30) this.timerBar.style.backgroundColor = '#ef4444';
-            else if (percentage < 60) this.timerBar.style.backgroundColor = '#f59e0b';
-            else this.timerBar.style.backgroundColor = 'var(--accent-green)';
-
-            if (time === 0) {
-                clearInterval(this.timerId);
-                this.handleAnswer(-1, null);
-            }
-            time--;
-        };
-        
-        update();
-        this.timerId = setInterval(update, 1000);
-    }
-
-    updateProgress() {
-        const totalQuestions = this.selectedQuestions.length;
-        const progress = ((this.currentQuestionIndex + 1) / totalQuestions) * 100;
-        this.progressBar.style.width = `${progress}%`;
-        this.progressText.textContent = `Pergunta ${this.currentQuestionIndex + 1}/${totalQuestions}`;
-    }
+    // Categorias de perguntas
+    categories: {
+        brand: "Marca e Posicionamento",
+        product: "Produto e Ingredientes",
+        local: "Bitupitá e Cultura Local",
+        acai: "Conhecimento Geral sobre Açaí",
+        fun: "Perguntas Divertidas",
+        ingredientes: "Ingredientes",
+        caracteristicas: "Características",
+        cultura: "Cultura",
+        nutricao: "Nutrição",
+        preparo: "Preparo",
+        conservacao: "Conservação",
+        producao: "Produção"
+    },
     
-    useFiftyFifty() {
-        if (!this.powerupFiftyFiftyBtn || this.powerUps.fiftyFifty <= 0 || this.isAnswered) return;
-        this.powerUps.fiftyFifty--;
-        this.updatePowerUpsUI();
-
-        const question = this.selectedQuestions[this.currentQuestionIndex];
-        const correctIndex = question.correctIndex;
-        let removedCount = 0;
-        const buttons = Array.from(this.answersContainer.children);
+    // Banco de perguntas
+    questions: [
+        // Categoria: Marca e Posicionamento
+        {
+            category: "brand",
+            difficulty: "facil",
+            question: "Qual o nome da nossa empresa?",
+            options: [
+                "Açaí da Terra",
+                "Sabor da Terra",
+                "Terra do Açaí",
+                "Açaí Sabor"
+            ],
+            correctIndex: 1
+        },
+        {
+            category: "brand",
+            question: "Qual é o slogan oficial que define a nossa proposta?",
+            options: [
+                "O açaí mais barato da cidade",
+                "Mais que açaí, uma experiência",
+                "Açaí rápido como o vento",
+                "Self-service de felicidade"
+            ],
+            correctIndex: 1,
+            difficulty: "facil"
+        },
+        {
+            category: "brand",
+            question: "Como o Açaí Sabor da Terra se posiciona no mercado de Bitupitá?",
+            options: [
+                "Como uma opção de buffet livre (self-service)",
+                "Como uma marca premium, focada em qualidade e atendimento",
+                "Como a opção mais econômica da orla",
+                "Como uma lanchonete com vários tipos de salgados"
+            ],
+            correctIndex: 1,
+            difficulty: "facil"
+        },
+        {
+            category: "brand",
+            question: "Qual a principal diferença do nosso serviço em comparação aos concorrentes?",
+            options: [
+                "Não temos diferença, vendemos a mesma coisa",
+                "Nosso foco é em produto premium e pedidos à la carte",
+                "Só abrimos pela manhã",
+                "Vendemos apenas açaí com peixe"
+            ],
+            correctIndex: 1,
+            difficulty: "facil"
+        },
         
-        const buttonIndices = buttons.map(btn => question.options.indexOf(btn.textContent));
-
-        while(removedCount < 2) {
-            const randomIndex = Math.floor(Math.random() * buttons.length);
-            if (buttonIndices[randomIndex] !== correctIndex && !buttons[randomIndex].disabled) {
-                buttons[randomIndex].disabled = true;
-                buttons[randomIndex].style.opacity = '0.3';
-                removedCount++;
-            }
-        }
-    }
-
-    useSkip() {
-        if (!this.powerupSkipBtn || this.powerUps.skip <= 0 || this.isAnswered) return;
-        this.powerUps.skip--;
-        this.updatePowerUpsUI();
-        clearInterval(this.timerId);
+        // Categoria: Produto e Ingredientes
+        {
+            category: "product",
+            difficulty: "medio",
+            question: "Qual é o nosso carro-chefe?",
+            options: [
+                "Açaí na Tigela",
+                "Milk Shake de Açaí",
+                "Açaí com Granola",
+                "Smoothie de Açaí"
+            ],
+            correctIndex: 0
+        },
+        {
+            category: "product",
+            question: "Qual é o tipo de polpa de açaí que utilizamos em nossos produtos?",
+            options: [
+                "Polpa comum congelada",
+                "Polpa Especial com maior concentração de fruta",
+                "Polpa líquida diluída",
+                "Polpa em pó reconstituída"
+            ],
+            correctIndex: 1,
+            difficulty: "medio"
+        },
+        {
+            category: "product",
+            question: "Qual é o diferencial do nosso açaí mais elogiado pelos clientes?",
+            options: [
+                "O preço baixo",
+                "A cremosidade e sabor intenso",
+                "A rapidez no preparo",
+                "O tamanho da porção"
+            ],
+            correctIndex: 1,
+            difficulty: "medio"
+        },
         
-        this.currentQuestionIndex++;
-        if (this.currentQuestionIndex < this.selectedQuestions.length) {
-            this.showQuestion();
-        } else {
-            this.showResult();
-        }
-    }
-
-    updatePowerUpsUI() {
-        this.powerupFiftyFiftyBtn.textContent = `50/50 (${this.powerUps.fiftyFifty}x)`;
-        this.powerupSkipBtn.textContent = `Pular (${this.powerUps.skip}x)`;
-        this.powerupFiftyFiftyBtn.disabled = this.powerUps.fiftyFifty <= 0;
-        this.powerupSkipBtn.disabled = this.powerUps.skip <= 0;
-    }
-
-    showResult() {
-        this.quizContainer.classList.add('hidden');
-        this.resultContainer.classList.remove('hidden');
-
-        const total = this.selectedQuestions.length;
-        const percentage = total > 0 ? Math.round((this.score / total) * 100) : 0;
-
-        this.scoreEl.textContent = `${this.score} / ${total}`;
+        // Categoria: Bitupitá e Cultura Local
+        {
+            category: "local",
+            difficulty: "facil",
+            question: "Qual esporte é famoso em Bitupitá devido aos ventos fortes?",
+            options: [
+                "Surf tradicional",
+                "Kitesurf",
+                "Futebol de areia",
+                "Vôlei de praia"
+            ],
+            correctIndex: 1
+        },
+        {
+            category: "local",
+            difficulty: "facil",
+            question: "Qual é o melhor horário para apreciar a paisagem de Bitupitá?",
+            options: [
+                "Durante a chuva",
+                "No pôr do sol",
+                "Às 3 da manhã",
+                "Meio-dia"
+            ],
+            correctIndex: 1
+        },
         
-        if (percentage > this.getHighScore()) {
-            this.setHighScore(percentage);
+        // Categoria: Conhecimento Geral sobre Açaí
+        {
+            category: "acai",
+            difficulty: "facil",
+            question: "De qual região do Brasil o açaí é nativo?",
+            options: [
+                "Sul",
+                "Norte (Amazônia)",
+                "Nordeste",
+                "Sudeste"
+            ],
+            correctIndex: 1
+        },
+        {
+            category: "acai",
+            difficulty: "facil",
+            question: "Qual o benefício mais conhecido do açaí?",
+            options: [
+                "Ajuda a dormir melhor",
+                "Rico em antioxidantes",
+                "Cura gripe",
+                "Diminui o apetite"
+            ],
+            correctIndex: 1
+        },
+        
+        // Categoria: Perguntas Divertidas
+        {
+            category: "fun",
+            difficulty: "facil",
+            question: "Qual seria a melhor legenda para uma foto com nosso açaí na praia?",
+            options: [
+                "Só mais um dia normal",
+                "Saboreando a vida em Bitupitá! 🌊🍇",
+                "Odeio praia",
+                "Queria estar em casa"
+            ],
+            correctIndex: 1
+        },
+        {
+            category: "fun",
+            difficulty: "facil",
+            question: "Se nosso açaí fosse um atleta local, qual seria?",
+            options: [
+                "Um jogador de dominó",
+                "Um kitesurfista profissional",
+                "Um nadador de piscina",
+                "Um ciclista de montanha"
+            ],
+            correctIndex: 1
+        },
+        
+        // Ingredientes
+        {
+            question: "Qual é a principal fruta usada no açaí?",
+            options: [
+                "Palmeira Juçara",
+                "Palmeira Açaí",
+                "Palmeira Real",
+                "Palmeira Imperial"
+            ],
+            correctIndex: 1,
+            category: "ingredientes",
+            explanation: "O açaí vem da Palmeira Açaí (Euterpe oleracea), nativa da região amazônica. Embora a Palmeira Juçara também produza frutos semelhantes, o verdadeiro açaí vem especificamente da Palmeira Açaí.",
+            difficulty: "facil"
+        },
+        {
+            question: "Qual é a cor natural do açaí puro?",
+            options: [
+                "Roxo escuro",
+                "Vermelho",
+                "Marrom",
+                "Preto"
+            ],
+            correctIndex: 0,
+            category: "caracteristicas",
+            difficulty: "facil"
+        },
+        {
+            question: "Em qual região do Brasil o açaí é mais consumido tradicionalmente?",
+            options: [
+                "Nordeste",
+                "Norte",
+                "Sul",
+                "Sudeste"
+            ],
+            correctIndex: 1,
+            category: "cultura",
+            difficulty: "facil"
+        },
+        {
+            question: "Qual é o principal benefício nutricional do açaí?",
+            options: [
+                "Alto teor de proteínas",
+                "Alto teor de antioxidantes",
+                "Alto teor de vitamina C",
+                "Alto teor de cálcio"
+            ],
+            correctIndex: 1,
+            category: "nutricao",
+            difficulty: "medio"
+        },
+        {
+            question: "Como o açaí é tradicionalmente consumido na região Norte?",
+            options: [
+                "Com granola e mel",
+                "Com peixe e farinha",
+                "Com leite condensado",
+                "Com frutas"
+            ],
+            correctIndex: 1,
+            category: "cultura",
+            difficulty: "medio"
+        },
+        {
+            question: "Qual é a melhor temperatura para servir o açaí?",
+            options: [
+                "-12°C a -10°C",
+                "-8°C a -6°C",
+                "-18°C a -15°C",
+                "-22°C a -20°C"
+            ],
+            correctIndex: 2,
+            category: "preparo",
+            difficulty: "dificil"
+        },
+        {
+            question: "Qual é o tempo médio de validade do açaí congelado?",
+            options: [
+                "1 mês",
+                "6 meses",
+                "1 ano",
+                "2 anos"
+            ],
+            correctIndex: 1,
+            category: "conservacao",
+            difficulty: "medio"
+        },
+        {
+            question: "Qual é a época de colheita do açaí?",
+            options: [
+                "Janeiro a Abril",
+                "Maio a Agosto",
+                "Julho a Dezembro",
+                "Ano todo"
+            ],
+            correctIndex: 2,
+            category: "producao",
+            difficulty: "dificil"
+        },
+        {
+            question: "Qual é o principal método de processamento do açaí?",
+            options: [
+                "Cozimento",
+                "Fermentação",
+                "Batimento",
+                "Secagem"
+            ],
+            correctIndex: 2,
+            category: "preparo",
+            difficulty: "medio"
+        },
+        {
+            question: "Qual é a classificação do açaí mais espesso?",
+            options: [
+                "Tipo A",
+                "Tipo B",
+                "Tipo C",
+                "Popular"
+            ],
+            correctIndex: 0,
+            category: "caracteristicas",
+            difficulty: "dificil"
+        },
+        {
+            question: "Quanto tempo o açaí pode ficar fora do freezer?",
+            options: [
+                "Até 2 horas",
+                "Até 4 horas",
+                "Até 6 horas",
+                "Até 8 horas"
+            ],
+            correctIndex: 0,
+            category: "conservacao",
+            difficulty: "medio"
+        },
+        {
+            question: "Qual é o principal acompanhamento do açaí no Sul/Sudeste?",
+            options: [
+                "Farinha de tapioca",
+                "Granola",
+                "Paçoca",
+                "Castanha do Pará"
+            ],
+            correctIndex: 1,
+            category: "cultura",
+            difficulty: "facil"
+        },
+        {
+            question: "Qual é o teor médio de gordura no açaí?",
+            options: [
+                "2-4%",
+                "4-6%",
+                "6-8%",
+                "8-10%"
+            ],
+            correctIndex: 2,
+            category: "nutricao",
+            difficulty: "dificil"
+        },
+        {
+            question: "Como identificar um açaí de boa qualidade?",
+            options: [
+                "Pela cor roxa intensa",
+                "Pelo preço alto",
+                "Pela textura cremosa",
+                "Pelo sabor doce"
+            ],
+            correctIndex: 2,
+            category: "caracteristicas",
+            difficulty: "medio"
+        },
+        {
+            question: "Qual é a altura média de uma palmeira de açaí?",
+            options: [
+                "5-10 metros",
+                "15-20 metros",
+                "25-30 metros",
+                "35-40 metros"
+            ],
+            correctIndex: 1,
+            category: "producao",
+            difficulty: "dificil"
+        },
+        // PERGUNTAS ADICIONADAS AUTOMATICAMENTE - NÃO REMOVER ESTE BLOCO
+        {
+            category: "acai",
+            difficulty: "facil",
+            question: "O açaí é uma fruta típica de qual região do Brasil?",
+            options: ["Sul", "Sudeste", "Nordeste", "Norte"],
+            correctIndex: 3
+        },
+        {
+            category: "acai",
+            difficulty: "facil",
+            question: "Qual é o nome científico da palmeira que produz o açaí?",
+            options: ["Euterpe edulis", "Euterpe oleracea", "Elaeis guineensis", "Cocos nucifera"],
+            correctIndex: 1
+        },
+        {
+            category: "acai",
+            difficulty: "medio",
+            question: "Qual grupo indígena foi pioneiro no consumo do açaí?",
+            options: ["Guaranis", "Tupinambás", "Ticunas", "Yanomamis"],
+            correctIndex: 2
+        },
+        {
+            category: "acai",
+            difficulty: "medio",
+            question: "Qual destes NÃO é um nome alternativo para o açaí?",
+            options: ["Juçara", "Palmiteiro", "Açaizeiro", "Pupunha"],
+            correctIndex: 3
+        },
+        {
+            category: "acai",
+            difficulty: "dificil",
+            question: "Quantos frutos um único cacho de açaí pode produzir?",
+            options: ["Até 500 frutos", "Até 1.000 frutos", "Até 3.000 frutos", "Até 6.000 frutos"],
+            correctIndex: 3
+        },
+        {
+            category: "acai",
+            difficulty: "dificil",
+            question: "Em qual tipo de ecossistema a palmeira de açaí cresce naturalmente?",
+            options: ["Cerrado", "Caatinga", "Várzeas amazônicas", "Mata Atlântica litorânea"],
+            correctIndex: 2
+        },
+        {
+            category: "acai",
+            difficulty: "facil",
+            question: "Qual é a aparência do açaí quando maduro?",
+            options: ["Amarelo-alaranjado", "Verde-claro", "Roxo-escuro quase preto", "Vermelho-vivo"],
+            correctIndex: 2
+        },
+        {
+            category: "acai",
+            difficulty: "medio",
+            question: "Qual parte da palmeira do açaí também é consumida como palmito?",
+            options: ["As folhas", "As raízes", "O broto terminal (meristema)", "A casca do caule"],
+            correctIndex: 2
+        },
+        {
+            category: "acai",
+            difficulty: "dificil",
+            question: "Qual estado brasileiro é o maior produtor mundial de açaí?",
+            options: ["Amazonas", "Bahia", "Pará", "Maranhão"],
+            correctIndex: 2
+        },
+        {
+            category: "acai",
+            difficulty: "facil",
+            question: "O açaí é classificado botanicamente como:",
+            options: ["Legume", "Raiz tuberosa", "Baga", "Noz"],
+            correctIndex: 2
+        },
+        {
+            category: "producao",
+            difficulty: "facil",
+            question: "Como é chamado o trabalhador que sobe nas palmeiras para colher o açaí?",
+            options: ["Boiadeiro", "Peconheiro", "Apicultor", "Vinhateiro"],
+            correctIndex: 1
+        },
+        {
+            category: "producao",
+            difficulty: "facil",
+            question: "Qual é o método tradicional de separação da polpa do caroço do açaí?",
+            options: ["Fermentação", "Secagem ao sol", "Maceração com água", "Congelamento rápido"],
+            correctIndex: 2
+        },
+        {
+            category: "producao",
+            difficulty: "medio",
+            question: "Por que o açaí processado deve ser pasteurizado ou congelado rapidamente?",
+            options: ["Para intensificar o sabor", "Para mudar sua cor natural", "Para evitar fermentação e perda nutricional", "Para aumentar o volume da polpa"],
+            correctIndex: 2
+        },
+        {
+            category: "producao",
+            difficulty: "medio",
+            question: "Qual etapa é essencial no processamento industrial do açaí para consumo seguro?",
+            options: ["Adição de conservantes químicos", "Tratamento térmico (pasteurização)", "Liofilização", "Fermentação controlada"],
+            correctIndex: 1
+        },
+        {
+            category: "producao",
+            difficulty: "dificil",
+            question: "Quantos kg de frutos são necessários para produzir aproximadamente 1 litro de polpa de açaí?",
+            options: ["1-2 kg", "3-4 kg", "5-7 kg", "8-10 kg"],
+            correctIndex: 2
+        },
+        {
+            category: "producao",
+            difficulty: "dificil",
+            question: "Qual técnica moderna ajuda a prolongar a vida útil da polpa de açaí sem perder nutrientes?",
+            options: ["Ultracongelamento (-18°C ou inferior)", "Adição de açúcar cristal", "Processamento a vácuo", "Defumação controlada"],
+            correctIndex: 0
+        },
+        {
+            category: "producao",
+            difficulty: "facil",
+            question: "O açaí é colhido principalmente durante qual período?",
+            options: ["Janeiro a março", "Abril a junho", "Julho a dezembro", "Durante todo o ano"],
+            correctIndex: 2
+        },
+        {
+            category: "producao",
+            difficulty: "medio",
+            question: "Qual é a principal ameaça à produção sustentável de açaí?",
+            options: ["Excesso de chuva", "Desmatamento para expansão agrícola", "Pragas importadas", "Solo muito fértil"],
+            correctIndex: 1
+        },
+        {
+            category: "producao",
+            difficulty: "dificil",
+            question: "O que é o 'manejo de mínimo impacto' na colheita de açaí?",
+            options: ["Colher apenas cachos maduros sem danificar a palmeira", "Usar máquinas pesadas para acelerar a colheita", "Plantar em monocultura com alta densidade", "Colher frutos verdes para maior durabilidade"],
+            correctIndex: 0
+        },
+        {
+            category: "producao",
+            difficulty: "facil",
+            question: "Como os cachos de açaí são transportados após a colheita?",
+            options: ["Em caminhões refrigerados", "Em caixas plásticas herméticas", "Amarrados em feixes (paneiros)", "Processados imediatamente no local"],
+            correctIndex: 2
         }
-        this.updateHighScoreDisplay();
-
-        let message = "";
-        let icon = "";
-        // CORREÇÃO: Mensagem de vitória sem o cupom.
-        if (this.score >= questionsDatabase.config.minCorrectForReward) {
-            icon = '🏆';
-            message = `<h3>Parabéns, Embaixador(a) Sabor da Terra!</h3><p>Seu conhecimento é impressionante! Você é um verdadeiro expert em nosso açaí!</p>`;
-        } else if (this.score >= total / 2) {
-            icon = '👍';
-            message = `<h3>Você conhece bem a gente!</h3><p>Mandou bem! Que tal passar na nossa loja pra comemorar com o seu açaí preferido?</p>`;
-        } else {
-            icon = '�';
-            message = `<h3>Valeu a tentativa!</h3><p>Agora que você sabe mais sobre nós, venha viver a experiência Sabor da Terra e se tornar um expert!</p>`;
-        }
-        this.resultIconEl.textContent = icon;
-        this.resultMessageEl.innerHTML = message;
-    }
-    
-    getHighScore() {
-        return parseFloat(localStorage.getItem(HIGH_SCORE_KEY) || 0);
-    }
-
-    setHighScore(score) {
-        localStorage.setItem(HIGH_SCORE_KEY, score.toString());
-        this.highScore = score;
-    }
-    
-    updateHighScoreDisplay() {
-        if(this.highScoreEl) {
-            this.highScoreEl.textContent = `Melhor pontuação: ${this.getHighScore()}%`;
-        }
-    }
-}
-
-// Função global para reiniciar o quiz (usada pelo botão no HTML antigo)
-function restartQuiz() {
-    if(window.quiz) {
-        window.quiz.start();
-    }
-}
-
-// Inicialização centralizada
-document.addEventListener('DOMContentLoaded', () => {
-    // Inicializa o quiz
-    window.quiz = new Quiz();
-});
+    ]
+}; 
