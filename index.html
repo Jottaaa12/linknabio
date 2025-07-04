@@ -676,14 +676,15 @@
             </a>
             
             <!-- Novo botão do Quiz -->
-            <div class="flex items-center justify-center w-full p-4 rounded-full shadow-lg font-bold text-lg btn-secondary relative mt-4 group opacity-60 cursor-not-allowed">
+            <button id="quiz-button" 
+                    class="flex items-center justify-center w-full p-4 rounded-full shadow-lg font-bold text-lg btn-secondary hover-lift relative mt-4 group"
+                    onclick="gtag('event', 'click', { 'custom_parameter_1': 'quiz_button' })">
                 <i class="fa-solid fa-gamepad mr-3 text-[var(--accent-green)]"></i>
                 <span>Jogar Quiz</span>
                 <span class="absolute -top-2 -right-2 bg-[var(--accent-green)] text-[var(--dark-text-on-green)] text-xs font-bold px-2 py-1 rounded-full animate-pulse">
                     Novo!
                 </span>
-            </div>
-            <p class="text-center text-xs text-[var(--subtle-text)] mt-2">(em desenvolvimento)</p>
+            </button>
             
             <div class="space-y-4 pt-2">
                 <a href="https://g.page/r/CdfFPeHDX5anEBE/review" target="_blank" 
@@ -824,6 +825,22 @@
         </div>
     </div>
 
+    <!-- Modal do Quiz em Desenvolvimento -->
+    <div id="quiz-modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50">
+        <div class="modal-content p-6 rounded-2xl shadow-2xl text-center relative max-w-sm w-full">
+            <button data-close-modal="quiz-modal" class="absolute -top-3 -right-3 bg-white text-purple-700 w-8 h-8 rounded-full shadow-lg font-bold hover:scale-110 transition-transform" aria-label="Fechar modal">×</button>
+            <div class="mb-4">
+                <div class="text-4xl mb-3">🎮</div>
+                <h3 class="text-lg font-bold mb-2">Quiz em Desenvolvimento</h3>
+                <p class="text-sm text-[var(--subtle-text)]">Nosso quiz ainda está em desenvolvimento, e em breve estará disponível para vocês!</p>
+            </div>
+            <button data-close-modal="quiz-modal" class="w-full p-3 rounded-full font-medium btn-primary hover-lift">
+                <i class="fa-solid fa-check mr-2"></i>
+                Entendi!
+            </button>
+        </div>
+    </div>
+
     <!-- Botão de Chatbot -->
     <button id="chatbot-btn" class="chatbot-btn" title="Fale com a assistente virtual">
         💬
@@ -866,6 +883,7 @@
             };
             setupModal('qr-code-button', 'qr-modal');
             setupModal('wifi-button', 'wifi-modal');
+            setupModal('quiz-button', 'quiz-modal');
 
             // QR Code
             document.getElementById('qr-code-button').addEventListener('click', () => {
