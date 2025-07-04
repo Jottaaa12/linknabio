@@ -67,7 +67,8 @@ const questionsDatabase = {
                 "Açaí rápido como o vento",
                 "Self-service de felicidade"
             ],
-            correctIndex: 1
+            correctIndex: 1,
+            difficulty: "facil"
         },
         {
             category: "brand",
@@ -78,7 +79,8 @@ const questionsDatabase = {
                 "Como a opção mais econômica da orla",
                 "Como uma lanchonete com vários tipos de salgados"
             ],
-            correctIndex: 1
+            correctIndex: 1,
+            difficulty: "facil"
         },
         {
             category: "brand",
@@ -89,7 +91,8 @@ const questionsDatabase = {
                 "Só abrimos pela manhã",
                 "Vendemos apenas açaí com peixe"
             ],
-            correctIndex: 1
+            correctIndex: 1,
+            difficulty: "facil"
         },
         
         // Categoria: Produto e Ingredientes
@@ -114,7 +117,8 @@ const questionsDatabase = {
                 "Polpa líquida diluída",
                 "Polpa em pó reconstituída"
             ],
-            correctIndex: 1
+            correctIndex: 1,
+            difficulty: "medio"
         },
         {
             category: "product",
@@ -125,12 +129,14 @@ const questionsDatabase = {
                 "A rapidez no preparo",
                 "O tamanho da porção"
             ],
-            correctIndex: 1
+            correctIndex: 1,
+            difficulty: "medio"
         },
         
         // Categoria: Bitupitá e Cultura Local
         {
             category: "local",
+            difficulty: "facil",
             question: "Qual esporte é famoso em Bitupitá devido aos ventos fortes?",
             options: [
                 "Surf tradicional",
@@ -142,6 +148,7 @@ const questionsDatabase = {
         },
         {
             category: "local",
+            difficulty: "facil",
             question: "Qual é o melhor horário para apreciar a paisagem de Bitupitá?",
             options: [
                 "Durante a chuva",
@@ -155,6 +162,7 @@ const questionsDatabase = {
         // Categoria: Conhecimento Geral sobre Açaí
         {
             category: "acai",
+            difficulty: "facil",
             question: "De qual região do Brasil o açaí é nativo?",
             options: [
                 "Sul",
@@ -166,6 +174,7 @@ const questionsDatabase = {
         },
         {
             category: "acai",
+            difficulty: "facil",
             question: "Qual o benefício mais conhecido do açaí?",
             options: [
                 "Ajuda a dormir melhor",
@@ -179,6 +188,7 @@ const questionsDatabase = {
         // Categoria: Perguntas Divertidas
         {
             category: "fun",
+            difficulty: "facil",
             question: "Qual seria a melhor legenda para uma foto com nosso açaí na praia?",
             options: [
                 "Só mais um dia normal",
@@ -190,6 +200,7 @@ const questionsDatabase = {
         },
         {
             category: "fun",
+            difficulty: "facil",
             question: "Se nosso açaí fosse um atleta local, qual seria?",
             options: [
                 "Um jogador de dominó",
@@ -210,8 +221,9 @@ const questionsDatabase = {
                 "Palmeira Imperial"
             ],
             correctIndex: 1,
-            category: "Ingredientes",
-            explanation: "O açaí vem da Palmeira Açaí (Euterpe oleracea), nativa da região amazônica. Embora a Palmeira Juçara também produza frutos semelhantes, o verdadeiro açaí vem especificamente da Palmeira Açaí."
+            category: "ingredientes",
+            explanation: "O açaí vem da Palmeira Açaí (Euterpe oleracea), nativa da região amazônica. Embora a Palmeira Juçara também produza frutos semelhantes, o verdadeiro açaí vem especificamente da Palmeira Açaí.",
+            difficulty: "facil"
         },
         {
             question: "Qual é a cor natural do açaí puro?",
@@ -222,7 +234,8 @@ const questionsDatabase = {
                 "Preto"
             ],
             correctIndex: 0,
-            category: "Características"
+            category: "caracteristicas",
+            difficulty: "facil"
         },
         {
             question: "Em qual região do Brasil o açaí é mais consumido tradicionalmente?",
@@ -233,7 +246,8 @@ const questionsDatabase = {
                 "Sudeste"
             ],
             correctIndex: 1,
-            category: "Cultura"
+            category: "cultura",
+            difficulty: "facil"
         },
         {
             question: "Qual é o principal benefício nutricional do açaí?",
@@ -244,7 +258,8 @@ const questionsDatabase = {
                 "Alto teor de cálcio"
             ],
             correctIndex: 1,
-            category: "Nutrição"
+            category: "nutricao",
+            difficulty: "medio"
         },
         {
             question: "Como o açaí é tradicionalmente consumido na região Norte?",
@@ -255,7 +270,8 @@ const questionsDatabase = {
                 "Com frutas"
             ],
             correctIndex: 1,
-            category: "Cultura"
+            category: "cultura",
+            difficulty: "medio"
         },
         {
             question: "Qual é a melhor temperatura para servir o açaí?",
@@ -266,7 +282,8 @@ const questionsDatabase = {
                 "-22°C a -20°C"
             ],
             correctIndex: 2,
-            category: "Preparo"
+            category: "preparo",
+            difficulty: "dificil"
         },
         {
             question: "Qual é o tempo médio de validade do açaí congelado?",
@@ -277,7 +294,8 @@ const questionsDatabase = {
                 "2 anos"
             ],
             correctIndex: 1,
-            category: "Conservação"
+            category: "conservacao",
+            difficulty: "medio"
         },
         {
             question: "Qual é a época de colheita do açaí?",
@@ -288,7 +306,8 @@ const questionsDatabase = {
                 "Ano todo"
             ],
             correctIndex: 2,
-            category: "Produção"
+            category: "producao",
+            difficulty: "dificil"
         },
         {
             question: "Qual é o principal método de processamento do açaí?",
@@ -299,7 +318,8 @@ const questionsDatabase = {
                 "Secagem"
             ],
             correctIndex: 2,
-            category: "Preparo"
+            category: "preparo",
+            difficulty: "medio"
         },
         {
             question: "Qual é a classificação do açaí mais espesso?",
@@ -310,7 +330,8 @@ const questionsDatabase = {
                 "Popular"
             ],
             correctIndex: 0,
-            category: "Características"
+            category: "caracteristicas",
+            difficulty: "dificil"
         },
         {
             question: "Quanto tempo o açaí pode ficar fora do freezer?",
@@ -321,7 +342,8 @@ const questionsDatabase = {
                 "Até 8 horas"
             ],
             correctIndex: 0,
-            category: "Conservação"
+            category: "conservacao",
+            difficulty: "medio"
         },
         {
             question: "Qual é o principal acompanhamento do açaí no Sul/Sudeste?",
@@ -332,7 +354,8 @@ const questionsDatabase = {
                 "Castanha do Pará"
             ],
             correctIndex: 1,
-            category: "Cultura"
+            category: "cultura",
+            difficulty: "facil"
         },
         {
             question: "Qual é o teor médio de gordura no açaí?",
@@ -343,7 +366,8 @@ const questionsDatabase = {
                 "8-10%"
             ],
             correctIndex: 2,
-            category: "Nutrição"
+            category: "nutricao",
+            difficulty: "dificil"
         },
         {
             question: "Como identificar um açaí de boa qualidade?",
@@ -354,7 +378,8 @@ const questionsDatabase = {
                 "Pelo sabor doce"
             ],
             correctIndex: 2,
-            category: "Características"
+            category: "caracteristicas",
+            difficulty: "medio"
         },
         {
             question: "Qual é a altura média de uma palmeira de açaí?",
@@ -365,7 +390,8 @@ const questionsDatabase = {
                 "35-40 metros"
             ],
             correctIndex: 1,
-            category: "Produção"
+            category: "producao",
+            difficulty: "dificil"
         },
         
         // Você pode continuar adicionando mais perguntas aqui...
