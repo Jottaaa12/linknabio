@@ -129,18 +129,6 @@ class Quiz {
         // Verificar se há resultado compartilhado na URL
         this.checkSharedResult();
 
-        // Sons
-        this.sounds = {
-            achievement: new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjI5LjEwMAAAAAAAAAAAAAAA//tQwAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAADAAAGhgBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVWqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqr///////////////////////////////////////////8AAAAATGF2YzU4LjU0AAAAAAAAAAAAAAAAJAAAAAAAAAAAAYbvth1KAAAAAAD/+9DEAAAKmP159PKAA0A3r785gBAAAA0gAAAABE4qwAAAAABPwoAAAAAANIAAAAAAAAAAAAAAAAAAAAA'),
-            difficulty: new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjI5LjEwMAAAAAAAAAAAAAAA//tQwAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAADAAAGhgBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVWqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqr///////////////////////////////////////////8AAAAATGF2YzU4LjU0AAAAAAAAAAAAAAAAJAAAAAAAAAAAAYbUwHc6AAAAAAD/+9DEAAAKmQF79PAAA0o3r785gBAAAA0gAAAABE4qwAAAAABPwoAAAAAANIAAAAAAAAAAAAAAAAAAAAA'),
-            timerWarning: new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjI5LjEwMAAAAAAAAAAAAAAA//tQwAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAADAAAGhgBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVWqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqr///////////////////////////////////////////8AAAAATGF2YzU4LjU0AAAAAAAAAAAAAAAAJAAAAAAAAAAAAYbNhxy6AAAAAAD/+9DEAAAKmQF79PAAA0o3r785gBAAAA0gAAAABE4qwAAAAABPwoAAAAAANIAAAAAAAAAAAAAAAAAAAAA')
-        };
-
-        // Configurar volume
-        Object.values(this.sounds).forEach(sound => {
-            sound.volume = 0.3;
-        });
-
         // Ranking
         this.ranking = this.loadRanking();
 
@@ -278,7 +266,6 @@ class Quiz {
         }
 
         // Tocar som e adicionar animação
-        this.sounds.difficulty.play();
         const btn = Array.from(this.difficultyButtons).find(b => b.dataset.difficulty === difficulty);
         if (btn) {
             btn.classList.add('pulse');
@@ -405,11 +392,6 @@ class Quiz {
 
         // Mostrar primeira pergunta
         this.showQuestion();
-
-        // Tocar som
-        if (window.soundManager) {
-            window.soundManager.play('start');
-        }
     }
 
     startTimer() {
@@ -610,11 +592,6 @@ class Quiz {
         // Atualizar pontuação apenas no modo competição
         if (this.mode === 'competition' && correct) {
             this.score++;
-        }
-
-        // Tocar som
-        if (window.soundManager) {
-            window.soundManager.play(correct ? 'correct' : 'wrong');
         }
 
         // Salvar resposta
@@ -1013,11 +990,6 @@ class Quiz {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    playSound(isCorrect) {
-        const sound = isCorrect ? CORRECT_SOUND : INCORRECT_SOUND;
-        sound.play().catch(() => {}); // Ignorar erros de reprodução (alguns navegadores bloqueiam)
-    }
-
     getHighScore() {
         return parseFloat(localStorage.getItem(HIGH_SCORE_KEY) || 0);
     }
@@ -1033,7 +1005,7 @@ class Quiz {
 
     showAchievementNotification(achievement) {
         // Tocar som de conquista
-        this.sounds.achievement.play();
+        // this.sounds.achievement.play();
 
         const notification = document.createElement('div');
         notification.className = 'achievement-notification';
@@ -1290,11 +1262,6 @@ class Quiz {
 
             this.updatePowerUpsUI();
 
-            // Tocar som
-            if (window.soundManager) {
-                window.soundManager.play('powerup');
-            }
-            
             // Anunciar uso do power-up
             this.announceToScreenReader('Power-up 50/50 usado. Duas opções incorretas foram removidas.');
         }
@@ -1312,19 +1279,6 @@ class Quiz {
             
             this.updatePowerUpsUI();
 
-            // Tocar som
-            if (window.soundManager) {
-                window.soundManager.play('powerup');
-            }
-
-            // Pular para próxima pergunta
-            if (this.currentQuestionIndex < this.selectedQuestions.length - 1) {
-                this.currentQuestionIndex++;
-                this.showQuestion();
-            } else {
-                this.showResult();
-            }
-            
             // Anunciar uso do power-up
             this.announceToScreenReader('Power-up Pular usado. Passando para próxima pergunta.');
         }
