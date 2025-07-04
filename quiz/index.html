@@ -190,22 +190,19 @@
                     <button 
                         class="difficulty-btn" 
                         data-difficulty="facil" 
-                        aria-pressed="true"
-                        onclick="window.quiz.start('facil', window.quiz.mode)">
+                        aria-pressed="true">
                         Fácil
                     </button>
                     <button 
                         class="difficulty-btn" 
                         data-difficulty="medio" 
-                        aria-pressed="false"
-                        onclick="window.quiz.start('medio', window.quiz.mode)">
+                        aria-pressed="false">
                         Médio
                     </button>
                     <button 
                         class="difficulty-btn" 
                         data-difficulty="dificil" 
-                        aria-pressed="false"
-                        onclick="window.quiz.start('dificil', window.quiz.mode)">
+                        aria-pressed="false">
                         Difícil
                     </button>
                 </div>
@@ -215,14 +212,12 @@
                 <h3 id="mode-label">Modo de Jogo</h3>
                 <div class="mode-buttons">
                     <button 
-                        onclick="window.quiz.mode = 'competition'" 
                         class="mode-btn active" 
                         data-mode="competition"
                         aria-pressed="true">
                         🏆 Competição
                     </button>
                     <button 
-                        onclick="window.quiz.mode = 'training'" 
                         class="mode-btn" 
                         data-mode="training"
                         aria-pressed="false">
@@ -231,7 +226,7 @@
                 </div>
             </div>
 
-            <button id="start-btn" class="btn btn-primary" aria-describedby="start-description" onclick="startQuizFromIntro()">
+            <button id="start-btn" class="btn btn-primary" aria-describedby="start-description">
                 <i class="fas fa-play" aria-hidden="true"></i>
                 Iniciar Quiz
             </button>
@@ -318,85 +313,6 @@
     <script src="achievements.js"></script>
     <script src="quiz.js"></script>
     
-    <script>
-        // Função para iniciar o quiz a partir da tela de introdução
-        function startQuizFromIntro() {
-            document.getElementById('intro-screen').classList.add('hidden');
-            document.getElementById('quiz-container').classList.remove('hidden');
-            window.quiz.start(); // Inicia o quiz
-        }
-
-        // Modificar a inicialização do quiz para não começar automaticamente
-        document.addEventListener('DOMContentLoaded', () => {
-            try {
-                window.quiz = new Quiz();
-                
-                // Inicializar achievementManager se disponível
-                if (window.achievementManager && window.quiz.achievementsButton) {
-                    window.quiz.achievementsButton.addEventListener('click', () => {
-                        window.achievementManager.showAchievementsModal();
-                    });
-                }
-                
-                // Não chama start() aqui, aguarda o clique no botão
-            } catch (error) {
-                console.error('Erro ao inicializar o quiz:', error);
-                document.body.innerHTML = `
-                    <div class="quiz-wrapper">
-                        <h1>Erro ao carregar o quiz</h1>
-                        <p>Por favor, recarregue a página ou entre em contato com o suporte.</p>
-                    </div>
-                `;
-            }
-        });
-
-        // Registrar Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(registration => {
-                        console.log('Service Worker registrado com sucesso:', registration);
-                    })
-                    .catch(error => {
-                        console.log('Falha ao registrar Service Worker:', error);
-                    });
-            });
-        }
-
-        // Prompt de instalação do PWA
-        let deferredPrompt;
-        const addBtn = document.createElement('button');
-        addBtn.style.display = 'none';
-        addBtn.className = 'pwa-install-button';
-        addBtn.innerHTML = `
-            <i class="fas fa-download"></i>
-            Instalar App
-        `;
-        document.body.appendChild(addBtn);
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            addBtn.style.display = 'flex';
-
-            addBtn.addEventListener('click', async () => {
-                if (deferredPrompt !== null) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        deferredPrompt = null;
-                    }
-                    addBtn.style.display = 'none';
-                }
-            });
-        });
-
-        window.addEventListener('appinstalled', () => {
-            deferredPrompt = null;
-            addBtn.style.display = 'none';
-        });
-    </script>
-
     <!-- Fallback para navegadores sem JavaScript -->
     <noscript>
         <div class="quiz-wrapper">
