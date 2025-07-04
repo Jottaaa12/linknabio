@@ -138,6 +138,15 @@ class Quiz {
         
         // Validar dados na inicialização
         this.validateInitialData();
+
+        // No construtor ou start(), criar os botões uma vez:
+        this.answerButtons = [];
+        for (let i = 0; i < 4; i++) {
+            const button = document.createElement('button');
+            button.className = 'btn';
+            this.answersContainer.appendChild(button);
+            this.answerButtons.push(button);
+        }
     }
 
     validateInitialData() {
@@ -474,21 +483,14 @@ class Quiz {
             const shuffled = options.map((opt, i) => ({ opt, i })).sort(() => Math.random() - 0.5);
             
             shuffled.forEach(({ opt, i }, idx) => {
-                const button = document.createElement('button');
-                button.className = 'answer-btn';
+                const button = this.answerButtons[idx];
                 button.textContent = typeof opt === 'string' ? opt : opt.text;
-                button.dataset.correct = (i === correctIndex).toString();
+                button.onclick = (e) => this.handleAnswer(i, button);
+                button.disabled = false;
+                button.className = 'btn';
                 button.setAttribute('aria-label', `Opção ${idx + 1}: ${typeof opt === 'string' ? opt : opt.text}`);
                 button.setAttribute('role', 'button');
                 button.setAttribute('tabindex', '0');
-                button.onclick = () => this.handleAnswer(i);
-                button.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        this.handleAnswer(i);
-                        e.preventDefault();
-                    }
-                });
-                this.answersContainer.appendChild(button);
             });
             
             // Atualizar progresso
@@ -515,7 +517,7 @@ class Quiz {
             }, 300);
             
             // Focar na primeira resposta para acessibilidade
-            const firstAnswer = this.answersContainer.querySelector('.answer-btn');
+            const firstAnswer = this.answersContainer.querySelector('.btn');
             if (firstAnswer) {
                 setTimeout(() => firstAnswer.focus(), 100);
             }
@@ -579,72 +581,41 @@ class Quiz {
         this.answersContainer.appendChild(loadingEl);
     }
 
-    handleAnswer(optionIndex) {
-        if (!this.currentQuestion || this.answering) return;
-        this.answering = true;
+    handleAnswer(selectedIndex, selectedButton) {
+        if (this.isAnswered) return;
+        this.isAnswered = true;
         if (this.mode === 'competition') {
             clearTimeout(this.timerTimeout);
         }
-        const correct = optionIndex === this.currentQuestion.correctIndex;
-        
-        // Atualizar pontuação apenas no modo competição
-        if (this.mode === 'competition' && correct) {
+        const question = this.selectedQuestions[this.currentQuestionIndex];
+        const isCorrect = selectedIndex === question.correctIndex;
+
+        if (isCorrect) {
             this.score++;
-        }
-
-        // Salvar resposta
-        this.answeredQuestions.push({
-            ...this.currentQuestion,
-            timeSpent: this.mode === 'competition' ? (Date.now() - this.startTime) / 1000 : 0,
-            correct,
-            userAnswer: optionIndex
-        });
-
-        // Destacar resposta correta e incorreta
-        const buttons = this.answersContainer.querySelectorAll('button');
-        
-        buttons.forEach((btn, index) => {
-            btn.disabled = true;
-            if (index === this.currentQuestion.correctIndex) {
-                btn.classList.add('correct');
-            } else if (index === optionIndex && !correct) {
-                btn.classList.add('wrong');
+            selectedButton.classList.add('correct');
+        } else {
+            // Marca a resposta errada do usuário
+            if (selectedButton) selectedButton.classList.add('incorrect');
+            // CORREÇÃO: Encontra e marca a resposta correta de forma segura
+            const correctButtonText = question.options[question.correctIndex];
+            const correctButton = Array.from(this.answersContainer.children)
+                .find(btn => btn.textContent === correctButtonText);
+            if (correctButton) {
+                correctButton.classList.add('correct');
             }
-        });
-
-        // No modo treino, mostrar explicação
-        if (this.mode === 'training' && this.currentQuestion.explanation) {
-            const explanation = document.createElement('div');
-            explanation.className = 'explanation';
-            explanation.textContent = this.currentQuestion.explanation;
-            this.answersContainer.appendChild(explanation);
         }
-
+        // Desabilita todos os botões após a resposta
+        Array.from(this.answersContainer.children).forEach(btn => btn.disabled = true);
         // Aguardar mais tempo no modo treino para o usuário ler a explicação
-        const delay = this.mode === 'training' ? 3000 : 1000;
-
+        const delay = this.mode === 'training' ? 3000 : 1500;
         setTimeout(() => {
-            // Remover classes de feedback
-            buttons.forEach(btn => {
-                btn.classList.remove('correct', 'wrong');
-                btn.disabled = false;
-            });
-
-            // Remover explicação se existir
-            const explanation = this.answersContainer.querySelector('.explanation');
-            if (explanation) {
-                explanation.remove();
-            }
-
-            // Próxima pergunta ou finalizar
-            if (this.currentQuestionIndex < this.selectedQuestions.length - 1) {
-                this.currentQuestionIndex++;
+            this.isAnswered = false;
+            this.currentQuestionIndex++;
+            if (this.currentQuestionIndex < this.selectedQuestions.length) {
                 this.showQuestion();
             } else {
                 this.showResult();
             }
-
-            this.answering = false;
         }, delay);
     }
 
@@ -1290,7 +1261,7 @@ class Quiz {
         }
         
         // Verificar se já respondeu
-        if (this.answering) {
+        if (this.isAnswered) {
             console.warn('Tentativa de usar power-up após resposta');
             return false;
         }
@@ -1363,4 +1334,30 @@ function restartQuiz() {
     if (window.quiz) {
         window.quiz.start();
     }
-} 
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Inicializa o quiz, que agora controla seus próprios eventos
+    window.quiz = new Quiz();
+
+    // Inicializa outros módulos (se eles existirem)
+    if (typeof ThemeManager !== 'undefined') {
+        window.themeManager = new ThemeManager();
+    }
+    if (typeof SoundManager !== 'undefined') {
+        window.soundManager = new SoundManager();
+        const soundButton = document.getElementById('sound-toggle');
+        if(soundButton) {
+            soundButton.onclick = () => window.soundManager.toggleMute();
+        }
+    }
+    if (typeof AchievementManager !== 'undefined') {
+        window.achievementManager = new AchievementManager();
+        const achievementsButton = document.getElementById('achievements-button');
+        if(achievementsButton) {
+             achievementsButton.addEventListener('click', () => {
+                window.achievementManager.showAchievementsModal();
+            });
+        }
+    }
+}); 
