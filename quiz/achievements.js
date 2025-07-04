@@ -155,14 +155,8 @@ class AchievementManager {
     }
 
     showAchievementsModal() {
-        const modal = document.createElement('div');
-        modal.className = 'achievements-modal';
-        
         const content = document.createElement('div');
         content.className = 'achievements-content';
-        
-        const title = document.createElement('h2');
-        title.textContent = '🏆 Conquistas';
         
         const grid = document.createElement('div');
         grid.className = 'achievements-grid';
@@ -189,24 +183,8 @@ class AchievementManager {
             grid.appendChild(card);
         }
 
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'close-modal';
-        closeBtn.textContent = 'Fechar';
-        
-        content.appendChild(title);
         content.appendChild(grid);
-        content.appendChild(closeBtn);
-        modal.appendChild(content);
-        document.body.appendChild(modal);
-
-        // Animar entrada
-        setTimeout(() => modal.classList.add('show'), 100);
-
-        // Fechar modal
-        closeBtn.addEventListener('click', () => {
-            modal.classList.remove('show');
-            setTimeout(() => modal.remove(), 300);
-        });
+        UIManager.createModal('🏆 Conquistas', content);
     }
 }
 
