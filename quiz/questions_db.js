@@ -4,6 +4,11 @@ const questionsDatabase = {
     config: {
         questionsPerQuiz: 10, // Número de perguntas por quiz
         minCorrectForReward: 8, // Mínimo de acertos para ganhar recompensa (80%)
+        difficulties: {
+            facil: { time: 30, points: 10 },
+            medio: { time: 20, points: 20 },
+            dificil: { time: 15, points: 30 }
+        }
     },
     
     // Categorias de perguntas
@@ -12,129 +17,354 @@ const questionsDatabase = {
         product: "Produto e Ingredientes",
         local: "Bitupitá e Cultura Local",
         acai: "Conhecimento Geral sobre Açaí",
-        fun: "Perguntas Divertidas"
+        fun: "Perguntas Divertidas",
+        ingredientes: "Ingredientes",
+        caracteristicas: "Características",
+        cultura: "Cultura",
+        nutricao: "Nutrição",
+        preparo: "Preparo",
+        conservacao: "Conservação",
+        producao: "Produção"
     },
     
     // Banco de perguntas
     questions: [
+        // MODELO PARA NOVAS PERGUNTAS:
+        /*
+        {
+            question: "Sua pergunta aqui?",
+            options: [
+                "Opção A",
+                "Opção B",
+                "Opção C",
+                "Opção D"
+            ],
+            correctIndex: 1, // índice da opção correta (0 a 3)
+            category: "Categoria", // (opcional)
+            explanation: "Explicação opcional para a resposta correta."
+        },
+        */
         // Categoria: Marca e Posicionamento
         {
             category: "brand",
+            difficulty: "facil",
+            question: "Qual o nome da nossa empresa?",
+            options: [
+                "Açaí da Terra",
+                "Sabor da Terra",
+                "Terra do Açaí",
+                "Açaí Sabor"
+            ],
+            correctIndex: 1
+        },
+        {
+            category: "brand",
             question: "Qual é o slogan oficial que define a nossa proposta?",
-            answers: [
-                { text: "O açaí mais barato da cidade", correct: false },
-                { text: "Mais que açaí, uma experiência", correct: true },
-                { text: "Açaí rápido como o vento", correct: false },
-                { text: "Self-service de felicidade", correct: false }
-            ]
+            options: [
+                "O açaí mais barato da cidade",
+                "Mais que açaí, uma experiência",
+                "Açaí rápido como o vento",
+                "Self-service de felicidade"
+            ],
+            correctIndex: 1
         },
         {
             category: "brand",
             question: "Como o Açaí Sabor da Terra se posiciona no mercado de Bitupitá?",
-            answers: [
-                { text: "Como uma opção de buffet livre (self-service)", correct: false },
-                { text: "Como uma marca premium, focada em qualidade e atendimento", correct: true },
-                { text: "Como a opção mais econômica da orla", correct: false },
-                { text: "Como uma lanchonete com vários tipos de salgados", correct: false }
-            ]
+            options: [
+                "Como uma opção de buffet livre (self-service)",
+                "Como uma marca premium, focada em qualidade e atendimento",
+                "Como a opção mais econômica da orla",
+                "Como uma lanchonete com vários tipos de salgados"
+            ],
+            correctIndex: 1
         },
         {
             category: "brand",
             question: "Qual a principal diferença do nosso serviço em comparação aos concorrentes?",
-            answers: [
-                { text: "Não temos diferença, vendemos a mesma coisa", correct: false },
-                { text: "Nosso foco é em produto premium e pedidos à la carte", correct: true },
-                { text: "Só abrimos pela manhã", correct: false },
-                { text: "Vendemos apenas açaí com peixe", correct: false }
-            ]
+            options: [
+                "Não temos diferença, vendemos a mesma coisa",
+                "Nosso foco é em produto premium e pedidos à la carte",
+                "Só abrimos pela manhã",
+                "Vendemos apenas açaí com peixe"
+            ],
+            correctIndex: 1
         },
         
         // Categoria: Produto e Ingredientes
         {
             category: "product",
+            difficulty: "medio",
+            question: "Qual é o nosso carro-chefe?",
+            options: [
+                "Açaí na Tigela",
+                "Milk Shake de Açaí",
+                "Açaí com Granola",
+                "Smoothie de Açaí"
+            ],
+            correctIndex: 0
+        },
+        {
+            category: "product",
             question: "Qual é o tipo de polpa de açaí que utilizamos em nossos produtos?",
-            answers: [
-                { text: "Polpa comum congelada", correct: false },
-                { text: "Polpa Especial com maior concentração de fruta", correct: true },
-                { text: "Polpa líquida diluída", correct: false },
-                { text: "Polpa em pó reconstituída", correct: false }
-            ]
+            options: [
+                "Polpa comum congelada",
+                "Polpa Especial com maior concentração de fruta",
+                "Polpa líquida diluída",
+                "Polpa em pó reconstituída"
+            ],
+            correctIndex: 1
         },
         {
             category: "product",
             question: "Qual é o diferencial do nosso açaí mais elogiado pelos clientes?",
-            answers: [
-                { text: "O preço baixo", correct: false },
-                { text: "A cremosidade e sabor intenso", correct: true },
-                { text: "A rapidez no preparo", correct: false },
-                { text: "O tamanho da porção", correct: false }
-            ]
+            options: [
+                "O preço baixo",
+                "A cremosidade e sabor intenso",
+                "A rapidez no preparo",
+                "O tamanho da porção"
+            ],
+            correctIndex: 1
         },
         
         // Categoria: Bitupitá e Cultura Local
         {
             category: "local",
             question: "Qual esporte é famoso em Bitupitá devido aos ventos fortes?",
-            answers: [
-                { text: "Surf tradicional", correct: false },
-                { text: "Kitesurf", correct: true },
-                { text: "Futebol de areia", correct: false },
-                { text: "Vôlei de praia", correct: false }
-            ]
+            options: [
+                "Surf tradicional",
+                "Kitesurf",
+                "Futebol de areia",
+                "Vôlei de praia"
+            ],
+            correctIndex: 1
         },
         {
             category: "local",
             question: "Qual é o melhor horário para apreciar a paisagem de Bitupitá?",
-            answers: [
-                { text: "Durante a chuva", correct: false },
-                { text: "No pôr do sol", correct: true },
-                { text: "Às 3 da manhã", correct: false },
-                { text: "Meio-dia", correct: false }
-            ]
+            options: [
+                "Durante a chuva",
+                "No pôr do sol",
+                "Às 3 da manhã",
+                "Meio-dia"
+            ],
+            correctIndex: 1
         },
         
         // Categoria: Conhecimento Geral sobre Açaí
         {
             category: "acai",
             question: "De qual região do Brasil o açaí é nativo?",
-            answers: [
-                { text: "Sul", correct: false },
-                { text: "Norte (Amazônia)", correct: true },
-                { text: "Nordeste", correct: false },
-                { text: "Sudeste", correct: false }
-            ]
+            options: [
+                "Sul",
+                "Norte (Amazônia)",
+                "Nordeste",
+                "Sudeste"
+            ],
+            correctIndex: 1
         },
         {
             category: "acai",
             question: "Qual o benefício mais conhecido do açaí?",
-            answers: [
-                { text: "Ajuda a dormir melhor", correct: false },
-                { text: "Rico em antioxidantes", correct: true },
-                { text: "Cura gripe", correct: false },
-                { text: "Diminui o apetite", correct: false }
-            ]
+            options: [
+                "Ajuda a dormir melhor",
+                "Rico em antioxidantes",
+                "Cura gripe",
+                "Diminui o apetite"
+            ],
+            correctIndex: 1
         },
         
         // Categoria: Perguntas Divertidas
         {
             category: "fun",
             question: "Qual seria a melhor legenda para uma foto com nosso açaí na praia?",
-            answers: [
-                { text: "Só mais um dia normal", correct: false },
-                { text: "Saboreando a vida em Bitupitá! 🌊🍇", correct: true },
-                { text: "Odeio praia", correct: false },
-                { text: "Queria estar em casa", correct: false }
-            ]
+            options: [
+                "Só mais um dia normal",
+                "Saboreando a vida em Bitupitá! 🌊🍇",
+                "Odeio praia",
+                "Queria estar em casa"
+            ],
+            correctIndex: 1
         },
         {
             category: "fun",
             question: "Se nosso açaí fosse um atleta local, qual seria?",
-            answers: [
-                { text: "Um jogador de dominó", correct: false },
-                { text: "Um kitesurfista profissional", correct: true },
-                { text: "Um nadador de piscina", correct: false },
-                { text: "Um ciclista de montanha", correct: false }
-            ]
+            options: [
+                "Um jogador de dominó",
+                "Um kitesurfista profissional",
+                "Um nadador de piscina",
+                "Um ciclista de montanha"
+            ],
+            correctIndex: 1
+        },
+        
+        // Ingredientes
+        {
+            question: "Qual é a principal fruta usada no açaí?",
+            options: [
+                "Palmeira Juçara",
+                "Palmeira Açaí",
+                "Palmeira Real",
+                "Palmeira Imperial"
+            ],
+            correctIndex: 1,
+            category: "Ingredientes",
+            explanation: "O açaí vem da Palmeira Açaí (Euterpe oleracea), nativa da região amazônica. Embora a Palmeira Juçara também produza frutos semelhantes, o verdadeiro açaí vem especificamente da Palmeira Açaí."
+        },
+        {
+            question: "Qual é a cor natural do açaí puro?",
+            options: [
+                "Roxo escuro",
+                "Vermelho",
+                "Marrom",
+                "Preto"
+            ],
+            correctIndex: 0,
+            category: "Características"
+        },
+        {
+            question: "Em qual região do Brasil o açaí é mais consumido tradicionalmente?",
+            options: [
+                "Nordeste",
+                "Norte",
+                "Sul",
+                "Sudeste"
+            ],
+            correctIndex: 1,
+            category: "Cultura"
+        },
+        {
+            question: "Qual é o principal benefício nutricional do açaí?",
+            options: [
+                "Alto teor de proteínas",
+                "Alto teor de antioxidantes",
+                "Alto teor de vitamina C",
+                "Alto teor de cálcio"
+            ],
+            correctIndex: 1,
+            category: "Nutrição"
+        },
+        {
+            question: "Como o açaí é tradicionalmente consumido na região Norte?",
+            options: [
+                "Com granola e mel",
+                "Com peixe e farinha",
+                "Com leite condensado",
+                "Com frutas"
+            ],
+            correctIndex: 1,
+            category: "Cultura"
+        },
+        {
+            question: "Qual é a melhor temperatura para servir o açaí?",
+            options: [
+                "-12°C a -10°C",
+                "-8°C a -6°C",
+                "-18°C a -15°C",
+                "-22°C a -20°C"
+            ],
+            correctIndex: 2,
+            category: "Preparo"
+        },
+        {
+            question: "Qual é o tempo médio de validade do açaí congelado?",
+            options: [
+                "1 mês",
+                "6 meses",
+                "1 ano",
+                "2 anos"
+            ],
+            correctIndex: 1,
+            category: "Conservação"
+        },
+        {
+            question: "Qual é a época de colheita do açaí?",
+            options: [
+                "Janeiro a Abril",
+                "Maio a Agosto",
+                "Julho a Dezembro",
+                "Ano todo"
+            ],
+            correctIndex: 2,
+            category: "Produção"
+        },
+        {
+            question: "Qual é o principal método de processamento do açaí?",
+            options: [
+                "Cozimento",
+                "Fermentação",
+                "Batimento",
+                "Secagem"
+            ],
+            correctIndex: 2,
+            category: "Preparo"
+        },
+        {
+            question: "Qual é a classificação do açaí mais espesso?",
+            options: [
+                "Tipo A",
+                "Tipo B",
+                "Tipo C",
+                "Popular"
+            ],
+            correctIndex: 0,
+            category: "Características"
+        },
+        {
+            question: "Quanto tempo o açaí pode ficar fora do freezer?",
+            options: [
+                "Até 2 horas",
+                "Até 4 horas",
+                "Até 6 horas",
+                "Até 8 horas"
+            ],
+            correctIndex: 0,
+            category: "Conservação"
+        },
+        {
+            question: "Qual é o principal acompanhamento do açaí no Sul/Sudeste?",
+            options: [
+                "Farinha de tapioca",
+                "Granola",
+                "Paçoca",
+                "Castanha do Pará"
+            ],
+            correctIndex: 1,
+            category: "Cultura"
+        },
+        {
+            question: "Qual é o teor médio de gordura no açaí?",
+            options: [
+                "2-4%",
+                "4-6%",
+                "6-8%",
+                "8-10%"
+            ],
+            correctIndex: 2,
+            category: "Nutrição"
+        },
+        {
+            question: "Como identificar um açaí de boa qualidade?",
+            options: [
+                "Pela cor roxa intensa",
+                "Pelo preço alto",
+                "Pela textura cremosa",
+                "Pelo sabor doce"
+            ],
+            correctIndex: 2,
+            category: "Características"
+        },
+        {
+            question: "Qual é a altura média de uma palmeira de açaí?",
+            options: [
+                "5-10 metros",
+                "15-20 metros",
+                "25-30 metros",
+                "35-40 metros"
+            ],
+            correctIndex: 1,
+            category: "Produção"
         },
         
         // Você pode continuar adicionando mais perguntas aqui...
@@ -143,12 +373,14 @@ const questionsDatabase = {
         {
             category: "categoria",
             question: "Sua pergunta aqui?",
-            answers: [
-                { text: "Resposta errada", correct: false },
-                { text: "Resposta certa", correct: true },
-                { text: "Resposta errada", correct: false },
-                { text: "Resposta errada", correct: false }
-            ]
+            options: [
+                "Opção A",
+                "Opção B", 
+                "Opção C",
+                "Opção D"
+            ],
+            correctIndex: 1, // índice da opção correta (0 a 3)
+            explanation: "Explicação opcional para a resposta correta."
         },
         */
     ]
