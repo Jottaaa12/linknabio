@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quiz - Açaí Sabor da Terra</title>
+    <meta name="description" content="Teste seus conhecimentos sobre o Açaí Sabor da Terra e ganhe descontos especiais!">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍇</text></svg>">
+    
+    <!-- Fontes e ícones -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Estilos específicos para a tela de apresentação */
+        .intro-screen {
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .logo-container {
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: logoGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% {
+                box-shadow: 0 8px 32px rgba(190, 242, 100, 0.2);
+            }
+            50% {
+                box-shadow: 0 8px 32px rgba(190, 242, 100, 0.4);
+            }
+        }
+
+        .intro-title {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 800;
+            margin: 1.5rem 0;
+            background: linear-gradient(135deg, var(--accent-green) 0%, #a3e635 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .intro-description {
+            font-size: 1.1rem;
+            color: var(--subtle-text);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .start-quiz-btn {
+            background: linear-gradient(135deg, var(--accent-green) 0%, #a3e635 100%);
+            color: var(--dark-text-on-green);
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 1rem 2.5rem;
+            border-radius: 9999px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .start-quiz-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(190, 242, 100, 0.3);
+        }
+
+        .quiz-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-item i {
+            font-size: 1.5rem;
+            color: var(--accent-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-item p {
+            font-size: 0.9rem;
+            color: var(--subtle-text);
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <!-- Tela de Apresentação -->
+        <div id="intro-screen" class="intro-screen fade-in">
+            <div class="logo-container">
+                <img src="https://i.imgur.com/d1KJ35R.jpeg" alt="Logo Açaí Sabor da Terra" class="logo">
+            </div>
+            
+            <h1 class="intro-title">Quiz Sabor da Terra</h1>
+            <p class="intro-description">Teste seus conhecimentos sobre o melhor açaí de Bitupitá e ganhe descontos especiais! Você está pronto para essa experiência deliciosa?</p>
+            
+            <div class="quiz-features">
+                <div class="feature-item">
+                    <i class="fas fa-star"></i>
+                    <p>10 Perguntas Selecionadas</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-gift"></i>
+                    <p>Ganhe Descontos</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-trophy"></i>
+                    <p>Recorde Pessoal</p>
+                </div>
+            </div>
+
+            <button onclick="startQuizFromIntro()" class="start-quiz-btn">
+                <i class="fas fa-play"></i>
+                Iniciar Quiz
+            </button>
+        </div>
+
+        <!-- Container do Quiz (inicialmente escondido) -->
+        <div id="quiz-container" class="quiz-wrapper hidden">
+            <h1 class="quiz-title">Quiz Sabor da Terra</h1>
+            
+            <div class="progress-container" role="progressbar" aria-label="Progresso do quiz">
+                <div id="progress-bar-container">
+                    <div id="progress-bar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+                </div>
+                <p id="progress-text">Pergunta 1/10</p>
+            </div>
+
+            <h2 id="question" aria-live="polite">Carregando pergunta...</h2>
+            
+            <div id="answers-container" role="region" aria-label="Opções de resposta">
+                <!-- Botões de resposta serão inseridos aqui -->
+            </div>
+        </div>
+
+        <!-- Container de Resultado -->
+        <div id="result-container" class="hidden result-container" aria-live="polite">
+            <div id="result-icon" role="img" aria-label="Ícone de resultado"></div>
+            <h2 class="result-title">Quiz Finalizado!</h2>
+            
+            <p>Sua pontuação foi:</p>
+            <p id="score" class="result-score">0 / 10</p>
+
+            <div id="result-message" class="result-message"></div>
+            <p id="high-score" class="high-score">Melhor pontuação: 0%</p>
+
+            <button onclick="restartQuiz()" class="btn btn-restart">
+                <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
+                Tentar Novamente
+            </button>
+            
+            <a href="/" class="btn text-center">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                Voltar ao Início
+            </a>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="questions_db.js"></script>
+    <script src="quiz.js"></script>
+    
+    <script>
+        // Função para iniciar o quiz a partir da tela de introdução
+        function startQuizFromIntro() {
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            window.quiz.start(); // Inicia o quiz
+        }
+
+        // Modificar a inicialização do quiz para não começar automaticamente
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                window.quiz = new Quiz();
+                // Não chama start() aqui, aguarda o clique no botão
+            } catch (error) {
+                console.error('Erro ao inicializar o quiz:', error);
+                document.body.innerHTML = `
+                    <div class="quiz-wrapper">
+                        <h1>Erro ao carregar o quiz</h1>
+                        <p>Por favor, recarregue a página ou entre em contato com o suporte.</p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+
+    <!-- Fallback para navegadores sem JavaScript -->
+    <noscript>
+        <div class="quiz-wrapper">
+            <h1>JavaScript Necessário</h1>
+            <p>Por favor, habilite o JavaScript para jogar o quiz.</p>
+        </div>
+    </noscript>
+</body>
+</html>
