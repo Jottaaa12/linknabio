@@ -231,7 +231,7 @@
                 </div>
             </div>
 
-            <button id="start-btn" class="btn btn-primary" aria-describedby="start-description">
+            <button id="start-btn" class="btn btn-primary" aria-describedby="start-description" onclick="startQuizFromIntro()">
                 <i class="fas fa-play" aria-hidden="true"></i>
                 Iniciar Quiz
             </button>
@@ -330,6 +330,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             try {
                 window.quiz = new Quiz();
+                
+                // Inicializar achievementManager se disponível
+                if (window.achievementManager && window.quiz.achievementsButton) {
+                    window.quiz.achievementsButton.addEventListener('click', () => {
+                        window.achievementManager.showAchievementsModal();
+                    });
+                }
+                
                 // Não chama start() aqui, aguarda o clique no botão
             } catch (error) {
                 console.error('Erro ao inicializar o quiz:', error);
