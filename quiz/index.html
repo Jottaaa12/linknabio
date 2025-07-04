@@ -152,24 +152,6 @@
     <!-- Skip Link para acessibilidade -->
     <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
     
-    <!-- Theme Toggle Button -->
-    <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema claro/escuro">
-        <i class="fas fa-moon" aria-hidden="true"></i>
-        <span class="sr-only">Alternar tema</span>
-    </button>
-
-    <!-- Sound Toggle Button -->
-    <button id="sound-toggle" class="sound-toggle" aria-label="Alternar som" onclick="soundManager.toggleMute()">
-        <i class="fas fa-volume-up" aria-hidden="true"></i>
-        <span class="sr-only">Alternar som</span>
-    </button>
-
-    <!-- Achievements Button -->
-    <button id="achievements-button" class="achievements-button" aria-label="Ver conquistas desbloqueadas">
-        <i class="fas fa-trophy" aria-hidden="true"></i>
-        <span class="sr-only">Conquistas</span>
-    </button>
-
     <main id="main-content" role="main">
         <!-- Tela de Apresentação -->
         <div id="intro-screen" class="intro-screen" role="banner">
@@ -246,28 +228,6 @@
                 </div>
             </div>
 
-            <div class="powerups-container" role="group" aria-label="Power-ups disponíveis">
-                <button 
-                    id="powerup-fiftyfifty" 
-                    class="powerup-btn" 
-                    onclick="window.quiz.useFiftyFifty()"
-                    aria-label="Usar 50/50 - Remove duas opções incorretas"
-                    aria-describedby="fiftyfifty-description">
-                    50/50 (1x)
-                </button>
-                <button 
-                    id="powerup-skip" 
-                    class="powerup-btn" 
-                    onclick="window.quiz.useSkip()"
-                    aria-label="Pular pergunta - Passa para a próxima pergunta"
-                    aria-describedby="skip-description">
-                    Pular (1x)
-                </button>
-            </div>
-            
-            <p id="fiftyfifty-description" class="sr-only">Remove duas opções incorretas da pergunta atual</p>
-            <p id="skip-description" class="sr-only">Passa para a próxima pergunta sem responder</p>
-
             <h2 id="question" aria-live="polite">Carregando pergunta...</h2>
             
             <div id="answers-container" role="region" aria-label="Opções de resposta">
@@ -286,27 +246,21 @@
             <div id="result-message" class="result-message"></div>
             <p id="high-score" class="high-score">Melhor pontuação: 0%</p>
 
-            <button onclick="restartQuiz()" class="btn btn-restart">
+            <button class="btn btn-restart">
                 <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
                 Tentar Novamente
             </button>
             
-            <a href="/" class="btn text-center">
+            <a href="#" class="btn text-center">
                 <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
                 Voltar ao Início
             </a>
         </div>
     </main>
 
-    <!-- Scripts -->
+    <!-- Scripts essenciais -->
     <script src="questions_db.js"></script>
-    <script src="theme.js"></script>
-    <script src="sounds.js"></script>
-    <script src="ranking.js"></script>
-    <script src="tutorial.js"></script>
-    <script src="achievements.js"></script>
     <script src="quiz.js"></script>
-    
     <!-- Fallback para navegadores sem JavaScript -->
     <noscript>
         <div class="quiz-wrapper">
