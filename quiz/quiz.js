@@ -114,16 +114,10 @@ class Quiz {
         // Timer properties
         this.timerId = null;
         this.timeLeft = 15; // 15 segundos por pergunta
-        this.timerContainer = document.getElementById('timer-container');
-        this.timerBar = document.getElementById('timer-bar');
-        this.timerText = document.getElementById('timer-text');
-        this.timerCount = document.getElementById('timer-count');
         // Achievement tracking
         this.fastAnswers = 0;
         this.achievementsButton = document.getElementById('achievements-button');
-        this.achievementsButton.addEventListener('click', () => {
-            window.achievementManager.showAchievementsModal();
-        });
+        // A inicialização do achievementManager será feita depois da inicialização da classe Quiz
         
         // Dificuldade
         this.currentDifficulty = 'facil';
@@ -221,6 +215,7 @@ class Quiz {
 
     initializeElements() {
         // Elementos principais
+        this.startContainer = document.getElementById('intro-screen');
         this.quizContainer = document.getElementById('quiz-container');
         this.resultContainer = document.getElementById('result-container');
         this.questionEl = document.getElementById('question');
@@ -232,6 +227,12 @@ class Quiz {
         this.progressText = document.getElementById('progress-text');
         this.highScoreEl = document.getElementById('high-score');
 
+        // Elementos do timer
+        this.timerContainer = document.getElementById('timer-container');
+        this.timerBar = document.getElementById('timer-bar');
+        this.timerText = document.getElementById('timer-text');
+        this.timerCount = document.getElementById('timer-count');
+
         // Validar elementos
         if (!this.validateElements()) {
             throw new Error('Elementos necessários não encontrados no DOM');
@@ -239,7 +240,7 @@ class Quiz {
     }
 
     validateElements() {
-        return this.quizContainer && this.resultContainer && this.questionEl &&
+        return this.startContainer && this.quizContainer && this.resultContainer && this.questionEl &&
                this.answersContainer && this.scoreEl && this.resultIconEl &&
                this.resultMessageEl && this.progressBar && this.progressText &&
                this.timerContainer && this.timerBar && this.timerText && this.timerCount;
@@ -270,8 +271,8 @@ class Quiz {
         
         // Atualizar tempo limite com validação
         const config = questionsDatabase.config.difficulties[difficulty];
-        if (config && typeof config.timeLimit === 'number') {
-            this.timeLeft = config.timeLimit;
+        if (config && typeof config.time === 'number') {
+            this.timeLeft = config.time;
         } else {
             this.timeLeft = 15; // valor padrão
         }
@@ -612,7 +613,9 @@ class Quiz {
         }
 
         // Tocar som
-        window.soundManager.play(correct ? 'correct' : 'wrong');
+        if (window.soundManager) {
+            window.soundManager.play(correct ? 'correct' : 'wrong');
+        }
 
         // Salvar resposta
         this.answeredQuestions.push({
@@ -798,12 +801,15 @@ class Quiz {
         const scorePercentage = (weightedScore / maxPossibleScore) * 100;
         
         // Adicionar ao ranking e obter posição
-        const rankingPosition = window.rankingManager.addScore(
-            this.score,
-            totalQuestions,
-            this.currentDifficulty,
-            weightedScore
-        );
+        let rankingPosition = null;
+        if (window.rankingManager) {
+            rankingPosition = window.rankingManager.addScore(
+                this.score,
+                totalQuestions,
+                this.currentDifficulty,
+                weightedScore
+            );
+        }
         
         // Gerar feedback detalhado
         const feedback = this.generateDetailedFeedback();
@@ -813,10 +819,10 @@ class Quiz {
                 <p>Acertos: ${this.score} / ${totalQuestions}</p>
                 <p>Dificuldade: ${this.currentDifficulty.charAt(0).toUpperCase() + this.currentDifficulty.slice(1)}</p>
                 <p>Pontuação: ${weightedScore} pontos</p>
-                ${rankingPosition <= 10 ? `
+                ${rankingPosition && rankingPosition <= 10 ? `
                 <p class="ranking-position">
                     ${rankingPosition === 1 ? '🥇 Novo recorde!' : `${rankingPosition}ª melhor pontuação!`}
-                    <button class="btn btn-small" onclick="window.rankingManager.showModal()">
+                    <button class="btn btn-small" onclick="if(window.rankingManager) window.rankingManager.showModal()">
                         Ver Ranking
                     </button>
                 </p>` : ''}
@@ -920,7 +926,10 @@ class Quiz {
             difficulty: this.currentDifficulty
         };
 
-        const newAchievements = window.achievementManager.updateStats(quizResults);
+        let newAchievements = [];
+        if (window.achievementManager) {
+            newAchievements = window.achievementManager.updateStats(quizResults);
+        }
         
         // Mostrar notificações de novas conquistas
         if (newAchievements.length > 0) {
@@ -932,8 +941,6 @@ class Quiz {
                 delay += 1500; // Espaçar notificações
             });
         }
-
-        // Removido código redundante de ranking, pois já está implementado acima
     }
 
     generateDetailedFeedback() {
@@ -1399,29 +1406,9 @@ class Quiz {
     }
 }
 
-// Inicialização
-document.addEventListener('DOMContentLoaded', () => {
-    try {
-        window.quiz = new Quiz();
-        window.quiz.start();
-    } catch (error) {
-        console.error('Erro ao inicializar o quiz:', error);
-        const errorWrapper = document.createElement('div');
-        errorWrapper.className = 'quiz-wrapper';
-        
-        const errorTitle = document.createElement('h1');
-        errorTitle.textContent = 'Erro ao carregar o quiz';
-        
-        const errorMessage = document.createElement('p');
-        errorMessage.textContent = 'Por favor, recarregue a página ou entre em contato com o suporte.';
-        
-        errorWrapper.appendChild(errorTitle);
-        errorWrapper.appendChild(errorMessage);
-        document.body.appendChild(errorWrapper);
-    }
-});
-
 // Função global para reiniciar o quiz
 function restartQuiz() {
-    window.quiz.start();
+    if (window.quiz) {
+        window.quiz.start();
+    }
 } 
