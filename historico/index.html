@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle - Açaí Sabor da Terra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Painel de Controle Gerencial</h1>
+        </header>
+        <main>
+            <div class="cards-container">
+                <div class="card">
+                    <h4>Faturamento Bruto</h4>
+                    <p id="faturamentoBruto">R$ 0,00</p>
+                </div>
+                <div class="card">
+                    <h4>Total de Saídas</h4>
+                    <p id="totalSaidas">R$ 0,00</p>
+                </div>
+                <div class="card">
+                    <h4>Saldo Líquido</h4>
+                    <p id="saldoLiquido">R$ 0,00</p>
+                </div>
+                <div class="card">
+                    <h4>Média Diária</h4>
+                    <p id="mediaDiaria">R$ 0,00</p>
+                </div>
+            </div>
+
+            <div class="detalhamento-toggle-container">
+                <button id="btnToggleDetalhamento" class="btn btn-secondary">Ver Detalhamento</button>
+            </div>
+            <div id="detalhamentoContainer" class="detalhamento-container" style="display: none;">
+                <!-- Cards detalhados serão renderizados aqui pelo JS -->
+            </div>
+
+            <div class="filters-container card">
+                <h4>Filtros</h4>
+                <div class="filter-item">
+                    <label for="dataInicio">De:</label>
+                    <input type="date" id="dataInicio">
+                </div>
+                <div class="filter-item">
+                    <label for="dataFim">Até:</label>
+                    <input type="date" id="dataFim">
+                </div>
+                <div class="filter-item">
+                    <label for="filtroFuncionario">Funcionário:</label>
+                    <select id="filtroFuncionario">
+                        <option value="Todos">Todos</option>
+                        <option value="Manoela">Manoela</option>
+                        <option value="Nayara">Nayara</option>
+                        <option value="João Pedro (gerente)">João Pedro (gerente)</option>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button id="btnLimparFiltros" class="btn btn-secondary">Limpar Filtros</button>
+                    <button id="btnExportarCsv" class="btn">Exportar para CSV</button>
+                </div>
+            </div>
+
+            <!-- Botões de Lançamento Individual -->
+            <div class="lancamentos-container card">
+                <h4>Lançamentos Individuais</h4>
+                <div class="lancamentos-buttons">
+                    <button id="btnLancarEntrada" class="btn btn-success">
+                        <span>➕</span> Lançar Entrada
+                    </button>
+                    <button id="btnLancarSaida" class="btn btn-danger">
+                        <span>➖</span> Lançar Saída
+                    </button>
+                </div>
+            </div>
+
+            <!-- Seção de Gráficos -->
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3>Evolução do Saldo Líquido</h3>
+                    <canvas id="saldoChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Distribuição das Entradas</h3>
+                    <canvas id="entradasChart"></canvas>
+                </div>
+            </div>
+
+            <div class="registros-container">
+                <div class="registros-header">
+                    <h2>Registros Detalhados</h2>
+                    <button id="btnNovoRegistro" class="btn">Adicionar Registro</button>
+                </div>
+                <p id="statusCarregamento">Carregando registros...</p>
+                <div id="listaRegistros">
+                    <!-- Registros serão inseridos aqui -->
+                </div>
+            </div>
+
+            <!-- Botão e Painel de Logs -->
+            <button class="logs-button" id="btnShowLogs">📋</button>
+            <div class="logs-panel" id="logsPanel">
+                <div class="logs-header">
+                    <h3>Registros do Sistema</h3>
+                    <button class="btn-close" id="btnCloseLogs">&times;</button>
+                </div>
+                <div class="logs-content" id="logsContent">
+                    <!-- Os logs serão inseridos aqui dinamicamente -->
+                </div>
+                <div class="logs-footer">
+                    <button class="btn-refresh-logs" id="btnRefreshLogs">Atualizar</button>
+                    <button class="btn-clear-logs" id="btnClearLogs">Limpar Logs</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Estrutura do Modal de Edição -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2 id="modalTitle">Editar Registro</h2>
+                <button id="closeModalBtn" class="close-button">&times;</button>
+            </header>
+            <form id="formEdicao">
+                <input type="hidden" id="editRecordId">
+                
+                <div class="form-group">
+                    <label for="editData">Data</label>
+                    <input type="date" id="editData" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editFuncionario">Funcionário</label>
+                    <select id="editFuncionario" required>
+                        <option value="Manoela">Manoela</option>
+                        <option value="Nayara">Nayara</option>
+                        <option value="João Pedro (gerente)">João Pedro (gerente)</option>
+                    </select>
+                </div>
+
+                <h4>Entradas</h4>
+                <div class="form-group">
+                    <label for="editDinheiroEntrada">Dinheiro</label>
+                    <input type="number" id="editDinheiroEntrada" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="editPixEntrada">Pix</label>
+                    <input type="number" id="editPixEntrada" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="editCartaoEntrada">Cartão</label>
+                    <input type="number" id="editCartaoEntrada" step="0.01" placeholder="0.00">
+                </div>
+                
+                <h4>Saídas</h4>
+                <div class="form-group">
+                    <label for="editTotalSaidas">Total Saídas</label>
+                    <input type="number" id="editTotalSaidas" step="0.01" placeholder="0.00">
+                </div>
+
+                <div class="form-group">
+                    <label for="editObservacao">Observação (opcional)</label>
+                    <textarea id="editObservacao" placeholder="Observações sobre este registro" rows="3"></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="btnCancelarEdicao" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" id="btnSalvar" class="btn">
+                        <span class="btn-text">Salvar Alterações</span>
+                        <span class="btn-spinner" style="display: none;">⏳</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="deleteConfirmModal" class="modal-overlay">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2>Confirmar Exclusão</h2>
+                <button id="closeDeleteModalBtn" class="close-button">&times;</button>
+            </header>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir este registro?</p>
+                <p class="warning-text">Esta ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCancelarExclusao" class="btn btn-secondary">Cancelar</button>
+                <button type="button" id="btnConfirmarExclusao" class="btn btn-danger">
+                    <span class="btn-text">Excluir</span>
+                    <span class="btn-spinner" style="display: none;">⏳</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Lançamento Individual de Entrada -->
+    <div id="entradaIndividualModal" class="modal-overlay">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2>Lançar Entrada Individual</h2>
+                <button id="closeEntradaModalBtn" class="close-button">&times;</button>
+            </header>
+            <form id="formEntradaIndividual">
+                <div class="form-group">
+                    <label for="entradaData">Data</label>
+                    <input type="date" id="entradaData" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="entradaFuncionario">Funcionário</label>
+                    <select id="entradaFuncionario" required>
+                        <option value="Manoela">Manoela</option>
+                        <option value="Nayara">Nayara</option>
+                        <option value="João Pedro (gerente)">João Pedro (gerente)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="entradaTipo">Tipo de Entrada</label>
+                    <select id="entradaTipo" required>
+                        <option value="dinheiro">Dinheiro</option>
+                        <option value="pix">Pix</option>
+                        <option value="cartao">Cartão</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="entradaValor">Valor</label>
+                    <input type="number" id="entradaValor" step="0.01" placeholder="0.00" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="entradaObservacao">Observação (opcional)</label>
+                    <textarea id="entradaObservacao" placeholder="Ex: Venda fora do horário, cliente específico, etc." rows="3"></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="btnCancelarEntrada" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" id="btnSalvarEntrada" class="btn btn-success">
+                        <span class="btn-text">Lançar Entrada</span>
+                        <span class="btn-spinner" style="display: none;">⏳</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Lançamento Individual de Saída -->
+    <div id="saidaIndividualModal" class="modal-overlay">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2>Lançar Saída Individual</h2>
+                <button id="closeSaidaModalBtn" class="close-button">&times;</button>
+            </header>
+            <form id="formSaidaIndividual">
+                <div class="form-group">
+                    <label for="saidaData">Data</label>
+                    <input type="date" id="saidaData" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="saidaFuncionario">Funcionário</label>
+                    <select id="saidaFuncionario" required>
+                        <option value="Manoela">Manoela</option>
+                        <option value="Nayara">Nayara</option>
+                        <option value="João Pedro (gerente)">João Pedro (gerente)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="saidaTipo">Tipo de Saída</label>
+                    <select id="saidaTipo" required>
+                        <option value="dinheiro">Dinheiro</option>
+                        <option value="pix">Pix</option>
+                        <option value="outros">Outros</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="saidaValor">Valor</label>
+                    <input type="number" id="saidaValor" step="0.01" placeholder="0.00" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="saidaObservacao">Observação (opcional)</label>
+                    <textarea id="saidaObservacao" placeholder="Ex: Compra de ingredientes, manutenção, etc." rows="3"></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="btnCancelarSaida" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" id="btnSalvarSaida" class="btn btn-danger">
+                        <span class="btn-text">Lançar Saída</span>
+                        <span class="btn-spinner" style="display: none;">⏳</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sistema de Toasts -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

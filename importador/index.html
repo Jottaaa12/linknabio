@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Importador de Histórico - Açaí Sabor da Terra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4A0E68; --primary-light: #9370DB; --primary-lighter: #DCC9E8; --background-light: #f0eef4; --background-very-light: #FBF9FE; --text-color: #333; --white: #fff; --border-color: #e0e0e0; --success-color: #28a745; --danger-color: #dc3545; --info-color: #17a2b8;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--background-light); color: var(--text-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 1rem; }
+        .container { width: 100%; max-width: 800px; background-color: var(--white); padding: 2rem; border-radius: 16px; box-shadow: 0 8px 24px rgba(74, 14, 104, 0.1); text-align: center; }
+        h2 { color: var(--primary-color); margin-bottom: 1rem; }
+        p { margin-bottom: 1.5rem; }
+        textarea { width: 100%; height: 300px; padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: monospace; font-size: 0.9rem; margin-bottom: 1.5rem; }
+        button { font-size: 1.1rem; padding: 0.8rem 2rem; background-color: var(--primary-color); color: var(--white); border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.2s; }
+        button:hover { background-color: #3a0b54; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        #status { margin-top: 1.5rem; font-weight: bold; }
+        #status.success { color: var(--success-color); }
+        #status.error { color: var(--danger-color); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Ferramenta de Importação de Histórico</h2>
+        <p>Cole seu compilado de dados na caixa abaixo e clique em "Importar" para salvar tudo no banco de dados de uma só vez.</p>
+        <textarea id="data-input" placeholder="Cole seus dados aqui..."></textarea>
+        <button id="import-button">Importar Registros para o Firebase</button>
+        <div id="status"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, writeBatch, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const firebaseConfig = {
+              apiKey: "AIzaSyCyzA-QWhXZTUahk13tKhMEAt8AqLpCzDc",
+              authDomain: "acai-sabordaterra-fiados.firebaseapp.com",
+              projectId: "acai-sabordaterra-fiados",
+              storageBucket: "acai-sabordaterra-fiados.appspot.com",
+              messagingSenderId: "95507357232",
+              appId: "1:95507357232:web:22d0264b98bd5ab0ff57f5"
+            };
+
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    console.log("Conectado! Pronto para importar.");
+                    ImportadorModule.init(db);
+                }
+            });
+
+            try {
+                await signInAnonymously(auth);
+            } catch (error) {
+                console.error("Falha na autenticação anônima:", error);
+                document.getElementById('status').textContent = 'Erro crítico de conexão.';
+            }
+        });
+
+        const ImportadorModule = {
+            db: null,
+            init(db) {
+                this.db = db;
+                document.getElementById('import-button').addEventListener('click', () => this.processAndImport());
+            },
+
+            parseData(text) {
+                const dailyRecords = new Map();
+                
+                const dayBlocks = text.split(/--- Data: /).slice(1);
+
+                for (const block of dayBlocks) {
+                    const lines = block.split('\n').filter(line => line.trim() !== '' && !line.trim().startsWith('###'));
+                    if (lines.length === 0) continue;
+
+                    const dateStr = lines[0].trim().replace(/---/g, '').trim();
+                    
+                    if (!dailyRecords.has(dateStr)) {
+                        dailyRecords.set(dateStr, {
+                            data: '', funcionario: 'N/A',
+                            dinheiroEntrada: 0, pixEntrada: 0, cartaoEntrada: 0,
+                            saida: 'nao', motivoSaida: [], dinheiroSaida: 0, pixSaida: 0,
+                            fidelidade: 'nao', fidelidadeQuantidade: 0,
+                            climaLoja: 'Bom', observacoesDia: [], dataDeRegistro: null,
+                            ajuste: { sistemaDinheiro: 0, realDinheiro: 0, diferencaDinheiro: 0, sistemaPix: 0, realPix: 0, diferencaPix: 0, motivo: '' }
+                        });
+                    }
+                    const record = dailyRecords.get(dateStr);
+
+                    for (let i = 1; i < lines.length; i++) {
+                        const trimmedLine = lines[i].trim();
+                        if (!trimmedLine.startsWith('- ')) continue;
+
+                        const parts = trimmedLine.split('|').map(p => p.trim());
+                        const typeAndDesc = parts[0].replace('- ', '').split(':');
+                        const type = typeAndDesc[0].trim();
+                        const description = (typeAndDesc[1] || '').trim();
+                        
+                        const paymentMethod = parts[1] ? parts[1].trim() : '';
+                        const valueStr = parts[2] ? parts[2].trim() : '0';
+                        
+                        const cleanValueStr = valueStr.replace(/R\$|\s/g, '').replace(/\./g, '').replace(',', '.');
+                        const value = parseFloat(cleanValueStr) || 0;
+
+                        if (type === 'ENTRADA') {
+                            if (paymentMethod === 'Dinheiro') record.dinheiroEntrada += value;
+                            else if (paymentMethod === 'Pix') record.pixEntrada += value;
+                            else if (paymentMethod === 'Cartão') record.cartaoEntrada += value;
+                        } else if (type === 'SAÍDA') {
+                            record.saida = 'sim';
+                            record.motivoSaida.push(description);
+                            if (paymentMethod === 'Dinheiro') record.dinheiroSaida += Math.abs(value);
+                            else if (paymentMethod === 'Pix') record.pixSaida += Math.abs(value);
+
+                            const fidelidadeMatch = description.match(/(\d+)\s+Prêmios\s+Fidelidade/i);
+                            if (fidelidadeMatch) {
+                                record.fidelidade = 'sim';
+                                record.fidelidadeQuantidade += parseInt(fidelidadeMatch[1], 10);
+                            }
+                            
+                            const manuelaMatch = description.match(/Pagamento Manuela/i);
+                            if (manuelaMatch) {
+                                record.funcionario = 'Manoela';
+                            }
+                        } else if (type === 'AJUSTE') {
+                            record.motivoSaida.push(`Ajuste de Caixa: ${description}`);
+                            if (value > 0) {
+                                 if (paymentMethod === 'Dinheiro') record.dinheiroEntrada += value;
+                                 else if (paymentMethod === 'Pix') record.pixEntrada += value;
+                            } else {
+                                 record.saida = 'sim';
+                                 if (paymentMethod === 'Dinheiro') record.dinheiroSaida += Math.abs(value);
+                                 else if (paymentMethod === 'Pix') record.pixSaida += Math.abs(value);
+                            }
+                        } else if (type === 'TRANSFER') {
+                            record.observacoesDia.push(`Transferência Interna: ${description}`);
+                        }
+                    }
+                }
+
+                const formattedRecords = [];
+                for (const [dateStr, record] of dailyRecords.entries()) {
+                    const [day, month, year] = dateStr.split('/');
+                    if (!day || !month || !year) continue;
+                    
+                    record.data = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                    record.dataDeRegistro = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                    
+                    record.motivoSaida = record.motivoSaida.join('; ');
+                    record.observacoesDia = record.observacoesDia.join('; ');
+
+                    const saldoDinheiro = record.dinheiroEntrada - record.dinheiroSaida;
+                    const saldoPix = record.pixEntrada - record.pixSaida;
+                    record.ajuste.sistemaDinheiro = saldoDinheiro;
+                    record.ajuste.realDinheiro = saldoDinheiro;
+                    record.ajuste.sistemaPix = saldoPix;
+                    record.ajuste.realPix = saldoPix;
+
+                    formattedRecords.push(record);
+                }
+                return formattedRecords;
+            },
+
+            async processAndImport() {
+                const text = document.getElementById('data-input').value;
+                if (!text.trim()) {
+                    alert('Por favor, cole os dados na caixa de texto.');
+                    return;
+                }
+
+                const statusEl = document.getElementById('status');
+                const button = document.getElementById('import-button');
+                button.disabled = true;
+                statusEl.className = '';
+                statusEl.textContent = 'Analisando e processando os dados...';
+
+                try {
+                    const recordsToImport = this.parseData(text);
+                    if (recordsToImport.length === 0) {
+                        throw new Error("Nenhum registro válido encontrado nos dados. Verifique o formato do texto.");
+                    }
+
+                    statusEl.textContent = `Encontrados ${recordsToImport.length} registros. Iniciando importação para o Firebase...`;
+
+                    const batch = writeBatch(this.db);
+                    const recordsRef = collection(this.db, "registrosDiarios");
+
+                    recordsToImport.forEach(record => {
+                        const newDocRef = doc(recordsRef);
+                        batch.set(newDocRef, record);
+                    });
+
+                    await batch.commit();
+
+                    statusEl.className = 'success';
+                    statusEl.textContent = `Sucesso! ${recordsToImport.length} registros diários foram importados para o banco de dados.`;
+                    document.getElementById('data-input').value = '';
+
+                } catch (error) {
+                    console.error("Erro na importação:", error);
+                    statusEl.className = 'error';
+                    statusEl.textContent = `Erro: ${error.message}. Verifique o console para mais detalhes.`;
+                } finally {
+                    button.disabled = false;
+                }
+            }
+        };
+    </script>
+</body>
+</html>

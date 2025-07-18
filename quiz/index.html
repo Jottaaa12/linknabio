@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quiz - Açaí Sabor da Terra</title>
+    <meta name="description" content="Teste seus conhecimentos sobre o Açaí Sabor da Terra e ganhe descontos especiais!">
+    <meta name="theme-color" content="#84cc16">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍇</text></svg>">
+    
+    <!-- Fontes e ícones -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <button id="theme-toggle" class="fab" aria-label="Alternar tema claro/escuro">
+        <i class="fas fa-moon" aria-hidden="true"></i>
+    </button>
+    <button id="sound-toggle" class="fab" aria-label="Alternar som">
+        <i class="fas fa-volume-up" aria-hidden="true"></i>
+    </button>
+    <button id="achievements-button" class="fab" aria-label="Ver conquistas">
+        <i class="fas fa-trophy" aria-hidden="true"></i>
+    </button>
+
+    <main id="main-content" role="main">
+        <!-- Tela de Apresentação -->
+        <div id="intro-screen" class="intro-screen" role="banner">
+            <img src="https://i.imgur.com/d1KJ35R.jpeg" alt="Logo Açaí Sabor da Terra" class="logo">
+            <h1>Quiz Açaí Sabor da Terra</h1>
+            <p>Teste seus conhecimentos e ganhe descontos especiais!</p>
+            
+            <div class="difficulty-selector" role="group" aria-labelledby="difficulty-label">
+                <h3 id="difficulty-label">Escolha a Dificuldade</h3>
+                <div class="difficulty-buttons">
+                    <button class="difficulty-btn" data-difficulty="facil" aria-pressed="true">Fácil</button>
+                    <button class="difficulty-btn" data-difficulty="medio" aria-pressed="false">Médio</button>
+                    <button class="difficulty-btn" data-difficulty="dificil" aria-pressed="false">Difícil</button>
+                </div>
+            </div>
+
+            <div class="mode-selector" role="group" aria-labelledby="mode-label">
+                <h3 id="mode-label">Modo de Jogo</h3>
+                <div class="mode-buttons">
+                    <button class="mode-btn" data-mode="competition" aria-pressed="true">🏆 Competição</button>
+                    <button class="mode-btn" data-mode="training" aria-pressed="false">📚 Treino</button>
+                </div>
+            </div>
+
+            <button id="start-btn" class="btn btn-primary">
+                <i class="fas fa-play" aria-hidden="true"></i> Iniciar Quiz
+            </button>
+        </div>
+
+        <!-- Container do Quiz (inicialmente escondido) -->
+        <div id="quiz-container" class="quiz-wrapper hidden" role="region" aria-label="Área do quiz">
+            <h1 class="quiz-title">Quiz Sabor da Terra</h1>
+            
+            <div class="progress-container">
+                <div id="progress-bar-container">
+                    <div id="progress-bar"></div>
+                </div>
+                <p id="progress-text">Pergunta 1/10</p>
+            </div>
+
+            <div class="timer-container" id="timer-container" role="timer" aria-live="polite">
+                <div id="timer-bar-container">
+                   <div class="timer-bar" id="timer-bar"></div>
+                </div>
+                <div class="timer-text" id="timer-text">
+                    <span id="timer-count">30</span>s
+                </div>
+            </div>
+
+            <div class="powerups-container" role="group" aria-label="Power-ups">
+                <button id="powerup-fiftyfifty" class="powerup-btn">50/50 (1x)</button>
+                <button id="powerup-skip" class="powerup-btn">Pular (1x)</button>
+            </div>
+            
+            <h2 id="question" aria-live="polite">Carregando pergunta...</h2>
+            
+            <div id="answers-container" role="region" aria-label="Opções de resposta">
+                <!-- Botões de resposta serão inseridos aqui pelo JS -->
+            </div>
+        </div>
+
+        <!-- Container de Resultado -->
+        <div id="result-container" class="result-container hidden" aria-live="polite">
+            <div id="result-icon" role="img" aria-label="Ícone de resultado"></div>
+            <h2 class="result-title">Quiz Finalizado!</h2>
+            
+            <p id="score" class="result-score">0 / 10</p>
+            <div id="result-message"></div>
+            <p id="high-score">Melhor pontuação: 0%</p>
+
+            <button class="btn btn-restart">
+                <i class="fa-solid fa-rotate-right" aria-hidden="true"></i> Tentar Novamente
+            </button>
+            <a href="#" class="btn text-center">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Voltar ao Início
+            </a>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="questions_db.js"></script>
+    <script src="theme.js"></script>
+    <script src="sounds.js"></script>
+    <script src="achievements.js"></script>
+    <script src="quiz.js"></script>
+    
+    <noscript>
+        <div class="quiz-wrapper">
+            <h1>JavaScript Necessário</h1>
+            <p>Por favor, habilite o JavaScript para jogar o quiz.</p>
+        </div>
+    </noscript>
+</body>
+</html>

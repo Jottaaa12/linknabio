@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Fiados - Açaí Sabor da Terra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Conteúdo Principal -->
+    <div id="main-content" class="app-container">
+        <header>
+            <h1>Gestão de Fiados</h1>
+            <button id="btnNovoFiado" class="btn btn-primary">Novo Fiado</button>
+        </header>
+        
+        <main>
+            <!-- Cards de Métricas -->
+            <div class="cards-container">
+                <div class="card">
+                    <h4>Total de Fiados</h4>
+                    <p id="totalFiados">0</p>
+                </div>
+                <div class="card">
+                    <h4>Valor Total</h4>
+                    <p id="valorTotal">R$ 0,00</p>
+                </div>
+                <div class="card">
+                    <h4>Fiados Pendentes</h4>
+                    <p id="fiadosPendentes">0</p>
+                </div>
+                <div class="card">
+                    <h4>Valor Pendente</h4>
+                    <p id="valorPendente">R$ 0,00</p>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters-container card">
+                <h4>Filtros</h4>
+                <div class="filter-item">
+                    <label for="dataInicio">De:</label>
+                    <input type="date" id="dataInicio">
+                </div>
+                <div class="filter-item">
+                    <label for="dataFim">Até:</label>
+                    <input type="date" id="dataFim">
+                </div>
+                <div class="filter-item">
+                    <label for="filtroStatus">Status:</label>
+                    <select id="filtroStatus">
+                        <option value="Todos">Todos</option>
+                        <option value="Pendente">Pendente</option>
+                        <option value="Pago">Pago</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="filtroCliente">Cliente:</label>
+                    <input type="text" id="filtroCliente" placeholder="Buscar por nome...">
+                </div>
+            </div>
+
+            <!-- Lista de Fiados -->
+            <div class="fiados-container">
+                <h2>Lista de Fiados</h2>
+                <p id="statusCarregamento">Carregando fiados...</p>
+                <div id="listaFiados">
+                    <!-- Fiados serão inseridos aqui -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Edição/Criação -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2 id="modalTitle">Novo Fiado</h2>
+                <button id="closeModalBtn" class="close-button">&times;</button>
+            </header>
+            <form id="formFiado">
+                <input type="hidden" id="editFiadoId">
+                
+                <div class="form-group">
+                    <label for="editCliente">Nome do Cliente *</label>
+                    <input type="text" id="editCliente" required placeholder="Nome completo">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editTelefone">Telefone</label>
+                    <input type="tel" id="editTelefone" placeholder="(11) 99999-9999">
+                </div>
+
+                <div class="form-group">
+                    <label for="editData">Data *</label>
+                    <input type="date" id="editData" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editValor">Valor *</label>
+                    <input type="number" id="editValor" step="0.01" required placeholder="0.00">
+                </div>
+
+                <div class="form-group">
+                    <label for="editProduto">Produto/Serviço</label>
+                    <input type="text" id="editProduto" placeholder="Descrição do produto">
+                </div>
+
+                <div class="form-group">
+                    <label for="editObservacoes">Observações</label>
+                    <textarea id="editObservacoes" rows="3" placeholder="Observações adicionais"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="editStatus">Status</label>
+                    <select id="editStatus" required>
+                        <option value="Pendente">Pendente</option>
+                        <option value="Pago">Pago</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="dataPagamentoGroup" style="display: none;">
+                    <label for="editDataPagamento">Data do Pagamento</label>
+                    <input type="date" id="editDataPagamento">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="btnCancelar" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" id="btnSalvar" class="btn btn-primary">
+                        <span class="btn-text">Salvar</span>
+                        <span class="btn-spinner" style="display: none;">⏳</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="deleteConfirmModal" class="modal-overlay">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2>Confirmar Exclusão</h2>
+                <button id="closeDeleteModalBtn" class="close-button">&times;</button>
+            </header>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir este fiado?</p>
+                <p class="warning-text">Esta ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCancelarExclusao" class="btn btn-secondary">Cancelar</button>
+                <button type="button" id="btnConfirmarExclusao" class="btn btn-danger">
+                    <span class="btn-text">Excluir</span>
+                    <span class="btn-spinner" style="display: none;">⏳</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sistema de Toasts -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

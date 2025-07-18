@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Diário - Açaí Sabor da Terra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <nav class="tabs">
+            <button class="tab-button active">📊 Registro Diário</button>
+        </nav>
+
+        <main class="content">
+            <div id="registroDiarioContainer">
+                <form id="registroForm">
+                    <div class="form-section">
+                        <h2>Registro Diário de Caixa</h2>
+                        
+                        <div class="form-group">
+                            <label for="metaDiaria">Meta Diária (R$)</label>
+                            <input type="number" id="metaDiaria" step="0.01" min="0" placeholder="Ex: 200.00">
+                        </div>
+                        <progress id="progressoMeta" max="100" value="0"></progress>
+                        <p id="textoMeta">0% da meta atingida</p>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="funcionario">Funcionário(a)</label>
+                                <select id="funcionario" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="Manoela">Manoela</option>
+                                    <option value="Nayara">Nayara</option>
+                                    <option value="João Pedro (gerente)">João Pedro (gerente)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="data">Data</label>
+                                <input type="date" id="data" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Entradas do Dia</label>
+                                <div class="form-grid">
+                                    <div class="form-group"><label for="dinheiroEntrada">💰 Dinheiro</label><input type="number" id="dinheiroEntrada" placeholder="0.00" step="0.01" min="0"></div>
+                                    <div class="form-group"><label for="pixEntrada">📱 PIX</label><input type="number" id="pixEntrada" placeholder="0.00" step="0.01" min="0"></div>
+                                    <div class="form-group"><label for="cartaoEntrada">💳 Cartão</label><input type="number" id="cartaoEntrada" placeholder="0.00" step="0.01" min="0"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- SAÍDAS DETALHADAS -->
+                            <div class="form-group full-width">
+                                <label>Saídas do Dia</label>
+                                <div id="saidasList">
+                                    <!-- Itens de saída serão adicionados dinamicamente aqui -->
+                                </div>
+                                <button type="button" id="btnAdicionarSaida" class="btn btn-secondary">+ Adicionar Saída</button>
+                                <p>Total Saídas: <span id="totalSaidas">R$ 0,00</span></p>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label>🎁 Houve cartão fidelidade hoje?</label>
+                                <div class="radio-group"><input type="radio" id="fidelidadeSim" name="fidelidade" value="sim"> <label for="fidelidadeSim">Sim</label><input type="radio" id="fidelidadeNao" name="fidelidade" value="nao" checked> <label for="fidelidadeNao">Não</label></div>
+                            </div>
+                            <div id="fidelidadeDetalhes" class="full-width">
+                                <div class="form-grid">
+                                    <div class="form-group full-width"><label for="fidelidadeQuantidade">Quantos cartões foram utilizados?</label><input type="number" id="fidelidadeQuantidade" placeholder="0" step="1" min="0"></div>
+                                </div>
+                            </div>
+
+                             <!-- UPLOAD DE COMPROVANTE -->
+                            <div class="form-group full-width">
+                                <label for="comprovante">Comprovante (imagem/PDF)</label>
+                                <input type="file" id="comprovante" accept="image/*,application/pdf">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="observacoesDia">Observações do Dia</label><textarea id="observacoesDia" placeholder="Anotações importantes sobre o dia de hoje..."></textarea>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Termômetro da Loja (Como foi o dia?)</label>
+                                <div class="mood-options"><label class="mood-option">😴<input type="radio" name="climaLoja" value="Muito Fraco"></label><label class="mood-option">😐<input type="radio" name="climaLoja" value="Fraco"></label><label class="mood-option">🙂<input type="radio" name="climaLoja" value="Bom"></label><label class="mood-option">😄<input type="radio" name="climaLoja" value="Ótimo"></label><label class="mood-option">🚀<input type="radio" name="climaLoja" value="Excepcional"></label></div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Frase do Dia (Opcional)</label>
+                                <div id="fraseMotivacionalArea" contenteditable="true"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-group justify-center"><button type="button" id="btnRevisar" class="btn btn-primary">Revisar Registro</button></div>
+                </form>
+
+                <div id="confirmacao" class="hidden">
+                    <div class="card">
+                        <h2>Revisão do Registro</h2>
+                        <div id="resumoContainer">
+                            <div id="resumo"></div>
+                            <div id="ajusteCaixa" class="form-section">
+                                <h4>Conciliação de Caixa (Opcional)</h4>
+                                <div class="ajuste-group">
+                                    <label>Dinheiro em Espécie</label>
+                                    <span>Saldo do Sistema: <strong id="sistemaDinheiro">R$ 0,00</strong></span>
+                                    <input type="number" id="realDinheiro" placeholder="Valor real na gaveta" step="0.01">
+                                    <span>Diferença: <strong id="diferencaDinheiro">R$ 0,00</strong></span>
+                                </div>
+                                <div class="ajuste-group">
+                                    <label>Saldo em PIX</label>
+                                    <span>Saldo do Sistema: <strong id="sistemaPix">R$ 0,00</strong></span>
+                                    <input type="number" id="realPix" placeholder="Valor real no extrato" step="0.01">
+                                    <span>Diferença: <strong id="diferencaPix">R$ 0,00</strong></span>
+                                </div>
+                                <textarea id="motivoAjuste" placeholder="Motivo do(s) ajuste(s)..."></textarea>
+                            </div>
+                        </div>
+                        <div class="button-group justify-center">
+                            <button type="button" id="btnVerLogs" class="btn btn-secondary hidden">📜 Histórico de Revisões</button>
+                            <button type="button" id="btnEditar" class="btn btn-secondary">Editar</button>
+                            <button type="button" id="btnConfirmar" class="btn btn-success">Confirmar e Salvar Online</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="envio" class="hidden">
+                    <div class="card">
+                        <h2>✅ Registro Salvo Online!</h2>
+                        <p>Seu registro diário foi salvo com sucesso na nuvem.</p>
+                        <div class="button-group justify-center">
+                            <button type="button" id="btnEnviarWhatsApp" class="btn btn-success">Enviar para WhatsApp</button>
+                            <button type="button" id="btnNovoRegistro" class="btn btn-primary">Novo Registro</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal para Logs -->
+    <div id="logsModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button id="closeLogsModal" class="modal-close-btn">&times;</button>
+            <h3>Histórico de Revisões</h3>
+            <div id="logsContainer"></div>
+        </div>
+    </div>
+
+    <!-- Datalist para Autocomplete de Motivos -->
+    <datalist id="motivosList">
+        <option value="Gelo"></option>
+        <option value="Limpeza"></option>
+        <option value="Suprimentos"></option>
+        <option value="Manutenção"></option>
+        <option value="Pagamento Fornecedor"></option>
+        <option value="Outros"></option>
+    </datalist>
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
+

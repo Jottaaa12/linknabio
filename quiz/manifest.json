@@ -1,0 +1,23 @@
+{
+    "name": "Quiz Açaí Sabor da Terra",
+    "short_name": "Quiz Açaí",
+    "description": "Teste seus conhecimentos sobre o Açaí Sabor da Terra e ganhe descontos especiais!",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#0a0a0f",
+    "theme_color": "#84cc16",
+    "icons": [
+        {
+            "src": "https://i.imgur.com/d1KJ35R.jpeg",
+            "sizes": "192x192",
+            "type": "image/jpeg",
+            "purpose": "any"
+        },
+        {
+            "src": "https://i.imgur.com/d1KJ35R.jpeg",
+            "sizes": "512x512",
+            "type": "image/jpeg",
+            "purpose": "any"
+        }
+    ]
+} 
