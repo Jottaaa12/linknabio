@@ -6,6 +6,7 @@ import { LocalStorageModule } from './storage.js';
 export const RegistroDiarioModule = {
     // --- PROPRIEDADES ---
     RASCUNHO_KEY: 'registroDiarioRascunho_AcaiSaborDaTerra_v2',
+    MOTIVOS_KEY: 'motivosSaidaSalvos_AcaiSaborDaTerra_v1',
     form: null,
     dadosParaEnvio: {},
     arquivoComprovante: null,
@@ -23,6 +24,7 @@ export const RegistroDiarioModule = {
         document.getElementById('data').value = Utils.getTodayDateString();
         this.showHideFidelidade();
         this.updateMoodOptionsStyle();
+        this.loadSavedMotivos(); // Carrega motivos para autocomplete
         this.addSaidaItem(); // Adiciona o primeiro item de saída
     },
 
@@ -51,7 +53,7 @@ export const RegistroDiarioModule = {
         const formValues = {};
         new FormData(this.form).forEach((value, key) => { formValues[key] = value; });
         
-        const ids = ['funcionario', 'data', 'dinheiroEntrada', 'pixEntrada', 'cartaoEntrada', 'fidelidadeQuantidade', 'observacoesDia', 'metaDiaria'];
+        const ids = ['funcionario', 'data', 'dinheiroEntrada', 'pixEntrada', 'cartaoEntrada', 'fidelidadeQuantidade', 'observacoesDia'];
         ids.forEach(id => formValues[id] = document.getElementById(id).value);
         formValues.fraseMotivacionalArea = document.getElementById('fraseMotivacionalArea').innerText;
 
@@ -60,8 +62,9 @@ export const RegistroDiarioModule = {
         document.querySelectorAll('.saida-item').forEach(item => {
             const valor = parseFloat(item.querySelector('.saida-valor').value) || 0;
             const motivo = item.querySelector('.saida-motivo').value.trim();
+            const metodo = item.querySelector('input[name^="metodo_"]:checked').value || 'dinheiro';
             if (valor > 0 && motivo) {
-                saidas.push({ valor, motivo });
+                saidas.push({ valor, motivo, metodo });
             }
         });
         formValues.saidasDetalhadas = saidas;
@@ -120,6 +123,9 @@ export const RegistroDiarioModule = {
         if (draft.saidasDetalhadas && draft.saidasDetalhadas.length > 0) {
             document.getElementById('saidasList').innerHTML = ''; // Limpa antes de carregar
             draft.saidasDetalhadas.forEach(saida => this.addSaidaItem(saida));
+        } else {
+            document.getElementById('saidasList').innerHTML = '';
+            this.addSaidaItem(); // Garante que sempre haja um item de saída
         }
         this.updateTotalSaidas();
     },
@@ -129,6 +135,17 @@ export const RegistroDiarioModule = {
     },
     
     // --- LÓGICA DE UI ---
+    loadSavedMotivos() {
+        const motivos = LocalStorageModule.get(this.MOTIVOS_KEY) || [];
+        const datalist = document.getElementById('motivosList');
+        // Limpa opções antigas, exceto as que podem estar fixas no HTML
+        datalist.innerHTML = ''; 
+        motivos.forEach(motivo => {
+            const option = document.createElement('option');
+            option.value = motivo;
+            datalist.appendChild(option);
+        });
+    },
     showHideFidelidade() {
         document.getElementById('fidelidadeDetalhes').classList.toggle('fidelidade-visivel', document.getElementById('fidelidadeSim').checked);
     },
@@ -139,13 +156,20 @@ export const RegistroDiarioModule = {
         });
     },
 
-    addSaidaItem(saida = { valor: '', motivo: '' }) {
+    addSaidaItem(saida = { valor: '', motivo: '', metodo: 'dinheiro' }) {
         const container = document.getElementById('saidasList');
         const div = document.createElement('div');
         div.className = 'saida-item';
+        const saidaId = `saida_${Date.now()}_${Math.random()}`; // ID único para o grupo de rádio
         div.innerHTML = `
             <input type="number" class="saida-valor" placeholder="Valor" step="0.01" min="0" value="${saida.valor}">
             <input type="text" class="saida-motivo" placeholder="Motivo" list="motivosList" value="${saida.motivo}">
+            <div class="saida-metodo">
+                <input type="radio" id="dinheiro_${saidaId}" name="metodo_${saidaId}" value="dinheiro" ${saida.metodo === 'dinheiro' ? 'checked' : ''}>
+                <label for="dinheiro_${saidaId}">Dinheiro</label>
+                <input type="radio" id="pix_${saidaId}" name="metodo_${saidaId}" value="pix" ${saida.metodo === 'pix' ? 'checked' : ''}>
+                <label for="pix_${saidaId}">PIX</label>
+            </div>
             <button type="button" class="btn btn-secondary btn-remover-saida">–</button>
         `;
         container.appendChild(div);
@@ -156,8 +180,11 @@ export const RegistroDiarioModule = {
             this.saveDraft();
         });
         
-        div.querySelector('.saida-valor').addEventListener('input', () => this.updateTotalSaidas());
-        div.querySelector('.saida-motivo').addEventListener('input', () => this.saveDraft());
+        div.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', () => {
+                this.updateTotalSaidas(); // Recalcula totais e salva o rascunho
+            });
+        });
     },
 
     updateTotalSaidas() {
@@ -174,16 +201,10 @@ export const RegistroDiarioModule = {
         this.dadosParaEnvio = this.getFormValues();
         document.getElementById('resumo').innerHTML = this.generateSummaryHTML(this.dadosParaEnvio);
         
-        const { saldoDinheiro, saldoPix, totalEntradas } = this.calculateTotals(this.dadosParaEnvio);
+        const { saldoDinheiro, saldoPix } = this.calculateTotals(this.dadosParaEnvio);
         document.getElementById('sistemaDinheiro').textContent = Utils.formatCurrency(saldoDinheiro);
         document.getElementById('sistemaPix').textContent = Utils.formatCurrency(saldoPix);
         
-        // Atualiza progresso da meta
-        const meta = parseFloat(this.dadosParaEnvio.metaDiaria) || 0;
-        const porcent = meta > 0 ? (totalEntradas / meta) * 100 : 0;
-        document.getElementById('progressoMeta').value = Math.min(porcent, 100);
-        document.getElementById('textoMeta').textContent = `${porcent.toFixed(1)}% da meta atingida`;
-
         document.getElementById('realDinheiro').value = '';
         document.getElementById('realPix').value = '';
         document.getElementById('motivoAjuste').value = '';
@@ -248,6 +269,9 @@ export const RegistroDiarioModule = {
                 dados: registroParaSalvar,
                 acao: 'CRIACAO'
             });
+
+            // 4. Salvar novos motivos de saída para autocomplete futuro
+            this.saveNewMotivos(this.dadosParaEnvio.saidasDetalhadas);
             
             this.dadosParaEnvio.ajuste = registroParaSalvar.ajuste;
             this.clearDraft();
@@ -291,8 +315,11 @@ export const RegistroDiarioModule = {
         const totalSaidas = data.totalSaidas || 0;
         const totalGeral = totalEntradas - totalSaidas;
         
-        const saldoDinheiro = dinheiroEntrada - (data.saidasDetalhadas?.filter(s => s.motivo.toLowerCase().includes('dinheiro')).reduce((acc, s) => acc + s.valor, 0) || 0);
-        const saldoPix = pixEntrada - (data.saidasDetalhadas?.filter(s => s.motivo.toLowerCase().includes('pix')).reduce((acc, s) => acc + s.valor, 0) || 0);
+        const saidasDinheiro = data.saidasDetalhadas?.filter(s => s.metodo === 'dinheiro').reduce((acc, s) => acc + s.valor, 0) || 0;
+        const saidasPix = data.saidasDetalhadas?.filter(s => s.metodo === 'pix').reduce((acc, s) => acc + s.valor, 0) || 0;
+
+        const saldoDinheiro = dinheiroEntrada - saidasDinheiro;
+        const saldoPix = pixEntrada - saidasPix;
 
         return { totalEntradas, totalSaidas, totalGeral, saldoDinheiro, saldoPix };
     },
@@ -314,7 +341,7 @@ export const RegistroDiarioModule = {
         if (data.saidasDetalhadas && data.saidasDetalhadas.length > 0) {
             html += `\n<strong>SAÍDAS DETALHADAS:</strong>\n`;
             data.saidasDetalhadas.forEach(s => {
-                html += `– ${Utils.formatCurrency(s.valor)}: ${s.motivo}\n`;
+                html += `– ${s.motivo} (${s.metodo.toUpperCase()}): ${Utils.formatCurrency(s.valor)}\n`;
             });
             html += `<span><strong>Total Saídas: ${Utils.formatCurrency(totalSaidas)}</strong></span>\n`;
             html += `-------------------------------------`;
@@ -405,5 +432,26 @@ export const RegistroDiarioModule = {
 
     hideLogsModal() {
         document.getElementById('logsModal').classList.add('hidden');
+    },
+
+    // --- LÓGICA DE AUTOCOMPLETE ---
+    saveNewMotivos(saidas) {
+        if (!saidas || saidas.length === 0) return;
+
+        const savedMotivos = LocalStorageModule.get(this.MOTIVOS_KEY) || [];
+        const novosMotivos = saidas.map(s => s.motivo.trim()).filter(m => m);
+        
+        let updated = false;
+        novosMotivos.forEach(novoMotivo => {
+            if (!savedMotivos.includes(novoMotivo)) {
+                savedMotivos.push(novoMotivo);
+                updated = true;
+            }
+        });
+
+        if (updated) {
+            LocalStorageModule.set(this.MOTIVOS_KEY, savedMotivos);
+            this.loadSavedMotivos(); // Atualiza o datalist na UI
+        }
     }
 };

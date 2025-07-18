@@ -769,25 +769,6 @@
             </div>
         </div>
         
-        <!-- Banner de Serviços - Link na Bio -->
-        <div class="mt-8 p-4 rounded-xl bg-gradient-to-r from-[var(--accent-green)]/10 to-[var(--primary-purple)]/10 border border-[var(--accent-green)]/20 backdrop-blur-sm fade-in-up delay-4">
-            <div class="text-center">
-                <p class="text-sm text-[var(--light-text)] mb-2">
-                    💼 <strong>Gostaria do seu próprio link na bio?</strong>
-                </p>
-                <p class="text-xs text-[var(--subtle-text)] mb-3">
-                    Entre em contato para agilizarmos seu orçamento
-                </p>
-                <a href="https://wa.me/5588981905006?text=Gostaria%20de%20um%20orçamento%20sobre%20a%20página%20de%20link%20na%20bio" 
-                   target="_blank"
-                   class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-[var(--accent-green)] text-[var(--dark-text-on-green)] hover:bg-[var(--accent-green-hover)] transition-all duration-200 hover:scale-105"
-                   onclick="gtag('event', 'click', { 'custom_parameter_1': 'service_banner_whatsapp' })">
-                    <i class="fa-brands fa-whatsapp mr-2"></i>
-                    Solicitar Orçamento
-                </a>
-            </div>
-        </div>
-        
         <footer class="mt-16 text-center text-xs opacity-50 fade-in-up delay-4">
             <p class="mb-2">© <span id="current-year"></span> Açaí Sabor da Terra</p>
             <p>Feito com ❤️ por <a href="https://www.instagram.com/jottaaa0" target="_blank" class="font-semibold underline hover:text-white">@jottaaa0</a></p>
@@ -858,6 +839,30 @@
         </form>
     </div>
 
+    <!-- Modal de Serviços -->
+    <div id="servicos-modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50">
+        <div class="modal-content p-6 rounded-2xl shadow-2xl text-center relative max-w-sm w-full">
+            <button data-close-modal="servicos-modal" class="absolute -top-3 -right-3 bg-white text-purple-700 w-8 h-8 rounded-full shadow-lg font-bold hover:scale-110 transition-transform" aria-label="Fechar modal">×</button>
+            <div class="mb-4">
+                <div class="text-4xl mb-3">💼</div>
+                <h3 class="text-lg font-bold mb-2 text-[var(--light-text)]">Gostaria do seu próprio link na bio?</h3>
+                <p class="text-sm text-[var(--subtle-text)] mb-4">Entre em contato para agilizarmos seu orçamento.</p>
+                <a href="https://wa.me/5588981905006?text=Gostaria%20de%20um%20orçamento%20sobre%20a%20página%20de%20link%20na%20bio" 
+                   target="_blank"
+                   class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-[var(--accent-green)] text-[var(--dark-text-on-green)] hover:bg-[var(--accent-green-hover)] transition-all duration-200 hover:scale-105"
+                   onclick="gtag('event', 'click', { 'custom_parameter_1': 'service_modal_whatsapp' })">
+                    <i class="fa-brands fa-whatsapp mr-2"></i>
+                    Solicitar Orçamento
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botão Flutuante de Serviços -->
+    <button id="servicos-btn" class="fixed bottom-5 left-5 z-40 bg-gradient-to-r from-purple-600 to-indigo-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl hover-lift hover:scale-110 transition-all duration-300" title="Contratar Serviços de Desenvolvimento">
+        <i class="fa-solid fa-briefcase"></i>
+    </button>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Analytics aprimorado
@@ -884,6 +889,7 @@
             setupModal('qr-code-button', 'qr-modal');
             setupModal('wifi-button', 'wifi-modal');
             setupModal('quiz-button', 'quiz-modal');
+            setupModal('servicos-btn', 'servicos-modal');
 
             // QR Code
             document.getElementById('qr-code-button').addEventListener('click', () => {
