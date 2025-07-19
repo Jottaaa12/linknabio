@@ -34,6 +34,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
     <style>
         :root {
             --dark-purple: #0a0a0f;
@@ -55,6 +57,18 @@
             min-height: 100vh;
         }
 
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-color: var(--dark-purple); /* Fundo para as partículas */
+            background-image: url('');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: 50% 50%;
+            z-index: -3; /* Abaixo de tudo */
+        }
+
         body::before {
             content: '';
             position: fixed;
@@ -63,7 +77,7 @@
                 radial-gradient(ellipse at 20% 20%, rgba(107, 33, 168, 0.15), transparent 50%),
                 radial-gradient(ellipse at 80% 80%, rgba(190, 242, 100, 0.1), transparent 50%),
                 radial-gradient(ellipse at 50% 50%, rgba(124, 58, 237, 0.05), transparent 70%);
-            z-index: -1;
+            z-index: -2; /* Acima do particles-js, abaixo do conteúdo */
         }
 
         /* Animações Suaves */
@@ -491,7 +505,7 @@
         .chatbot-btn {
             position: fixed;
             right: 24px;
-            bottom: 100px; /* acima do mascote e outros balões */
+            bottom: 24px; /* Ajustado para o canto inferior direito */
             z-index: 9999;
             background: linear-gradient(135deg, #4A0E68 60%, #bef264 100%);
             color: #fff;
@@ -510,7 +524,7 @@
         @media (max-width: 600px) {
             .chatbot-btn {
                 right: 16px;
-                bottom: 90px;
+                bottom: 16px; /* Ajustado para o canto inferior direito em mobile */
                 width: 52px;
                 height: 52px;
                 font-size: 1.7rem;
@@ -639,6 +653,7 @@
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-6">
+    <div id="particles-js"></div>
 
     <main class="w-full max-w-sm mx-auto text-center z-10">
         
@@ -1042,6 +1057,80 @@
                 const timeSpent = Math.round((Date.now() - startTime) / 1000);
                 trackEvent('engagement', 'time_on_page', `${timeSpent}s`);
             });
+        });
+
+        /* particles.js config */
+        particlesJS("particles-js", {
+            "particles": {
+                "number": {
+                    "value": 40, /* Reduzido de 80 para 40 */
+                    "density": {"enable": true, "value_area": 800}
+                },
+                "color": {"value": "#bef264" /* Cor dos pontinhos (accent-green) */},
+                "shape": {
+                    "type": "circle",
+                    "stroke": {"width": 0, "color": "#000000"},
+                    "polygon": {"nb_sides": 5},
+                    "image": {"src": "img/github.svg", "width": 100, "height": 100}
+                },
+                "opacity": {
+                    "value": 0.6, // Slightly higher base opacity
+                    "random": true, // Enable random opacity
+                    "anim": {
+                        "enable": true, // Enable opacity animation
+                        "speed": 1,
+                        "opacity_min": 0.2, // Minimum opacity
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 180, // Increased distance for sparser lines
+                    "color": "#7c3aed", /* Cor das linhas (primary-purple) */
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 2, /* Reduzido de 6 para 2 */
+                    "direction": "none",
+                    "random": true, /* Alterado para true para movimento mais natural */
+                    "straight": false,
+                    "out_mode": "bounce", // Changed to bounce for "balanço" effect
+                    "bounce": true, // Explicitly enable bounce
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {"enable": false, /* Desativado */ "mode": "grab"},
+                    "onclick": {"enable": false, /* Desativado */ "mode": "push"},
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {"distance": 140, "line_linked": {"opacity": 1}},
+                    "bubble": {"distance": 400, "size": 40, "duration": 2, "opacity": 8, "speed": 3},
+                    "repulse": {"distance": 200, "duration": 0.4},
+                    "push": {"particles_nb": 4},
+                    "remove": {"particles_nb": 2}
+                }
+            },
+            "retina_detect": false /* Desativado */
         });
     </script>
 </body>
