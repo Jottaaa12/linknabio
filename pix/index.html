@@ -3,36 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagamento PIX</title>
+    <title>Pagamento PIX - Açaí Sabor da Terra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <div id="particles-js"></div>
+    <header>
+        <h1>Açaí Sabor da Terra</h1>
+    </header>
     <div class="container">
         <div class="card">
-            <div class="card-header">
-                <h2>Pagamento via PIX</h2>
-            </div>
             <div class="card-body">
-                <div class="qr-code-container">
-                    <canvas id="qr-code"></canvas>
+                <div class="acai-illustration">
+                    <div class="bowl"></div>
+                    <div class="acai-berry" style="top: -20px; left: 10px;"></div>
+                    <div class="acai-berry" style="top: -15px; left: 40px;"></div>
+                    <div class="acai-berry" style="top: -25px; left: 70px;"></div>
+                </div>
+                <div class="qr-code-wrapper">
+                    <div class="qr-code-frame">
+                        <canvas id="qr-code"></canvas>
+                    </div>
                 </div>
                 <div class="info">
-                    <p><strong>Nome:</strong> Nayara Santos de Araújo</p>
-                    <p><strong>Chave PIX:</strong> 88981905006 <button id="copy-key" class="copy-btn"><i class="far fa-copy"></i></button></p>
+                    <p><strong>Para:</strong> Nayara Santos de Araújo</p>
+                    <p class="pix-key-container">
+                        <strong>Chave PIX:</strong> <span id="pix-key-text">+5588981905006</span>
+                        <button id="copy-key" class="copy-btn"><i class="far fa-copy"></i></button>
+                    </p>
                 </div>
                 <div class="value-input-container">
-                    <input type="number" id="pix-value" placeholder="Digite o valor (opcional)">
+                    <input type="number" id="pix-value" placeholder="Valor (opcional)">
                     <button id="generate-qr">Gerar QR Code com Valor</button>
                 </div>
+                <a href="https://wa.me/5588988229312?text=Ol%C3%A1!+Segue+comprovante+do+PIX" target="_blank" class="whatsapp-btn">
+                    <i class="fab fa-whatsapp"></i> ENVIAR COMPROVANTE
+                </a>
                 <div class="secondary-key-container">
                     <button id="show-secondary-key">Não consegue pagar? Tente outra chave</button>
-                    <p id="secondary-key" class="hidden"><strong>Chave PIX 2:</strong> pix@acaisabordaterra.com.br <button id="copy-secondary-key" class="copy-btn"><i class="far fa-copy"></i></button></p>
+                    <p id="secondary-key" class="hidden">
+                        <strong>Chave 2:</strong> pix@acaisabordaterra.com.br
+                        <button id="copy-secondary-key" class="copy-btn"><i class="far fa-copy"></i></button>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
+    <footer>
+        <p>&copy; 2024 Açaí Sabor da Terra. Todos os direitos reservados.</p>
+    </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

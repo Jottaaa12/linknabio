@@ -1,103 +1,223 @@
+/* General Setup */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f0f2f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #1a1a2e;
+    color: #fff;
     margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+header {
+    background: linear-gradient(90deg, #4a00e0, #8e2de2);
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .container {
-    max-width: 400px;
-    width: 100%;
-    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    min-height: calc(100vh - 160px);
 }
 
+/* Glassmorphism Card */
 .card {
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    overflow: hidden;
-}
-
-.card-header {
-    background-color: #00bfa5;
-    color: #fff;
-    padding: 20px;
-    text-align: center;
-}
-
-.card-header h2 {
-    margin: 0;
-    font-size: 1.5em;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    max-width: 450px;
+    width: 100%;
 }
 
 .card-body {
     padding: 30px;
     text-align: center;
+    position: relative;
 }
 
-.qr-code-container {
+/* Açaí Illustration */
+.acai-illustration {
+    position: absolute;
+    top: -50px;
+    right: -40px;
+    width: 100px;
+    height: 100px;
+    opacity: 0.7;
+}
+
+.bowl {
+    width: 80px;
+    height: 40px;
+    background: #fff;
+    border-radius: 0 0 40px 40px;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    box-shadow: inset 0 -5px 10px rgba(0,0,0,0.2);
+}
+
+.acai-berry {
+    width: 15px;
+    height: 15px;
+    background: #4a00e0;
+    border-radius: 50%;
+    position: absolute;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* QR Code Styling */
+.qr-code-wrapper {
+    display: flex;
+    justify-content: center;
     margin-bottom: 20px;
 }
 
-#qr-code {
-    width: 200px !important;
-    height: 200px !important;
+.qr-code-frame {
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(142, 45, 226, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+#qr-code {
+    width: 220px !important;
+    height: 220px !important;
+    border-radius: 10px;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#qr-code.fade-out {
+    opacity: 0;
+}
+
+/* Info & Inputs */
 .info p {
     margin: 10px 0;
     font-size: 1.1em;
+}
+
+.pix-key-container {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 10px;
 }
 
 .copy-btn {
     background: none;
     border: none;
     cursor: pointer;
-    margin-left: 10px;
-    font-size: 1em;
-    color: #007bff;
+    color: #fff;
+    font-size: 1.2em;
 }
 
 .value-input-container {
-    margin-top: 20px;
+    margin: 20px 0;
 }
 
 #pix-value {
     width: calc(100% - 22px);
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 10px;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    background: rgba(0,0,0,0.2);
+    color: #fff;
+    text-align: center;
 }
 
 #generate-qr {
-    background-color: #007bff;
+    background: #8e2de2;
     color: #fff;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    padding: 12px 20px;
+    border-radius: 8px;
     cursor: pointer;
     width: 100%;
+    margin-top: 10px;
+    font-weight: 600;
+    transition: background 0.3s ease;
 }
 
+#generate-qr:hover {
+    background: #4a00e0;
+}
+
+/* WhatsApp Button */
+.whatsapp-btn {
+    display: inline-block;
+    background: linear-gradient(45deg, #25d366, #128c7e);
+    color: #fff;
+    padding: 15px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    margin-top: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+    animation: pulse 2s infinite;
+}
+
+.whatsapp-btn:hover {
+    transform: scale(1.05);
+    animation-play-state: paused;
+}
+
+.whatsapp-btn i {
+    margin-right: 10px;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+/* Secondary Key & Footer */
 .secondary-key-container {
-    margin-top: 20px;
+    margin-top: 25px;
 }
 
 #show-secondary-key {
     background: none;
     border: none;
-    color: #007bff;
+    color: #ccc;
     cursor: pointer;
     text-decoration: underline;
 }
 
 .hidden {
     display: none;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #aaa;
+    font-size: 0.9em;
 }
