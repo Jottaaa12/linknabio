@@ -1,6 +1,7 @@
-export class UIManager {
+"""export class UIManager {
     constructor(firestoreService) {
         this.firestoreService = firestoreService;
+        this.funcionarios = []; // Store funcionarios data
         this.funcionarioForm = document.getElementById('funcionario-form');
         this.funcionariosTbody = document.getElementById('funcionarios-tbody');
         this.avisoForm = document.getElementById('aviso-form');
@@ -8,10 +9,13 @@ export class UIManager {
 
         this.funcionarioForm.addEventListener('submit', this.handleFuncionarioFormSubmit.bind(this));
         this.avisoForm.addEventListener('submit', this.handleAvisoFormSubmit.bind(this));
+        // Add a single event listener to the table body for delegation
+        this.funcionariosTbody.addEventListener('click', this.handleTableClick.bind(this));
     }
 
     init() {
         this.firestoreService.setupFuncionariosListener((funcionarios) => {
+            this.funcionarios = funcionarios; // Update local cache
             this.renderFuncionarios(funcionarios);
         });
 
@@ -24,6 +28,7 @@ export class UIManager {
         this.funcionariosTbody.innerHTML = '';
         funcionarios.forEach(funcionario => {
             const tr = document.createElement('tr');
+            tr.setAttribute('data-id', funcionario.id); // Set data-id on the row
             tr.innerHTML = `
                 <td>${funcionario.nomeCompleto}</td>
                 <td>${funcionario.email}</td>
@@ -31,8 +36,8 @@ export class UIManager {
                 <td>${funcionario.chavePix}</td>
                 <td>${funcionario.status}</td>
                 <td>
-                    <button data-id="${funcionario.id}" class="edit-btn">Editar</button>
-                    <button data-id="${funcionario.id}" class="delete-btn">Excluir</button>
+                    <button class="edit-btn">Editar</button>
+                    <button class="delete-btn">Excluir</button>
                 </td>
             `;
             this.funcionariosTbody.appendChild(tr);
@@ -63,13 +68,20 @@ export class UIManager {
 
         const data = { nomeCompleto, email, cargo, chavePix, status };
 
-        if (id) {
-            await this.firestoreService.updateFuncionario(id, data);
-        } else {
-            await this.firestoreService.createFuncionario(data);
+        try {
+            if (id) {
+                await this.firestoreService.updateFuncionario(id, data);
+                alert('Funcionário atualizado com sucesso!');
+            } else {
+                await this.firestoreService.createFuncionario(data);
+                alert('Funcionário criado com sucesso!');
+            }
+            this.funcionarioForm.reset();
+            document.getElementById('funcionario-id').value = ''; // Clear hidden id
+        } catch (error) {
+            console.error("Erro ao salvar funcionário:", error);
+            alert(`Erro ao salvar funcionário: ${error.message}`);
         }
-
-        this.funcionarioForm.reset();
     }
 
     async handleAvisoFormSubmit(event) {
@@ -80,8 +92,57 @@ export class UIManager {
 
         const data = { titulo, mensagem, autor };
 
-        await this.firestoreService.createAviso(data);
+        try {
+            await this.firestoreService.createAviso(data);
+            alert('Aviso enviado com sucesso!');
+            this.avisoForm.reset();
+        } catch (error) {
+            console.error("Erro ao criar aviso:", error);
+            alert(`Erro ao criar aviso: ${error.message}`);
+        }
+    }
 
-        this.avisoForm.reset();
+    handleTableClick(event) {
+        const target = event.target;
+        const row = target.closest('tr');
+        if (!row) return;
+
+        const id = row.dataset.id;
+
+        if (target.classList.contains('edit-btn')) {
+            this.handleEditFuncionario(id);
+        } else if (target.classList.contains('delete-btn')) {
+            this.handleDeleteFuncionario(id);
+        }
+    }
+
+    handleEditFuncionario(id) {
+        const funcionario = this.getFuncionarioById(id);
+        if (funcionario) {
+            document.getElementById('funcionario-id').value = funcionario.id;
+            document.getElementById('nome-completo').value = funcionario.nomeCompleto;
+            document.getElementById('email').value = funcionario.email;
+            document.getElementById('cargo').value = funcionario.cargo;
+            document.getElementById('chave-pix').value = funcionario.chavePix;
+            document.getElementById('status').value = funcionario.status;
+            window.scrollTo(0, 0); // Scroll to top to see the form
+        }
+    }
+
+    async handleDeleteFuncionario(id) {
+        if (confirm('Tem certeza que deseja excluir este funcionário?')) {
+            try {
+                await this.firestoreService.deleteFuncionario(id);
+                alert('Funcionário excluído com sucesso!');
+            } catch (error) {
+                console.error("Erro ao excluir funcionário:", error);
+                alert(`Erro ao excluir funcionário: ${error.message}`);
+            }
+        }
+    }
+
+    getFuncionarioById(id) {
+        return this.funcionarios.find(f => f.id === id);
     }
 }
+""

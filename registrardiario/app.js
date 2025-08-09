@@ -24,6 +24,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     const db = getFirestore(app);
     const storage = getStorage(app);
 
+    // Lógica para os cards de usuário
+    const userCards = document.querySelectorAll('.user-card');
+    const funcionarioSelect = document.getElementById('funcionario');
+    userCards.forEach(card => {
+        card.addEventListener('click', () => {
+            // Remove a seleção de todos os cards
+            userCards.forEach(c => c.classList.remove('selected'));
+            // Adiciona a seleção ao card clicado
+            card.classList.add('selected');
+            // Define o valor no select oculto
+            funcionarioSelect.value = card.dataset.value;
+        });
+    });
+
     // Monitora o estado da autenticação.
     onAuthStateChanged(auth, (user) => {
         if (user) {

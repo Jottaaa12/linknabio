@@ -6,6 +6,7 @@ import {
     updateDoc, 
     deleteDoc, 
     doc, 
+    getDoc, // Import getDoc
     Timestamp,
     orderBy,
     query
@@ -75,16 +76,21 @@ export class FirestoreService {
 
     // Atualiza um funcionário existente
     async updateFuncionario(id, data) {
+        const docRef = doc(this.db, this.funcionariosCollectionName, id);
         try {
+            // Preserve o campo dataCriacao original
+            const docSnap = await getDoc(docRef);
+            const existingData = docSnap.data() || {};
+
             const funcionarioData = {
                 nomeCompleto: data.nomeCompleto,
                 email: data.email,
                 cargo: data.cargo,
                 chavePix: data.chavePix,
-                status: data.status
+                status: data.status,
+                dataCriacao: existingData.dataCriacao || Timestamp.now() // Preserve or set new if not exists
             };
 
-            const docRef = doc(this.db, this.funcionariosCollectionName, id);
             await updateDoc(docRef, funcionarioData);
             return { success: true };
         } catch (error) {

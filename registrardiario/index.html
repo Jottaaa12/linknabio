@@ -3,144 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro Diário - Açaí Sabor da Terra</title>
+    <title>Fechamento do Dia - Açaí Sabor da Terra</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script> <!-- Adicione seu kit do Font Awesome se tiver -->
 </head>
 <body>
 
-    <div class="app-container">
-        <nav class="tabs">
-            <button class="tab-button active">📊 Registro Diário</button>
-        </nav>
+    <div class="dashboard-container">
 
-        <main class="content">
-            <div id="registroDiarioContainer">
-                <form id="registroForm">
-                    <div class="form-section">
-                        <h2>Registro Diário de Caixa</h2>
-                        
-                        <p class="creditos-topo">Sistema criado por <a href="https://www.instagram.com/Jottaaa0" target="_blank" rel="noopener noreferrer">@Jottaaa0</a></p>
-
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="funcionario">Funcionário(a)</label>
-                                <select id="funcionario" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="Yasmin">Yasmin</option>
-                                    <option value="Nayara">Nayara</option>
-                                    <option value="João Pedro (gerente)">João Pedro (gerente)</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="data">Data</label>
-                                <input type="date" id="data" required>
-                            </div>
-                            <div class="form-group full-width">
-                                <label>Entradas do Dia</label>
-                                <div class="form-grid">
-                                    <div class="form-group"><label for="dinheiroEntrada">💰 Dinheiro</label><input type="number" id="dinheiroEntrada" placeholder="0.00" step="0.01" min="0"></div>
-                                    <div class="form-group"><label for="pixEntrada">📱 PIX</label><input type="number" id="pixEntrada" placeholder="0.00" step="0.01" min="0"></div>
-                                    <div class="form-group"><label for="cartaoEntrada">💳 Cartão</label><input type="number" id="cartaoEntrada" placeholder="0.00" step="0.01" min="0"></div>
-                                </div>
-                            </div>
-                            
-                            <!-- SAÍDAS DETALHADAS -->
-                            <div class="form-group full-width">
-                                <label>Saídas do Dia</label>
-                                <div id="saidasList">
-                                    <!-- Itens de saída serão adicionados dinamicamente aqui -->
-                                </div>
-                                <button type="button" id="btnAdicionarSaida" class="btn btn-secondary">+ Adicionar Saída</button>
-                                <p>Total Saídas: <span id="totalSaidas">R$ 0,00</span></p>
-                            </div>
-
-                            <div class="form-group full-width">
-                                <label>🎁 Houve cartão fidelidade hoje?</label>
-                                <div class="radio-group"><input type="radio" id="fidelidadeSim" name="fidelidade" value="sim"> <label for="fidelidadeSim">Sim</label><input type="radio" id="fidelidadeNao" name="fidelidade" value="nao" checked> <label for="fidelidadeNao">Não</label></div>
-                            </div>
-                            <div id="fidelidadeDetalhes" class="full-width">
-                                <div class="form-grid">
-                                    <div class="form-group full-width"><label for="fidelidadeQuantidade">Quantos cartões foram utilizados?</label><input type="number" id="fidelidadeQuantidade" placeholder="0" step="1" min="0"></div>
-                                </div>
-                            </div>
-
-                             <!-- UPLOAD DE COMPROVANTE -->
-                            <div class="form-group full-width">
-                                <label for="comprovante">Comprovante (imagem/PDF)</label>
-                                <input type="file" id="comprovante" accept="image/*,application/pdf">
-                            </div>
-
-                            <div class="form-group full-width">
-                                <label for="observacoesDia">Observações do Dia</label><textarea id="observacoesDia" placeholder="Anotações importantes sobre o dia de hoje..."></textarea>
-                            </div>
-                            <div class="form-group full-width">
-                                <label>Termômetro da Loja (Como foi o dia?)</label>
-                                <div class="mood-options"><label class="mood-option">😴<input type="radio" name="climaLoja" value="Muito Fraco"></label><label class="mood-option">😐<input type="radio" name="climaLoja" value="Fraco"></label><label class="mood-option">🙂<input type="radio" name="climaLoja" value="Bom"></label><label class="mood-option">😄<input type="radio" name="climaLoja" value="Ótimo"></label><label class="mood-option">🚀<input type="radio" name="climaLoja" value="Excepcional"></label></div>
-                            </div>
-                            <div class="form-group full-width">
-                                <label>Frase do Dia (Opcional)</label>
-                                <div id="fraseMotivacionalArea" contenteditable="true"></div>
-                            </div>
+        <!-- Coluna Lateral: Detalhes e Ações -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>Detalhes do Dia</h3>
+            </div>
+            <div class="sidebar-content">
+                <div class="card">
+                    <h4>Responsável</h4>
+                    <div class="user-selection">
+                        <div class="user-card" data-value="Yasmin">
+                            <span>Yasmin</span>
+                        </div>
+                        <div class="user-card" data-value="Nayara">
+                            <span>Nayara</span>
+                        </div>
+                        <div class="user-card" data-value="João Pedro (gerente)">
+                            <span>João P.</span>
                         </div>
                     </div>
-                    <div class="button-group justify-center"><button type="button" id="btnRevisar" class="btn btn-primary">Revisar Registro</button></div>
-                </form>
-
-                <div id="confirmacao" class="hidden">
-                    <div class="card">
-                        <h2>Revisão do Registro</h2>
-                        <div id="resumoContainer">
-                            <div id="resumo"></div>
-                            <div id="ajusteCaixa" class="form-section">
-                                <h4>Conciliação de Caixa (Opcional)</h4>
-                                <div class="ajuste-group">
-                                    <label>Dinheiro em Espécie</label>
-                                    <span>Saldo do Sistema: <strong id="sistemaDinheiro">R$ 0,00</strong></span>
-                                    <input type="number" id="realDinheiro" placeholder="Valor real na gaveta" step="0.01">
-                                    <span>Diferença: <strong id="diferencaDinheiro">R$ 0,00</strong></span>
-                                </div>
-                                <div class="ajuste-group">
-                                    <label>Saldo em PIX</label>
-                                    <span>Saldo do Sistema: <strong id="sistemaPix">R$ 0,00</strong></span>
-                                    <input type="number" id="realPix" placeholder="Valor real no extrato" step="0.01">
-                                    <span>Diferença: <strong id="diferencaPix">R$ 0,00</strong></span>
-                                </div>
-                                <textarea id="motivoAjuste" placeholder="Motivo do(s) ajuste(s)..."></textarea>
-                            </div>
-                        </div>
-                        <div class="button-group justify-center">
-                            <button type="button" id="btnVerLogs" class="btn btn-secondary hidden">📜 Histórico de Revisões</button>
-                            <button type="button" id="btnEditar" class="btn btn-secondary">Editar</button>
-                            <button type="button" id="btnConfirmar" class="btn btn-success">Confirmar e Salvar Online</button>
-                        </div>
-                    </div>
+                    <select id="funcionario" required class="hidden-select">
+                        <option value=""></option>
+                        <option value="Yasmin">Yasmin</option>
+                        <option value="Nayara">Nayara</option>
+                        <option value="João Pedro (gerente)">João Pedro (gerente)</option>
+                    </select>
                 </div>
 
-                <div id="envio" class="hidden">
-                    <div class="card">
-                        <h2>✅ Registro Salvo Online!</h2>
-                        <p>Seu registro diário foi salvo com sucesso na nuvem.</p>
-                        <div class="button-group justify-center">
-                            <button type="button" id="btnEnviarWhatsApp" class="btn btn-success">Enviar para WhatsApp</button>
-                            <button type="button" id="btnNovoRegistro" class="btn btn-primary">Novo Registro</button>
+                <div class="card">
+                    <h4>Data do Registro</h4>
+                    <input type="date" id="data" required>
+                </div>
+
+                <div class="card">
+                    <h4>Observações</h4>
+                    <textarea id="observacoesDia" placeholder="Anotações importantes..."></textarea>
+                </div>
+                
+                <div class="card">
+                    <h4>Frase do Dia</h4>
+                    <div id="fraseMotivacionalArea" contenteditable="true"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal: Registros e Números -->
+        <main class="main-content">
+            <header class="main-header">
+                <h1>Fechamento de Caixa</h1>
+                <p class="creditos-topo">Sistema por <a href="https://www.instagram.com/Jottaaa0" target="_blank">@Jottaaa0</a></p>
+            </header>
+
+            <div id="registroDiarioContainer">
+                <form id="registroForm">
+                    
+                    <div class="content-grid">
+                        <!-- Entradas -->
+                        <div class="card large-card">
+                            <h3>Entradas do Dia</h3>
+                            <div class="form-grid">
+                                <div class="form-group"><label for="dinheiroEntrada">💰 Dinheiro</label><input type="number" id="dinheiroEntrada" placeholder="0.00" step="0.01" min="0"></div>
+                                <div class="form-group"><label for="pixEntrada">📱 PIX</label><input type="number" id="pixEntrada" placeholder="0.00" step="0.01" min="0"></div>
+                                <div class="form-group"><label for="cartaoEntrada">💳 Cartão</label><input type="number" id="cartaoEntrada" placeholder="0.00" step="0.01" min="0"></div>
+                            </div>
                         </div>
+
+                        <!-- Saídas -->
+                        <div class="card large-card">
+                            <h3>Saídas do Dia</h3>
+                            <div id="saidasList">
+                                <!-- Itens de saída dinâmicos -->
+                            </div>
+                            <button type="button" id="btnAdicionarSaida" class="btn btn-secondary">+ Adicionar Saída</button>
+                            <p class="total-saidas">Total Saídas: <span id="totalSaidas">R$ 0,00</span></p>
+                        </div>
+
+                        <!-- Outros Detalhes -->
+                        <div class="card">
+                            <h4>🎁 Cartão Fidelidade</h4>
+                            <div class="radio-group-modern">
+                                <label><input type="radio" id="fidelidadeSim" name="fidelidade" value="sim"> Sim</label>
+                                <label><input type="radio" id="fidelidadeNao" name="fidelidade" value="nao" checked> Não</label>
+                            </div>
+                            <div id="fidelidadeDetalhes">
+                                <div class="form-group full-width"><label for="fidelidadeQuantidade">Quantos cartões?</label><input type="number" id="fidelidadeQuantidade" placeholder="0" step="1" min="0"></div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h4>Comprovante</h4>
+                            <input type="file" id="comprovante" accept="image/*,application/pdf">
+                        </div>
+
+                        <div class="card full-span">
+                            <h4>Como foi o dia? (Termômetro da Loja)</h4>
+                            <div class="mood-options">
+                                <label class="mood-option">😴<input type="radio" name="climaLoja" value="Muito Fraco"></label>
+                                <label class="mood-option">😐<input type="radio" name="climaLoja" value="Fraco"></label>
+                                <label class="mood-option">🙂<input type="radio" name="climaLoja" value="Bom"></label>
+                                <label class="mood-option">😄<input type="radio" name="climaLoja" value="Ótimo"></label>
+                                <label class="mood-option">🚀<input type="radio" name="climaLoja" value="Excepcional"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group justify-center main-action">
+                        <button type="button" id="btnRevisar" class="btn btn-primary">Revisar e Finalizar</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Telas de Confirmação e Envio (Modal) -->
+            <div id="confirmacao" class="modal-overlay hidden">
+                <div class="modal-content">
+                    <h2>Revisão do Registro</h2>
+                    <div id="resumoContainer">
+                        <div id="resumo"></div>
+                        <div id="ajusteCaixa" class="form-section">
+                            <h4>Conciliação de Caixa (Opcional)</h4>
+                            <div class="ajuste-group">
+                                <label>Dinheiro em Espécie</label>
+                                <span>Saldo do Sistema: <strong id="sistemaDinheiro">R$ 0,00</strong></span>
+                                <input type="number" id="realDinheiro" placeholder="Valor real na gaveta" step="0.01">
+                                <span>Diferença: <strong id="diferencaDinheiro">R$ 0,00</strong></span>
+                            </div>
+                            <div class="ajuste-group">
+                                <label>Saldo em PIX</label>
+                                <span>Saldo do Sistema: <strong id="sistemaPix">R$ 0,00</strong></span>
+                                <input type="number" id="realPix" placeholder="Valor real no extrato" step="0.01">
+                                <span>Diferença: <strong id="diferencaPix">R$ 0,00</strong></span>
+                            </div>
+                            <textarea id="motivoAjuste" placeholder="Motivo do(s) ajuste(s)..."></textarea>
+                        </div>
+                    </div>
+                    <div class="button-group justify-center">
+                        <button type="button" id="btnVerLogs" class="btn btn-secondary hidden">📜 Histórico</button>
+                        <button type="button" id="btnEditar" class="btn btn-secondary">Editar</button>
+                        <button type="button" id="btnConfirmar" class="btn btn-success">Confirmar e Salvar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="envio" class="modal-overlay hidden">
+                <div class="modal-content">
+                    <h2>✅ Registro Salvo!</h2>
+                    <p>Seu registro diário foi salvo com sucesso na nuvem.</p>
+                    <div class="button-group justify-center">
+                        <button type="button" id="btnEnviarWhatsApp" class="btn btn-success">Enviar para WhatsApp</button>
+                        <button type="button" id="btnNovoRegistro" class="btn btn-primary">Novo Registro</button>
                     </div>
                 </div>
             </div>
         </main>
-    </div>
-
-    <!-- Modal para Logs -->
-    <div id="logsModal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <button id="closeLogsModal" class="modal-close-btn">&times;</button>
-            <h3>Histórico de Revisões</h3>
-            <div id="logsContainer"></div>
-        </div>
     </div>
 
     <!-- Datalist para Autocomplete de Motivos -->
@@ -157,4 +183,3 @@
     <script type="module" src="app.js"></script>
 </body>
 </html>
-

@@ -115,14 +115,10 @@ async function loadDashboardData(user) {
         document.getElementById('perfil-nome').value = userData.nomeCompleto;
         document.getElementById('perfil-cargo').value = userData.cargo;
         document.getElementById('pagamento-chave-pix').value = userData.chavePix;
-    } else {
-        console.log("Dados do funcionário não encontrados!");
-        alert("Não foi possível carregar os dados do perfil.");
+
+        // Setup form listeners for profile and payment updates
+        setupProfileForms(userDocRef);
     }
-
-    // Setup form listeners for profile and payment updates
-    setupProfileForms(userDocRef);
-
     // Fetch and display announcements
     loadAnnouncements();
 }
