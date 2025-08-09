@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roleta do Aniversariante</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="secao-verificacao" class="container">
+        <h1>Verifique seu Aniversário</h1>
+        <p>Para girar a roleta, insira seu número de telefone:</p>
+        <input type="tel" id="telefone-input" placeholder="(XX) XXXXX-XXXX" pattern="[0-9]{2}[0-9]{5}[0-9]{4}" required>
+        <button id="verificar-btn">Verificar</button>
+    </div>
+
+    <div id="roleta-container" class="container hidden">
+        <h1>Feliz Aniversário, Gire para Ganhar!</h1>
+        <canvas id="roleta-canvas" width="500" height="500"></canvas>
+        <button id="girar-btn">GIRAR E TORCER!</button>
+    </div>
+
+    <div id="premio-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Parabéns!</h2>
+            <p id="premio-texto"></p>
+        </div>
+    </div>
+
+    <script src="roleta.js"></script>
+</body>
+</html>

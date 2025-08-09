@@ -159,7 +159,7 @@ export const RegistroDiarioModule = {
     addSaidaItem(saida = { valor: '', motivo: '', metodo: 'dinheiro' }) {
         const container = document.getElementById('saidasList');
         const div = document.createElement('div');
-        div.className = 'saida-item';
+        div.className = 'saida-item saida-item-mobile-fix';
         const saidaId = `saida_${Date.now()}_${Math.random()}`; // ID único para o grupo de rádio
         div.innerHTML = `
             <input type="number" class="saida-valor" placeholder="Valor" step="0.01" min="0" value="${saida.valor}">

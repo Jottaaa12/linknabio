@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Portal do Funcionário</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2>Cadastro de Novo Funcionário</h2>
+            <form id="registro-form">
+                <input type="text" id="registro-nome" placeholder="Nome Completo" required>
+                <input type="email" id="registro-email" placeholder="E-mail" required>
+                <input type="password" id="registro-password" placeholder="Senha" required>
+                <input type="text" id="registro-cargo" placeholder="Cargo" required>
+                <input type="text" id="registro-chave-pix" placeholder="Chave PIX" required>
+                <button type="submit">Cadastrar</button>
+            </form>
+            <p>Já tem uma conta? <a href="index.html">Faça login</a></p>
+        </div>
+    </div>
+    <script type="module" src="app.js"></script>
+</body>
+</html>

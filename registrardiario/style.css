@@ -429,3 +429,9 @@ progress {
 .creditos-topo a:hover {
     text-decoration: underline;
 }
+
+@media (max-width: 768px) {
+    .saida-item-mobile-fix {
+        grid-template-columns: 1fr 2fr 1.5fr auto;
+    }
+}

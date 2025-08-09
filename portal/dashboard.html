@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Portal do Funcionário</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Painel do Funcionário</h1>
+            <button id="logout-btn">Sair</button>
+        </header>
+
+        <main>
+            <section id="meu-perfil">
+                <h2>Meu Perfil</h2>
+                <form id="perfil-form">
+                    <label for="perfil-nome">Nome Completo:</label>
+                    <input type="text" id="perfil-nome" required>
+                    <label for="perfil-cargo">Cargo:</label>
+                    <input type="text" id="perfil-cargo" required>
+                    <button type="submit">Salvar Perfil</button>
+                </form>
+            </section>
+
+            <section id="meus-pagamentos">
+                <h2>Meus Pagamentos</h2>
+                <form id="pagamento-form">
+                    <label for="pagamento-chave-pix">Chave PIX:</label>
+                    <input type="text" id="pagamento-chave-pix" required>
+                    <button type="submit">Salvar Chave PIX</button>
+                </form>
+            </section>
+
+            <section id="quadro-de-avisos">
+                <h2>Quadro de Avisos</h2>
+                <div id="avisos-container">
+                    <!-- Avisos serão inseridos aqui -->
+                </div>
+            </section>
+        </main>
+    </div>
+    <script type="module" src="app.js"></script>
+</body>
+</html>

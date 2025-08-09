@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Funcionários</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Gestão de Funcionários</h1>
+        <div id="funcionarios-section">
+            <h2>Funcionários</h2>
+            <!-- Formulário para adicionar/editar funcionário -->
+            <form id="funcionario-form">
+                <input type="hidden" id="funcionario-id">
+                <input type="text" id="nome-completo" placeholder="Nome Completo" required>
+                <input type="email" id="email" placeholder="E-mail" required>
+                <input type="text" id="cargo" placeholder="Cargo" required>
+                <input type="text" id="chave-pix" placeholder="Chave PIX" required>
+                <select id="status">
+                    <option value="pendente">Pendente</option>
+                    <option value="aprovado">Aprovado</option>
+                    <option value="reprovado">Reprovado</option>
+                </select>
+                <button type="submit">Salvar</button>
+            </form>
+            <!-- Tabela de funcionários -->
+            <table id="funcionarios-table">
+                <thead>
+                    <tr>
+                        <th>Nome Completo</th>
+                        <th>E-mail</th>
+                        <th>Cargo</th>
+                        <th>Chave PIX</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="funcionarios-tbody">
+                    <!-- Linhas da tabela serão preenchidas via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="avisos-section">
+            <h2>Avisos</h2>
+            <!-- Formulário para adicionar aviso -->
+            <form id="aviso-form">
+                <input type="text" id="aviso-titulo" placeholder="Título do Aviso" required>
+                <textarea id="aviso-mensagem" placeholder="Mensagem do Aviso" required></textarea>
+                <input type="text" id="aviso-autor" placeholder="Autor do Aviso" required>
+                <button type="submit">Enviar Aviso</button>
+            </form>
+            <!-- Lista de avisos -->
+            <div id="avisos-list">
+                <!-- Avisos serão preenchidos via JavaScript -->
+            </div>
+        </div>
+    </div>
+    <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #1a1a2e; /* Dark theme background */
+    color: #e0e0e0; /* Light text color */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background-color: #2a2a4a;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    position: relative;
+}
+
+h1 {
+    color: #8a2be2; /* Purple brand color */
+    margin-bottom: 20px;
+}
+
+canvas {
+    border: 10px solid #8a2be2; /* Premium purple border */
+    border-radius: 50%;
+    background-color: #3a3a5a;
+    margin-bottom: 30px;
+    position: relative;
+    box-shadow: 0 0 30px rgba(138, 43, 226, 0.5); /* Glow effect */
+    transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1); /* CSS transition for spinning */
+}
+
+/* Static and elegant pointer */
+.container::before {
+    content: '';
+    position: absolute;
+    top: 10px; /* Position at the top */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 30px solid #39ff14; /* Lime green pointer */
+    z-index: 10;
+}
+
+#girar-btn {
+    background-color: #39ff14; /* Lime green brand color */
+    color: #1a1a2e;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#girar-btn:hover {
+    background-color: #2ecc71;
+    transform: scale(1.05);
+}
+
+#girar-btn.pulse {
+    animation: pulse 0.8s infinite alternate;
+}
+
+@keyframes pulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.05); }
+}
+
+/* Modal */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.modal.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.modal-content {
+    background-color: #2a2a4a;
+    margin: auto;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+    text-align: center;
+    position: relative;
+}
+
+.close-button {
+    color: #e0e0e0;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #8a2be2;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#premio-texto {
+    font-size: 1.8em;
+    color: #39ff14;
+    margin-top: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+#secao-verificacao {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+#telefone-input {
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 2px solid #8a2be2;
+    background-color: #1a1a2e;
+    color: #e0e0e0;
+    font-size: 1.1em;
+    text-align: center;
+    width: 250px;
+}
+
+#telefone-input::placeholder {
+    color: #b0b0b0;
+}
+
+#verificar-btn {
+    background-color: #39ff14;
+    color: #1a1a2e;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#verificar-btn:hover {
+    background-color: #2ecc71;
+    transform: scale(1.05);
+}

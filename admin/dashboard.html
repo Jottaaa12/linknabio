@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Painel do Administrador</h1>
+            <button id="logout-btn">Sair</button>
+        </header>
+
+        <main>
+            <section id="gestao-funcionarios">
+                <h2>Gestão de Funcionários</h2>
+                <table id="funcionarios-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Cargo</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="funcionarios-tbody">
+                        <!-- Rows will be inserted here -->
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="gestao-avisos">
+                <h2>Gestão de Avisos</h2>
+                <form id="aviso-form">
+                    <h3>Criar Novo Aviso</h3>
+                    <input type="text" id="aviso-titulo" placeholder="Título" required>
+                    <textarea id="aviso-mensagem" placeholder="Mensagem" required></textarea>
+                    <button type="submit">Publicar Aviso</button>
+                </form>
+                <div id="avisos-list">
+                    <h3>Avisos Publicados</h3>
+                    <!-- Avisos will be listed here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal for Employee Details -->
+    <div id="funcionario-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 id="modal-nome"></h2>
+            <p><strong>Email:</strong> <span id="modal-email"></span></p>
+            <p><strong>Cargo:</strong> <span id="modal-cargo"></span></p>
+            <p><strong>Status:</strong> <span id="modal-status"></span></p>
+            <p><strong>Chave PIX:</strong> <span id="modal-chave-pix"></span></p>
+            
+            <hr>
+
+            <h3>Registro de Ponto</h3>
+            <div id="modal-registro-ponto"></div>
+
+            <hr>
+
+            <h3>Adicionar Ocorrência</h3>
+            <form id="registro-ponto-form">
+                <input type="hidden" id="registro-ponto-funcionario-id">
+                <input type="date" id="registro-ponto-data" required>
+                <select id="registro-ponto-tipo" required>
+                    <option value="presenca">Presença</option>
+                    <option value="falta_justificada">Falta Justificada</option>
+                    <option value="falta_injustificada">Falta Injustificada</option>
+                </select>
+                <textarea id="registro-ponto-obs" placeholder="Observação"></textarea>
+                <button type="submit">Adicionar Registro</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
