@@ -368,6 +368,23 @@ textarea {
     max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    position: relative; /* Adicionado para posicionar o botão de fechar */
+}
+
+.btn-close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+}
+
+.btn-close-modal:hover {
+    color: var(--text-primary);
 }
 
 #resumo {

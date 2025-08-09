@@ -30,22 +30,35 @@ export const RegistroDiarioModule = {
 
     // --- EVENT LISTENERS ---
     setupEventListeners() {
-        this.form.addEventListener('input', () => this.saveDraft());
+        // Função auxiliar para adicionar listeners de forma segura
+        const addSafeListener = (id, event, handler) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener(event, handler);
+            } else {
+                console.warn(`Elemento com id '${id}' não encontrado para adicionar listener.`);
+            }
+        };
+
+        if (this.form) {
+            this.form.addEventListener('input', () => this.saveDraft());
+        }
+
         document.querySelectorAll('input[name="fidelidade"]').forEach(radio => radio.addEventListener('change', () => this.showHideFidelidade()));
         document.querySelectorAll('.mood-option input').forEach(radio => radio.addEventListener('change', () => this.updateMoodOptionsStyle()));
         
-        document.getElementById('btnAdicionarSaida').addEventListener('click', () => this.addSaidaItem());
-        document.getElementById('btnRevisar').addEventListener('click', () => this.review());
-        document.getElementById('btnEditar').addEventListener('click', () => this.edit());
-        document.getElementById('btnConfirmar').addEventListener('click', () => this.confirmAndSave());
-        document.getElementById('btnEnviarWhatsApp').addEventListener('click', () => this.sendToWhatsApp());
-        document.getElementById('btnNovoRegistro').addEventListener('click', () => this.reset());
+        addSafeListener('btnAdicionarSaida', 'click', () => this.addSaidaItem());
+        addSafeListener('btnRevisar', 'click', () => this.review());
+        addSafeListener('btnEditar', 'click', () => this.edit());
+        addSafeListener('btnConfirmar', 'click', () => this.confirmAndSave());
+        addSafeListener('btnEnviarWhatsApp', 'click', () => this.sendToWhatsApp());
+        addSafeListener('btnNovoRegistro', 'click', () => this.reset());
         
-        document.getElementById('realDinheiro').addEventListener('input', () => this.updateAjuste());
-        document.getElementById('realPix').addEventListener('input', () => this.updateAjuste());
+        addSafeListener('realDinheiro', 'input', () => this.updateAjuste());
+        addSafeListener('realPix', 'input', () => this.updateAjuste());
         
-        document.getElementById('btnVerLogs').addEventListener('click', () => this.showLogsModal());
-        document.getElementById('closeLogsModal').addEventListener('click', () => this.hideLogsModal());
+        addSafeListener('btnVerLogs', 'click', () => this.showLogsModal());
+        addSafeListener('closeLogsModal', 'click', () => this.hideLogsModal());
     },
 
     // --- MANIPULAÇÃO DO FORMULÁRIO ---
