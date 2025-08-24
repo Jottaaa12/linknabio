@@ -19,11 +19,7 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-8E9HZ5QYNT', {
-        page_title: 'Link na Bio - Açaí Sabor da Terra',
-        custom_map: {
-          'custom_parameter_1': 'button_click',
-          'custom_parameter_2': 'social_media'
-        }
+        page_title: 'Link na Bio - Açaí Sabor da Terra'
       });
     </script>
     
@@ -665,35 +661,30 @@
             <p class="mt-2 text-md opacity-70" style="color: var(--subtle-text);">Mais que açaí, uma experiência.</p>
 
             <div class="flex justify-center space-x-5 mt-6 text-xl" style="color: var(--subtle-text);">
-                <a href="https://www.instagram.com/acaisabordaterra_" target="_blank" aria-label="Instagram" 
-                   class="transition-all duration-300 hover:scale-125 hover:text-[var(--accent-green)] hover-lift"
-                   onclick="gtag('event', 'click', { 'custom_parameter_2': 'instagram' })">
+                <a id="instagram-link" href="https://www.instagram.com/acaisabordaterra_" target="_blank" aria-label="Instagram" 
+                   class="transition-all duration-300 hover:scale-125 hover:text-[var(--accent-green)] hover-lift">
                    <i class="fab fa-instagram"></i>
                 </a>
-                <a href="https://wa.me/5588988229312" target="_blank" aria-label="WhatsApp" 
-                   class="transition-all duration-300 hover:scale-125 hover:text-[var(--accent-green)] hover-lift"
-                   onclick="gtag('event', 'click', { 'custom_parameter_2': 'whatsapp' })">
+                <a id="whatsapp-link" href="https://wa.me/5588988229312" target="_blank" aria-label="WhatsApp" 
+                   class="transition-all duration-300 hover:scale-125 hover:text-[var(--accent-green)] hover-lift">
                    <i class="fab fa-whatsapp"></i>
                 </a>
-                <a href="https://www.facebook.com/profile.php?id=61572671844988&mibextid=ZbWKwL" target="_blank" aria-label="Facebook" 
-                   class="transition-all duration-300 hover:scale-125 hover:text-[var(--accent-green)] hover-lift"
-                   onclick="gtag('event', 'click', { 'custom_parameter_2': 'facebook' })">
+                <a id="facebook-link" href="https://www.facebook.com/profile.php?id=61572671844988&mibextid=ZbWKwL" target="_blank" aria-label="Facebook" 
+                   class="transition-all duration-300 hover:scale-125 hover:text-[var(--accent-green)] hover-lift">
                    <i class="fab fa-facebook"></i>
                 </a>
             </div>
         </div>
 
         <div class="space-y-4 mt-10 fade-in-up delay-2">
-            <a href="https://acaisabordaterra.deeliv.app/" target="_blank" 
-               class="flex items-center justify-center w-full p-4 rounded-full shadow-lg font-bold text-lg btn-primary hover-lift"
-               onclick="gtag('event', 'click', { 'custom_parameter_1': 'order_button' })">
+            <a id="order-link" href="https://acaisabordaterra.deeliv.app/" target="_blank" 
+               class="flex items-center justify-center w-full p-4 rounded-full shadow-lg font-bold text-lg btn-primary hover-lift">
                 <i class="fa-solid fa-hand-pointer mr-3"></i><span>Peça por aqui</span>
             </a>
             
             <!-- Novo botão do Quiz -->
             <button id="quiz-button" 
-                    class="flex items-center justify-center w-full p-4 rounded-full shadow-lg font-bold text-lg btn-secondary hover-lift relative mt-4 group"
-                    onclick="gtag('event', 'click', { 'custom_parameter_1': 'quiz_button' })">
+                    class="flex items-center justify-center w-full p-4 rounded-full shadow-lg font-bold text-lg btn-secondary hover-lift relative mt-4 group">
                 <i class="fa-solid fa-gamepad mr-3 text-[var(--accent-green)]"></i>
                 <span>Jogar Quiz</span>
                 <span class="absolute -top-2 -right-2 bg-[var(--accent-green)] text-[var(--dark-text-on-green)] text-xs font-bold px-2 py-1 rounded-full animate-pulse">
@@ -702,17 +693,15 @@
             </button>
             
             <div class="space-y-4 pt-2">
-                <a href="https://g.page/r/CdfFPeHDX5anEBE/review" target="_blank" 
-                   class="flex items-center justify-center w-full p-4 rounded-full font-medium rating-btn hover-lift"
-                   onclick="gtag('event', 'click', { 'custom_parameter_1': 'google_review' })">
+                <a id="rating-link" href="https://g.page/r/CdfFPeHDX5anEBE/review" target="_blank" 
+                   class="flex items-center justify-center w-full p-4 rounded-full font-medium rating-btn hover-lift">
                     <i class="fa-solid fa-star w-6 mr-3"></i><span>Avalie nosso Atendimento</span>
                 </a>
-                 <a href="https://maps.app.goo.gl/bzaGzygRZ4emagVk8" target="_blank" 
-                    class="flex items-center justify-center w-full p-4 rounded-full font-medium btn-secondary hover-lift"
-                    onclick="gtag('event', 'click', { 'custom_parameter_1': 'location' })">
+                 <a id="location-link" href="https://maps.app.goo.gl/bzaGzygRZ4emagVk8" target="_blank" 
+                    class="flex items-center justify-center w-full p-4 rounded-full font-medium btn-secondary hover-lift">
                     <i class="fa-solid fa-map-location-dot w-6 mr-3 text-[var(--accent-green)]"></i><span>Encontre nossa Loja</span>
                 </a>
-                <a href="https://play.google.com/store/apps/details?id=v002.app.deeliv.acaisabordaterra" 
+                <a id="download-app-link" href="https://play.google.com/store/apps/details?id=v002.app.deeliv.acaisabordaterra" 
                    class="flex items-center justify-center w-full p-4 rounded-full font-medium btn-secondary hover-lift"
                    target="_blank">
                     <i class="fa-solid fa-mobile-alt w-6 mr-3 text-[var(--accent-green)]"></i>
@@ -723,23 +712,19 @@
         
         <div class="grid grid-cols-2 gap-4 pt-8 fade-in-up delay-3">
              <button id="wifi-button" class="flex items-center justify-center w-full p-3 rounded-full font-medium btn-secondary hover-lift text-sm" 
-                     style="color: var(--subtle-text);"
-                     onclick="gtag('event', 'click', { 'custom_parameter_1': 'wifi_button' })">
+                     style="color: var(--subtle-text);">
                      <i class="fa-solid fa-wifi w-5 mr-2"></i><span>Wi-Fi da Loja</span>
              </button>
              <button id="qr-code-button" class="flex items-center justify-center w-full p-3 rounded-full font-medium btn-secondary hover-lift text-sm" 
-                     style="color: var(--subtle-text);"
-                     onclick="gtag('event', 'click', { 'custom_parameter_1': 'qr_button' })">
+                     style="color: var(--subtle-text);">
                      <i class="fa-solid fa-qrcode w-5 mr-2"></i><span>QR da Página</span>
              </button>
              <a id="vcard-button" href="#" class="flex items-center justify-center w-full p-3 rounded-full font-medium btn-secondary hover-lift text-sm" 
-                style="color: var(--subtle-text);"
-                onclick="gtag('event', 'click', { 'custom_parameter_1': 'vcard_button' })">
+                style="color: var(--subtle-text);">
                 <i class="fa-solid fa-address-book w-5 mr-2"></i><span>Salvar Contato</span>
              </a>
              <button id="share-button" class="flex items-center justify-center w-full p-3 rounded-full font-medium btn-secondary hover-lift text-sm" 
-                     style="color: var(--subtle-text);"
-                     onclick="gtag('event', 'click', { 'custom_parameter_1': 'share_button' })">
+                     style="color: var(--subtle-text);">
                      <i class="fa-solid fa-share-alt w-5 mr-2"></i><span>Indicar Amigo</span>
              </button>
         </div>
@@ -786,7 +771,7 @@
         
         <footer class="mt-16 text-center text-xs opacity-50 fade-in-up delay-4">
             <p class="mb-2">© <span id="current-year"></span> Açaí Sabor da Terra</p>
-            <p>Feito com ❤️ por <a href="https://www.instagram.com/jottaaa0" target="_blank" class="font-semibold underline hover:text-white">@jottaaa0</a></p>
+            <p>Feito com ❤️ por <a id="developer-link" href="https://www.instagram.com/jottaaa0" target="_blank" class="font-semibold underline hover:text-white">@jottaaa0</a></p>
         </footer>
     </main>
 
@@ -862,10 +847,9 @@
                 <div class="text-4xl mb-3">💼</div>
                 <h3 class="text-lg font-bold mb-2 text-[var(--light-text)]">Gostaria do seu próprio link na bio?</h3>
                 <p class="text-sm text-[var(--subtle-text)] mb-4">Entre em contato para agilizarmos seu orçamento.</p>
-                <a href="https://wa.me/5588981905006?text=Gostaria%20de%20um%20orçamento%20sobre%20a%20página%20de%20link%20na%20bio" 
+                <a id="request-quote-link" href="https://wa.me/5588981905006?text=Gostaria%20de%20um%20orçamento%20sobre%20a%20página%20de%20link%20na%20bio" 
                    target="_blank"
-                   class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-[var(--accent-green)] text-[var(--dark-text-on-green)] hover:bg-[var(--accent-green-hover)] transition-all duration-200 hover:scale-105"
-                   onclick="gtag('event', 'click', { 'custom_parameter_1': 'service_modal_whatsapp' })">
+                   class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-[var(--accent-green)] text-[var(--dark-text-on-green)] hover:bg-[var(--accent-green-hover)] transition-all duration-200 hover:scale-105">
                     <i class="fa-brands fa-whatsapp mr-2"></i>
                     Solicitar Orçamento
                 </a>
@@ -880,30 +864,75 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Analytics aprimorado
-            function trackEvent(category, action, label) {
-                gtag('event', action, {
-                    'event_category': category,
-                    'event_label': label,
-                    'custom_parameter_1': `${category}_${action}`
-                });
+            
+            // --- GA4 Event Tracking (Senior Implementation) ---
+            const trackEvent = (eventName, params = {}) => {
+                if (typeof gtag !== 'function') {
+                    console.log(`GA4 Event (dev fallback): ${eventName}`, params);
+                    return;
+                }
+                gtag('event', eventName, params);
+            };
+
+            // Centralized click tracking configuration
+            const clickTrackingConfig = {
+                // Social Links
+                'instagram-link': { name: 'select_content', params: { content_type: 'social_link', item_id: 'instagram' } },
+                'whatsapp-link': { name: 'select_content', params: { content_type: 'social_link', item_id: 'whatsapp' } },
+                'facebook-link': { name: 'select_content', params: { content_type: 'social_link', item_id: 'facebook' } },
+                // Main Actions
+                'order-link': { name: 'begin_checkout', params: { content_type: 'main_button', item_id: 'order_deeliv' } },
+                
+                // Secondary Actions
+                'rating-link': { name: 'generate_lead', params: { content_type: 'secondary_button', item_id: 'google_review' } },
+                'location-link': { name: 'select_content', params: { content_type: 'secondary_button', item_id: 'google_maps' } },
+                'download-app-link': { name: 'select_content', params: { content_type: 'secondary_button', item_id: 'download_app' } },
+                // Utility Buttons
+                'wifi-button': { name: 'select_content', params: { content_type: 'utility_button', item_id: 'wifi' } },
+                'qr-code-button': { name: 'select_content', params: { content_type: 'utility_button', item_id: 'qr_code' } },
+                'vcard-button': { name: 'select_content', params: { content_type: 'utility_button', item_id: 'vcard_save' } },
+                'share-button': { name: 'share', params: { method: 'generic_share_button', content_type: 'page' } },
+                // Floating Buttons
+                'servicos-btn': { name: 'select_content', params: { content_type: 'floating_button', item_id: 'services_contact' } },
+                'chatbot-btn': { name: 'select_content', params: { content_type: 'floating_button', item_id: 'chatbot_open' } },
+                // Modal Actions
+                'copy-password-button': { name: 'select_content', params: { content_type: 'modal_button', item_id: 'copy_wifi_password' } },
+                'request-quote-link': { name: 'generate_lead', params: { content_type: 'modal_button', item_id: 'request_quote_whatsapp' } },
+                // Footer
+                'developer-link': { name: 'select_content', params: { content_type: 'footer_link', item_id: 'developer_credit' } }
+            };
+
+            // Attach event listeners programmatically
+            for (const [id, { name, params }] of Object.entries(clickTrackingConfig)) {
+                const element = document.getElementById(id);
+                if (element && id !== 'share-button') { // Share button has its own listener
+                    element.addEventListener('click', () => trackEvent(name, params));
+                }
             }
 
-            // Lógica dos Modais (Pop-ups)
+            // Lógica dos Modais (Pop-ups) - Refactored for GA4
             const setupModal = (buttonId, modalId) => {
                 const modal = document.getElementById(modalId);
                 const button = document.getElementById(buttonId);
                 if (!modal || !button) return;
                 const closeButtons = modal.querySelectorAll(`[data-close-modal="${modalId}"]`);
-                const openModal = () => { modal.classList.remove('hidden'); trackEvent('modal', 'open', modalId); };
-                const closeModal = () => { modal.classList.add('hidden'); trackEvent('modal', 'close', modalId); };
+                
+                const openModal = () => { 
+                    modal.classList.remove('hidden'); 
+                    trackEvent('view_item', { item_list_id: modalId, item_list_name: 'modal' });
+                };
+                const closeModal = () => { 
+                    modal.classList.add('hidden'); 
+                };
+
                 button.addEventListener('click', openModal);
                 closeButtons.forEach(btn => btn.addEventListener('click', closeModal));
                 modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
             };
+
             setupModal('qr-code-button', 'qr-modal');
             setupModal('wifi-button', 'wifi-modal');
-            setupModal('quiz-button', 'quiz-modal');
+            
             setupModal('servicos-btn', 'servicos-modal');
 
             // QR Code
@@ -922,13 +951,14 @@
                     navigator.clipboard.writeText(wifiPassword).then(() => {
                         passwordSpan.textContent = wifiPassword;
                         copyTextSpan.textContent = 'Copiado!';
-                        trackEvent('wifi', 'copy_password', 'success');
+                        // The click itself is already tracked, but we can track the success of the action
+                        trackEvent('action_result', { result: 'success', action_type: 'copy_wifi_password' });
                         setTimeout(() => {
                             passwordSpan.textContent = '••••••••';
                             copyTextSpan.textContent = 'Copiar';
                         }, 2000);
                     }).catch(() => {
-                        trackEvent('wifi', 'copy_password', 'error');
+                        trackEvent('action_result', { result: 'error', action_type: 'copy_wifi_password' });
                     });
                 });
             }
@@ -936,7 +966,13 @@
             // VCard
             const vCardButton = document.getElementById('vcard-button');
             if(vCardButton) {
-                vCardButton.href = `data:text/vcard;charset=utf-8,${encodeURIComponent('BEGIN:VCARD\nVERSION:3.0\nN:Sabor da Terra;Açaí;;;\nFN:Açaí Sabor da Terra\nTEL;TYPE=CELL,PREF:+5588988229312\nEND:VCARD')}`;
+                const vCardData = `BEGIN:VCARD
+VERSION:3.0
+N:Sabor da Terra;Açaí;;;
+FN:Açaí Sabor da Terra
+TEL;TYPE=CELL,PREF:+5588988229312
+END:VCARD`;
+                vCardButton.href = `data:text/vcard;charset=utf-8,${encodeURIComponent(vCardData)}`;
                 vCardButton.download = 'AcaiSaborDaTerra.vcf';
             }
 
@@ -944,30 +980,34 @@
             const shareButton = document.getElementById('share-button');
             if(shareButton) {
                 shareButton.addEventListener('click', async () => { 
+                    // Track the initial click event from the config
+                    const trackingData = clickTrackingConfig['share-button'];
+                    if(trackingData) trackEvent(trackingData.name, trackingData.params);
+
+                    const sharePayload = {
+                        title: 'Açaí Sabor da Terra',
+                        text: 'Confira os links do Açaí Sabor da Terra!',
+                        url: window.location.href
+                    };
                     if (navigator.share) { 
                         try { 
-                            await navigator.share({ 
-                                title: 'Açaí Sabor da Terra', 
-                                text: 'Confira os links do Açaí Sabor da Terra!', 
-                                url: window.location.href 
-                            }); 
-                            trackEvent('share', 'native_share', 'success');
+                            await navigator.share(sharePayload); 
+                            trackEvent('share', { method: 'native_web_share', content_type: 'page', result: 'success' });
                         } catch (err) {
-                            trackEvent('share', 'native_share', 'error');
+                            if (err.name !== 'AbortError') {
+                                trackEvent('share', { method: 'native_web_share', content_type: 'page', result: 'error', error_name: err.name });
+                            }
                         } 
                     } else { 
                         // Fallback para navegadores sem suporte
-                        const url = window.location.href;
-                        const text = 'Confira os links do Açaí Sabor da Terra!';
-                        const shareText = `${text}\n\n${url}`;
                         if (navigator.clipboard) {
-                            navigator.clipboard.writeText(shareText).then(() => {
+                            navigator.clipboard.writeText(sharePayload.url).then(() => {
                                 alert('Link copiado para a área de transferência!');
-                                trackEvent('share', 'clipboard_fallback', 'success');
+                                trackEvent('share', { method: 'clipboard_fallback', content_type: 'page', result: 'success' });
                             });
                         } else {
-                            prompt('Compartilhe este link:', url);
-                            trackEvent('share', 'prompt_fallback', 'used');
+                            prompt('Copie este link para compartilhar:', sharePayload.url);
+                            trackEvent('share', { method: 'prompt_fallback', content_type: 'page', result: 'used' });
                         }
                     } 
                 });
@@ -991,43 +1031,48 @@
 
             function botReply(userMsg) {
                 const msg = userMsg.toLowerCase().normalize('NFD').replace(/[^a-z0-9\s]/gi, '');
+                let botResponse = '';
                 if (/endereco|localizacao|loja|como chegar|mapa|estacionamento/.test(msg)) {
-                    addMessage('📍 Nossa loja fica em <b>Bitupitá</b>!<br>Veja no Google Maps: <a href="https://maps.app.goo.gl/bzaGzygRZ4emagVk8" target="_blank" class="chatbot-link">Abrir no Maps</a>');
+                    botResponse = '📍 Nossa loja fica em <b>Bitupitá</b>!<br>Veja no Google Maps: <a href="https://maps.app.goo.gl/bzaGzygRZ4emagVk8" target="_blank" class="chatbot-link">Abrir no Maps</a>';
                 } else if (/pagamento|aceita|cartao|credito|debito|dinheiro/.test(msg)) {
-                    addMessage('💳 Aceitamos <b>PIX</b>, <b>cartão de crédito</b>, <b>cartão de débito</b> e <b>dinheiro</b>!');
+                    botResponse = '💳 Aceitamos <b>PIX</b>, <b>cartão de crédito</b>, <b>cartão de débito</b> e <b>dinheiro</b>!';
                 } else if (/delivery|entrega|entregam|taxa|bairro|regiao|onde entregam|tempo entrega/.test(msg)) {
-                    addMessage('🚚 Fazemos delivery em toda a região de <b>Bitupitá</b>! Consulte a taxa e o tempo estimado no momento do pedido.');
+                    botResponse = '🚚 Fazemos delivery em toda a região de <b>Bitupitá</b>! Consulte a taxa e o tempo estimado no momento do pedido.';
                 } else if (/retirada|buscar|pegar na loja|pickup/.test(msg)) {
-                    addMessage('🏪 Fazemos retirada! Basta pedir pelo nosso site e selecionar a opção de retirada.');
+                    botResponse = '🏪 Fazemos retirada! Basta pedir pelo nosso site e selecionar a opção de retirada.';
                 } else if (/cardapio|produtos|menu|tem o que|sabores|tamanhos|valores/.test(msg)) {
-                    addMessage('🍨 Nosso cardápio está disponível no nosso site:<br><a href="https://acaisabordaterra.deeliv.app" target="_blank" class="chatbot-link">acaisabordaterra.deeliv.app</a>');
+                    botResponse = '🍨 Nosso cardápio está disponível no nosso site:<br><a href="https://acaisabordaterra.deeliv.app" target="_blank" class="chatbot-link">acaisabordaterra.deeliv.app</a>';
                 } else if (/fidelidade|selo|cartao fidelidade|promo/.test(msg)) {
-                    addMessage('🎁 Temos um <b>cartão fidelidade</b>: a cada 9 selos, você ganha um copo totalmente grátis! Peça o seu!');
+                    botResponse = '🎁 Temos um <b>cartão fidelidade</b>: a cada 9 selos, você ganha um copo totalmente grátis! Peça o seu!';
                 } else if (/whatsapp|instagram|contato|rede social/.test(msg)) {
-                    addMessage('📱 WhatsApp: <a href="https://wa.me/5588988229312" target="_blank" class="chatbot-link">Clique aqui</a><br>Instagram: <a href="https://www.instagram.com/acaisabordaterra_" target="_blank" class="chatbot-link">@acaisabordaterra_</a>');
+                    botResponse = '📱 WhatsApp: <a href="https://wa.me/5588988229312" target="_blank" class="chatbot-link">Clique aqui</a><br>Instagram: <a href="https://www.instagram.com/acaisabordaterra_" target="_blank" class="chatbot-link">@acaisabordaterra_</a>';
                 } else if (/horario|funcionamento|abre|fecha|hora|dias|domingo|feriado/.test(msg)) {
-                    addMessage('⏰ Nosso horário de funcionamento é das <b>16h às 23h</b>, todos os dias!');
+                    botResponse = '⏰ Nosso horário de funcionamento é das <b>16h às 23h</b>, todos os dias!';
                 } else if (/pix|chave pix|pagar pix/.test(msg)) {
-                    addMessage('💰 Nossa chave PIX é: <b>88981905006</b><br>Nome: João Pedro Carvalho Torres');
+                    botResponse = '💰 Nossa chave PIX é: <b>88981905006</b><br>Nome: João Pedro Carvalho Torres';
                 } else if (/alergia|alergico|restricao|gluten|lactose|vegano|ingrediente/.test(msg)) {
-                    addMessage('⚠️ Se você tem alguma restrição alimentar, por favor, informe no pedido! Consulte ingredientes com o atendente para sua segurança.');
+                    botResponse = '⚠️ Se você tem alguma restrição alimentar, por favor, informe no pedido! Consulte ingredientes com o atendente para sua segurança.';
                 } else if (/evento|festa|carrinho|personalizado|aniversario|casamento/.test(msg)) {
-                    addMessage('🎉 Temos carrinho de açaí para eventos! Fale com nosso time para orçamentos e disponibilidade.');
+                    botResponse = '🎉 Temos carrinho de açaí para eventos! Fale com nosso time para orçamentos e disponibilidade.';
                 } else if (/app|aplicativo|baixar app|play store/.test(msg)) {
-                    addMessage('📱 Baixe nosso app para uma experiência ainda melhor! <a href="https://play.google.com/store/apps/details?id=v002.app.deeliv.acaisabordaterra" target="_blank" class="chatbot-link">Clique aqui para baixar na Play Store</a>');
+                    botResponse = '📱 Baixe nosso app para uma experiência ainda melhor! <a href="https://play.google.com/store/apps/details?id=v002.app.deeliv.acaisabordaterra" target="_blank" class="chatbot-link">Clique aqui para baixar na Play Store</a>';
                 } else if (/pedido|quero pedir|fazer pedido|como pedir/.test(msg)) {
-                    addMessage('🛒 Para fazer seu pedido, acesse nosso cardápio digital:<br><a href="https://acaisabordaterra.deeliv.app" target="_blank" class="chatbot-link">Clique aqui para pedir!</a>');
+                    botResponse = '🛒 Para fazer seu pedido, acesse nosso cardápio digital:<br><a href="https://acaisabordaterra.deeliv.app" target="_blank" class="chatbot-link">Clique aqui para pedir!</a>';
                 } else if (/promo|desconto|cupom/.test(msg)) {
-                    addMessage('🎁 Consulte nossas promoções e cupons no Instagram ou pergunte ao atendente!');
+                    botResponse = '🎁 Consulte nossas promoções e cupons no Instagram ou pergunte ao atendente!';
                 } else {
-                    addMessage('🤖 Sou uma assistente virtual! Posso te ajudar com dúvidas sobre endereço, horário, cardápio, promoções, fidelidade, delivery, formas de pagamento e mais!');
+                    botResponse = '🤖 Sou uma assistente virtual! Posso te ajudar com dúvidas sobre endereço, horário, cardápio, promoções, fidelidade, delivery, formas de pagamento e mais!';
                 }
+                addMessage(botResponse);
+                trackEvent('chatbot_response', { query: msg.substring(0, 100) });
             }
 
             function openChatbot() {
                 chatbotModal.classList.remove('hidden');
                 if (chatbotMessages.childElementCount === 0) {
-                    addMessage('Olá! Eu sou a assistente virtual do Açaí Sabor da Terra. 🍇<br>Pergunte sobre horário, PIX, promoções e mais!');
+                    const welcomeMessage = 'Olá! Eu sou a assistente virtual do Açaí Sabor da Terra. 🍇<br>Pergunte sobre horário, PIX, promoções e mais!';
+                    addMessage(welcomeMessage);
+                    trackEvent('chatbot_welcome_message_viewed');
                 }
             }
 
@@ -1037,25 +1082,29 @@
                 openChatbot();
             });
 
-            closeChatbot.onclick = () => chatbotModal.classList.add('hidden');
+            closeChatbot.onclick = () => {
+                chatbotModal.classList.add('hidden');
+                trackEvent('chatbot_closed');
+            };
+            
             chatbotForm.onsubmit = e => {
                 e.preventDefault();
                 const userMsg = chatbotInput.value.trim();
                 if (!userMsg) return;
                 addMessage(userMsg, 'user');
+                trackEvent('chatbot_message_sent', { message_length: userMsg.length });
                 setTimeout(() => botReply(userMsg), 500);
                 chatbotInput.value = '';
             };
 
             // Inicializar
             document.getElementById('current-year').textContent = new Date().getFullYear();
-            // showAppButton(); // Se quiser ativar o botão do app, descomente
-            // Removido: showMenuLoading, loadMenu, setupQuickOrder, menuData, renderMenu, etc
+            
             // Tracking de tempo na página
             let startTime = Date.now();
             window.addEventListener('beforeunload', () => {
                 const timeSpent = Math.round((Date.now() - startTime) / 1000);
-                trackEvent('engagement', 'time_on_page', `${timeSpent}s`);
+                trackEvent('engagement', { time_on_page_seconds: timeSpent });
             });
         });
 
