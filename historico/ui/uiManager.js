@@ -81,6 +81,24 @@ export class UIManager {
         document.getElementById('formSaidaIndividual').addEventListener('submit', (event) => this.handleSaidaIndividualSubmit(event));
     }
 
+    populateEmployeeFilters(employees) {
+        const selects = [
+            document.getElementById('filtroFuncionario'),
+            document.getElementById('editFuncionario'),
+            document.getElementById('entradaFuncionario'),
+            document.getElementById('saidaFuncionario')
+        ];
+
+        selects.forEach(select => {
+            if (select) {
+                // Preserva a primeira opção (ex: "Todos") se ela existir
+                const firstOption = select.options.length > 0 ? select.options[0].outerHTML : '';
+                
+                select.innerHTML = firstOption + employees.map(emp => `<option value="${emp}">${emp}</option>`).join('');
+            }
+        });
+    }
+
     setupDetalhamentoToggle() {
         const btn = document.getElementById('btnToggleDetalhamento');
         const container = document.getElementById('detalhamentoContainer');

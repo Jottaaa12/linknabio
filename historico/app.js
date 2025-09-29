@@ -8,6 +8,11 @@ import { UIManager } from "./ui/uiManager.js";
 // Constantes da aplicação
 const CONSTANTS = {
     COLLECTION_NAME: 'registrosDiarios',
+    EMPLOYEES: [
+        "Manoela",
+        "Nayara",
+        "João Pedro (gerente)"
+    ],
     FIREBASE_CONFIG: {
         apiKey: "AIzaSyCyzA-QWhXZTUahk13tKhMEAt8AqLpCzDc",
         authDomain: "acai-sabordaterra-fiados.firebaseapp.com",
@@ -39,6 +44,9 @@ class PainelControleApp {
             this.firestoreService = new FirestoreService(db);
             this.logService = new LogService(db);
             this.uiManager = new UIManager();
+
+            // Popula os filtros de funcionário
+            this.uiManager.populateEmployeeFilters(CONSTANTS.EMPLOYEES);
 
             // Configura callbacks do UIManager
             this.setupUIManagerCallbacks();
@@ -328,52 +336,47 @@ class PainelControleApp {
                 );
             }
 
-            // Filtro por data de início
+            // Validação e parsing das datas de filtro
+            let inicio, fim;
             if (dataInicio) {
-                try {
-                    const inicio = new Date(dataInicio + "T00:00:00");
-                    if (isNaN(inicio.getTime())) {
-                        throw new Error('Data de início inválida');
-                    }
-                    registrosFiltrados = registrosFiltrados.filter(registro => {
-                        const dataRegistro = registro.timestamp ? 
-                            new Date(registro.timestamp.seconds * 1000) : 
-                            new Date(registro.data + "T00:00:00");
-                        return dataRegistro >= inicio;
-                    });
-                } catch (error) {
-                    console.error('Erro ao filtrar por data de início:', error);
+                const [ano, mes, dia] = dataInicio.split('-').map(Number);
+                inicio = new Date(ano, mes - 1, dia, 0, 0, 0, 0);
+                if (isNaN(inicio.getTime())) {
                     this.uiManager.showToast('Data de início inválida', 'error');
+                    return;
                 }
             }
-
-            // Filtro por data de fim
             if (dataFim) {
-                try {
-                    const fim = new Date(dataFim + "T23:59:59");
-                    if (isNaN(fim.getTime())) {
-                        throw new Error('Data de fim inválida');
-                    }
-                    registrosFiltrados = registrosFiltrados.filter(registro => {
-                        const dataRegistro = registro.timestamp ? 
-                            new Date(registro.timestamp.seconds * 1000) : 
-                            new Date(registro.data + "T00:00:00");
-                        return dataRegistro <= fim;
-                    });
-                } catch (error) {
-                    console.error('Erro ao filtrar por data de fim:', error);
+                const [ano, mes, dia] = dataFim.split('-').map(Number);
+                fim = new Date(ano, mes - 1, dia, 23, 59, 59, 999);
+                if (isNaN(fim.getTime())) {
                     this.uiManager.showToast('Data de fim inválida', 'error');
+                    return;
                 }
             }
 
             // Validação de período
-            if (dataInicio && dataFim) {
-                const inicio = new Date(dataInicio);
-                const fim = new Date(dataFim);
-                if (fim < inicio) {
-                    this.uiManager.showToast('A data final não pode ser menor que a data inicial', 'error');
-                    return;
-                }
+            if (inicio && fim && fim < inicio) {
+                this.uiManager.showToast('A data final não pode ser menor que a data inicial', 'error');
+                return;
+            }
+
+            // Aplica filtros de data
+            if (inicio) {
+                registrosFiltrados = registrosFiltrados.filter(registro => {
+                    const dataRegistro = registro.timestamp ? 
+                        registro.timestamp.toDate() : 
+                        new Date(registro.data.replace(/-/g, '\/')); // Fallback para o campo 'data' string
+                    return dataRegistro >= inicio;
+                });
+            }
+            if (fim) {
+                registrosFiltrados = registrosFiltrados.filter(registro => {
+                    const dataRegistro = registro.timestamp ? 
+                        registro.timestamp.toDate() : 
+                        new Date(registro.data.replace(/-/g, '\/')); // Fallback para o campo 'data' string
+                    return dataRegistro <= fim;
+                });
             }
 
             this.registrosFiltrados = registrosFiltrados;
