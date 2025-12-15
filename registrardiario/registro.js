@@ -27,7 +27,90 @@ export const RegistroDiarioModule = {
         this.showHideFidelidade();
         this.updateMoodOptionsStyle();
         this.loadSavedMotivos(); // Carrega motivos para autocomplete
+        this.checkDateValidity(); // Verifica data inicial
+        this.showHideFidelidade();
+        this.updateMoodOptionsStyle();
+        this.loadSavedMotivos(); // Carrega motivos para autocomplete
+        this.checkChristmasMode(); // 🎄 Verifica se é Natal
         this.addSaidaItem(); // Adiciona o primeiro item de saída
+    },
+
+    checkChristmasMode() {
+        const today = new Date();
+        const month = today.getMonth(); // 0 = Jan, 11 = Dez
+
+        // Ativa apenas em Dezembro (Mês 11)
+        if (month === 11) {
+            document.body.classList.add('theme-christmas');
+
+            // Injeta as luzes de natal no Body para ficar no topo absoluto
+            // Wrapper para cortar o excesso (overflow hidden) e centralizar
+            const wrapper = document.createElement('div');
+            wrapper.className = 'christmas-lights-wrapper';
+
+            const lights = document.createElement('ul');
+            lights.className = 'christmas-lights';
+
+            // Cria várias luzinhas
+            for (let i = 0; i < 30; i++) { // Aumentei pra garantir que preencha telas largas
+                lights.appendChild(document.createElement('li'));
+            }
+
+
+            wrapper.appendChild(lights);
+            document.body.prepend(wrapper);
+
+            // Inicia efeitos extras
+            this.addChristmasDecorations();
+            this.startSantaRandomizer();
+        }
+    },
+
+    addChristmasDecorations() {
+        // Adiciona bengalinhas e presentes flutuando no fundo
+        const container = document.querySelector('.aurora-container') || document.body;
+        const icons = ['🍬', '🎁', '🎄', '🦌', '⛄'];
+
+        for (let i = 0; i < 15; i++) {
+            const decor = document.createElement('div');
+            decor.className = 'xmas-decor';
+            decor.textContent = icons[Math.floor(Math.random() * icons.length)];
+
+            // Posição aleatória
+            decor.style.left = Math.random() * 100 + 'vw';
+            decor.style.top = Math.random() * 100 + 'vh';
+            decor.style.animationDelay = Math.random() * 5 + 's';
+            decor.style.fontSize = (Math.random() * 20 + 20) + 'px';
+
+            container.appendChild(decor);
+        }
+    },
+
+    startSantaRandomizer() {
+        // Papai Noel passando aleatoriamente
+        const spawnSanta = () => {
+            const santa = document.createElement('div');
+            santa.className = 'flying-santa';
+            // Imagem em vez de Emoji
+            santa.innerHTML = '🎅🦌💨 <span style="font-size: 1rem; color: #fff;">Ho Ho Ho!</span>';
+
+            // Altura aleatória na tela
+            santa.style.top = (Math.random() * 60 + 10) + '%'; // Ajustei pra não ficar tão embaixo
+
+            document.body.appendChild(santa);
+
+            // Remove depois que passar (tempo da animação + buffer)
+            setTimeout(() => {
+                santa.remove();
+            }, 8000);
+
+            // Próxima aparição entre 10 e 30 segundos
+            const nextTime = Math.random() * 20000 + 10000;
+            setTimeout(spawnSanta, nextTime);
+        };
+
+        // Primeira aparição rápida para teste (3s)
+        setTimeout(spawnSanta, 3000);
     },
 
     // --- EVENT LISTENERS ---
@@ -69,6 +152,24 @@ export const RegistroDiarioModule = {
 
         addSafeListener('btnVerLogs', 'click', () => this.showLogsModal());
         addSafeListener('closeLogsModal', 'click', () => this.hideLogsModal());
+
+
+        // File Input Change
+        const fileInput = document.getElementById('comprovante');
+        const fileLabel = document.querySelector('.file-upload-label span');
+        const fileLabelContainer = document.querySelector('.file-upload-label');
+
+        if (fileInput && fileLabel) {
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    fileLabel.textContent = e.target.files[0].name;
+                    fileLabelContainer.classList.add('active');
+                } else {
+                    fileLabel.textContent = "Tirar foto / Anexar";
+                    fileLabelContainer.classList.remove('active');
+                }
+            });
+        }
     },
 
     // --- MANIPULAÇÃO DO FORMULÁRIO ---
@@ -575,12 +676,19 @@ export const RegistroDiarioModule = {
     // --- WOW EFFECTS ---
     triggerConfetti() {
         if (typeof confetti === 'function') {
+            const isChristmas = document.body.classList.contains('theme-christmas');
+
+            // Cores: Tema Padrão vs Natal 🎄
+            const colors = isChristmas
+                ? ['#ff0000', '#00ff00', '#ffd700', '#ffffff'] // Vermelho, Verde, Dourado, Branco
+                : ['#d946ef', '#8b5cf6', '#0ea5e9', '#ffffff']; // Neon Padrão
+
             // Explosão central
             confetti({
                 particleCount: 150,
                 spread: 70,
                 origin: { y: 0.6 },
-                colors: ['#d946ef', '#8b5cf6', '#0ea5e9', '#ffffff'] // Cores do tema
+                colors: colors
             });
 
             // Chuva lateral
@@ -590,14 +698,14 @@ export const RegistroDiarioModule = {
                     angle: 60,
                     spread: 55,
                     origin: { x: 0 },
-                    colors: ['#d946ef', '#ffffff']
+                    colors: colors
                 });
                 confetti({
                     particleCount: 50,
                     angle: 120,
                     spread: 55,
                     origin: { x: 1 },
-                    colors: ['#8b5cf6', '#ffffff']
+                    colors: colors
                 });
             }, 300);
         }
