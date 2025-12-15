@@ -1,11 +1,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { 
+import {
     getAuth,
     signInWithEmailAndPassword,
     onAuthStateChanged,
     signOut
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { 
+import {
     getFirestore,
     collection,
     onSnapshot,
@@ -15,9 +15,10 @@ import {
     addDoc,
     deleteDoc,
     query,
-    orderBy
+    orderBy,
+    getDocs
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-import { firebaseConfig } from "./firebase-config.js";
+import { firebaseConfig } from "../shared/firebase-config.js";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -241,7 +242,7 @@ async function showDetails(employeeId) {
         // Fetch and display attendance records
         const registroPontoDiv = document.getElementById('modal-registro-ponto');
         const qRegistro = query(collection(db, 'funcionarios', employeeId, 'registroDePonto'), orderBy('data', 'desc'));
-        
+
         onSnapshot(qRegistro, (snapshot) => {
             registroPontoDiv.innerHTML = '<h4>Histórico:</h4>';
             if (snapshot.empty) {

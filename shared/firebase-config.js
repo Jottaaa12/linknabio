@@ -5,5 +5,5 @@ export const firebaseConfig = {
     storageBucket: "acai-sabordaterra-fiados.appspot.com",
     messagingSenderId: "95507357232",
     appId: "1:95507357232:web:22d0264b98bd5ab0ff57f5",
-    measurementId: "G-BV50025CJK"
-  };
+    measurementId: "G-BV50025CJK" // Opcional, estava no portal
+};

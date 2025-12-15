@@ -1,14 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyCyzA-QWhXZTUahk13tKhMEAt8AqLpCzDc",
-    authDomain: "acai-sabordaterra-fiados.firebaseapp.com",
-    projectId: "acai-sabordaterra-fiados",
-    storageBucket: "acai-sabordaterra-fiados.appspot.com",
-    messagingSenderId: "95507357232",
-    appId: "1:95507357232:web:22d0264b98bd5ab0ff57f5"
-};
+import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, doc, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { firebaseConfig } from "../shared/firebase-config.js";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);

@@ -2,7 +2,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { FirestoreService } from "./services/firestoreService.js";
+import { FirestoreService } from "./services/firestoreService.js";
 import { UIManager } from "./ui/uiManager.js";
+import { firebaseConfig } from "../shared/firebase-config.js";
 
 class FiadosApp {
     constructor() {
@@ -12,7 +14,7 @@ class FiadosApp {
         this.allFiados = [];
         this.filteredFiados = [];
         this.isInitialized = false;
-        
+
         this.init();
     }
 
@@ -26,15 +28,7 @@ class FiadosApp {
     }
 
     async initializeFirebase() {
-        const firebaseConfig = {
-            apiKey: "AIzaSyCyzA-QWhXZTUahk13tKhMEAt8AqLpCzDc",
-            authDomain: "acai-sabordaterra-fiados.firebaseapp.com",
-            projectId: "acai-sabordaterra-fiados",
-            storageBucket: "acai-sabordaterra-fiados.appspot.com",
-            messagingSenderId: "95507357232",
-            appId: "1:95507357232:web:22d0264b98bd5ab0ff57f5"
-        };
-
+        // Usa a configuração importada do arquivo compartilhado
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         this.db = getFirestore(app);
@@ -153,7 +147,7 @@ class FiadosApp {
 
         // Filtro por cliente
         if (cliente) {
-            filtered = filtered.filter(fiado => 
+            filtered = filtered.filter(fiado =>
                 fiado.cliente.toLowerCase().includes(cliente)
             );
         }
@@ -202,7 +196,7 @@ class FiadosApp {
 // Inicializa a aplicação quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
     const app = new FiadosApp();
-    
+
     // Cleanup ao sair da página
     window.addEventListener('beforeunload', () => {
         app.cleanup();

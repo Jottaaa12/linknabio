@@ -1,194 +1,311 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fechamento do Dia - Açaí Sabor da Terra</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="style.css">
-    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script> <!-- Adicione seu kit do Font Awesome se tiver -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <!-- Ícones via CDN (FontAwesome Free ou Phosphor) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
 
-    <div class="dashboard-container">
+    <div class="aurora-container">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
+    </div>
 
-        <!-- Coluna Lateral: Detalhes e Ações -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h3>Detalhes do Dia</h3>
+    <div class="main-container">
+
+        <header class="page-header">
+            <div class="header-content">
+                <h1>Fechamento de Caixa</h1>
+                <p class="subtitle">Açaí Sabor da Terra</p>
             </div>
-            <div class="sidebar-content">
-                <div class="card">
-                    <h4>Responsável</h4>
-                    <div class="user-selection">
-                        <div class="user-card" data-value="Yasmin">
-                            <span>Yasmin</span>
+            <div class="date-display">
+                <span id="displayDate">--/--/----</span>
+            </div>
+        </header>
+
+        <form id="registroForm" class="glass-panel">
+
+            <!-- Seção 1: Quem e Quando -->
+            <section class="form-section">
+                <div class="section-header">
+                    <i class="fa-solid fa-user-clock"></i>
+                    <h2>Responsável & Data</h2>
+                </div>
+
+                <div class="grid-2">
+                    <div class="input-wrapper">
+                        <label>Quem está fechando?</label>
+                        <div class="employee-selector">
+                            <div class="employee-option" data-value="Yasmin">
+                                <div class="avatar">Y</div>
+                                <span>Yasmin</span>
+                            </div>
+                            <div class="employee-option" data-value="Nayara">
+                                <div class="avatar">N</div>
+                                <span>Nayara</span>
+                            </div>
+                            <div class="employee-option" data-value="João Pedro (gerente)">
+                                <div class="avatar manager">J</div>
+                                <span>João Pedro</span>
+                            </div>
                         </div>
-                        <div class="user-card" data-value="Nayara">
-                            <span>Nayara</span>
+                        <select id="funcionario" required class="hidden-select">
+                            <option value=""></option>
+                            <option value="Yasmin">Yasmin</option>
+                            <option value="Nayara">Nayara</option>
+                            <option value="João Pedro (gerente)">João Pedro (gerente)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-wrapper">
+                        <label for="data">Data do Registro</label>
+                        <div class="date-input-container">
+                            <input type="date" id="data" required>
+                            <i class="fa-regular fa-calendar-days icon-input"></i>
                         </div>
-                        <div class="user-card" data-value="João Pedro (gerente)">
-                            <span>João P.</span>
+                        <small id="dateWarning" class="warning-text hidden"><i
+                                class="fa-solid fa-triangle-exclamation"></i> Atenção: Data diferente de hoje!</small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção 2: Entradas -->
+            <section class="form-section">
+                <div class="section-header">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                    <h2>Entradas do Dia</h2>
+                </div>
+
+                <div class="grid-3">
+                    <div class="input-card money">
+                        <div class="icon-bg"><i class="fa-solid fa-money-bill-wave"></i></div>
+                        <label for="dinheiroEntrada">Dinheiro</label>
+                        <div class="input-with-prefix">
+                            <span>R$</span>
+                            <input type="number" id="dinheiroEntrada" placeholder="0.00" step="0.01" min="0">
                         </div>
                     </div>
-                    <select id="funcionario" required class="hidden-select">
-                        <option value=""></option>
-                        <option value="Yasmin">Yasmin</option>
-                        <option value="Nayara">Nayara</option>
-                        <option value="João Pedro (gerente)">João Pedro (gerente)</option>
-                    </select>
+                    <div class="input-card pix">
+                        <div class="icon-bg"><i class="fa-brands fa-pix"></i></div>
+                        <label for="pixEntrada">PIX</label>
+                        <div class="input-with-prefix">
+                            <span>R$</span>
+                            <input type="number" id="pixEntrada" placeholder="0.00" step="0.01" min="0">
+                        </div>
+                    </div>
+                    <div class="input-card card-machine">
+                        <div class="icon-bg"><i class="fa-solid fa-credit-card"></i></div>
+                        <label for="cartaoEntrada">Cartão</label>
+                        <div class="input-with-prefix">
+                            <span>R$</span>
+                            <input type="number" id="cartaoEntrada" placeholder="0.00" step="0.01" min="0">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção 3: Saídas -->
+            <section class="form-section">
+                <div class="section-header">
+                    <i class="fa-solid fa-arrow-trend-down"></i>
+                    <h2>Saídas & Gastos</h2>
                 </div>
 
-                <div class="card">
-                    <h4>Data do Registro</h4>
-                    <input type="date" id="data" required>
+                <div id="saidasList">
+                    <!-- Itens inseridos via JS -->
                 </div>
 
-                <div class="card">
-                    <h4>Observações</h4>
-                    <textarea id="observacoesDia" placeholder="Anotações importantes..."></textarea>
+                <div class="actions-row">
+                    <button type="button" id="btnAdicionarSaida" class="btn-ghost">
+                        <i class="fa-solid fa-plus"></i> Adicionar Saída
+                    </button>
+                    <div class="total-display">
+                        <span>Total de Saídas:</span>
+                        <strong id="totalSaidas">R$ 0,00</strong>
+                    </div>
                 </div>
-                
+            </section>
+
+            <!-- Seção 4: Extras -->
+            <section class="form-section">
+                <div class="section-header">
+                    <i class="fa-solid fa-star"></i>
+                    <h2>Detalhes Finais</h2>
+                </div>
+
+                <div class="grid-2">
+                    <div class="extra-card">
+                        <label>Cartão Fidelidade Preenchido?</label>
+                        <div class="toggle-switch-wrapper">
+                            <span class="toggle-label">Não</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="fidelidadeToggle">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="toggle-label">Sim</span>
+                        </div>
+                        <div id="fidelidadeDetalhes" class="hidden fade-in">
+                            <input type="number" id="fidelidadeQuantidade" placeholder="Quantos cartões?"
+                                class="simple-input" min="0">
+                        </div>
+                    </div>
+
+                    <div class="extra-card">
+                        <label>Comprovante de Fechamento</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="comprovante" accept="image/*,application/pdf"
+                                class="hidden-file-input">
+                            <label for="comprovante" class="file-upload-label">
+                                <i class="fa-solid fa-camera"></i>
+                                <span id="fileName">Tirar foto / Anexar</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-wrapper full-width">
+                    <label>Anotações / Ocorrências</label>
+                    <textarea id="observacoesDia"
+                        placeholder="Faltou algum produto? Ocorreu algum problema?"></textarea>
+                </div>
+
+                <div class="mood-section">
+                    <label>Como foi o movimento?</label>
+                    <div class="mood-selector">
+                        <label class="mood-emoji" title="Muito Fraco">
+                            <input type="radio" name="climaLoja" value="Muito Fraco">
+                            <span>😴</span>
+                        </label>
+                        <label class="mood-emoji" title="Fraco">
+                            <input type="radio" name="climaLoja" value="Fraco">
+                            <span>😐</span>
+                        </label>
+                        <label class="mood-emoji" title="Bom">
+                            <input type="radio" name="climaLoja" value="Bom">
+                            <span>🙂</span>
+                        </label>
+                        <label class="mood-emoji" title="Ótimo">
+                            <input type="radio" name="climaLoja" value="Ótimo">
+                            <span>😄</span>
+                        </label>
+                        <label class="mood-emoji" title="Excepcional">
+                            <input type="radio" name="climaLoja" value="Excepcional">
+                            <span>🚀</span>
+                        </label>
+                    </div>
+                </div>
+
                 <div class="card">
                     <h4>Frase do Dia</h4>
-                    <div id="fraseMotivacionalArea" contenteditable="true"></div>
+                    <div id="fraseMotivacionalArea" contenteditable="true" class="simple-input"></div>
                 </div>
-            </div>
-        </aside>
 
-        <!-- Conteúdo Principal: Registros e Números -->
-        <main class="main-content">
-            <header class="main-header">
-                <h1>Fechamento de Caixa</h1>
-                <p class="creditos-topo">Sistema por <a href="https://www.instagram.com/Jottaaa0" target="_blank">@Jottaaa0</a></p>
-            </header>
+            </section>
 
-            <div id="registroDiarioContainer">
-                <form id="registroForm">
-                    
-                    <div class="content-grid">
-                        <!-- Entradas -->
-                        <div class="card large-card">
-                            <h3>Entradas do Dia</h3>
-                            <div class="form-grid">
-                                <div class="form-group"><label for="dinheiroEntrada">💰 Dinheiro</label><input type="number" id="dinheiroEntrada" placeholder="0.00" step="0.01" min="0"></div>
-                                <div class="form-group"><label for="pixEntrada">📱 PIX</label><input type="number" id="pixEntrada" placeholder="0.00" step="0.01" min="0"></div>
-                                <div class="form-group"><label for="cartaoEntrada">💳 Cartão</label><input type="number" id="cartaoEntrada" placeholder="0.00" step="0.01" min="0"></div>
-                            </div>
-                        </div>
-
-                        <!-- Saídas -->
-                        <div class="card large-card">
-                            <h3>Saídas do Dia</h3>
-                            <div id="saidasList">
-                                <!-- Itens de saída dinâmicos -->
-                            </div>
-                            <button type="button" id="btnAdicionarSaida" class="btn btn-secondary">+ Adicionar Saída</button>
-                            <p class="total-saidas">Total Saídas: <span id="totalSaidas">R$ 0,00</span></p>
-                        </div>
-
-                        <!-- Outros Detalhes -->
-                        <div class="card">
-                            <h4>🎁 Cartão Fidelidade</h4>
-                            <div class="radio-group-modern">
-                                <label><input type="radio" id="fidelidadeSim" name="fidelidade" value="sim"> Sim</label>
-                                <label><input type="radio" id="fidelidadeNao" name="fidelidade" value="nao" checked> Não</label>
-                            </div>
-                            <div id="fidelidadeDetalhes">
-                                <div class="form-group full-width"><label for="fidelidadeQuantidade">Quantos cartões?</label><input type="number" id="fidelidadeQuantidade" placeholder="0" step="1" min="0"></div>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <h4>Comprovante</h4>
-                            <input type="file" id="comprovante" accept="image/*,application/pdf">
-                        </div>
-
-                        <div class="card full-span">
-                            <h4>Como foi o dia? (Termômetro da Loja)</h4>
-                            <div class="mood-options">
-                                <label class="mood-option">😴<input type="radio" name="climaLoja" value="Muito Fraco"></label>
-                                <label class="mood-option">😐<input type="radio" name="climaLoja" value="Fraco"></label>
-                                <label class="mood-option">🙂<input type="radio" name="climaLoja" value="Bom"></label>
-                                <label class="mood-option">😄<input type="radio" name="climaLoja" value="Ótimo"></label>
-                                <label class="mood-option">🚀<input type="radio" name="climaLoja" value="Excepcional"></label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="button-group justify-center main-action">
-                        <button type="button" id="btnRevisar" class="btn btn-primary">Revisar e Finalizar</button>
-                    </div>
-                </form>
+            <div class="form-footer">
+                <p class="autosave-status"><i class="fa-solid fa-cloud"></i> Rascunho salvo automático</p>
+                <button type="button" id="btnRevisar" class="btn-primary-glow">
+                    REVISAR E FINALIZAR <i class="fa-solid fa-chevron-right"></i>
+                </button>
             </div>
 
-            <!-- Telas de Confirmação e Envio (Modal) -->
-            <div id="confirmacao" class="modal-overlay hidden">
-                <div class="modal-content">
-                    <h2>Revisão do Registro</h2>
-                    <div id="resumoContainer">
-                        <div id="resumo"></div>
-                        <div id="ajusteCaixa" class="form-section">
-                            <h4>Conciliação de Caixa (Opcional)</h4>
-                            <div class="ajuste-group">
-                                <label>Dinheiro em Espécie</label>
-                                <span>Saldo do Sistema: <strong id="sistemaDinheiro">R$ 0,00</strong></span>
-                                <input type="number" id="realDinheiro" placeholder="Valor real na gaveta" step="0.01">
-                                <span>Diferença: <strong id="diferencaDinheiro">R$ 0,00</strong></span>
+        </form>
+
+        <!-- Modais (Mantidos e reestilizados via CSS) -->
+        <div id="confirmacao" class="modal-overlay hidden">
+            <div class="glass-modal">
+                <div class="modal-header">
+                    <h2>Revisão</h2>
+                </div>
+                <div class="modal-body">
+                    <div id="resumo" class="resumo-box"></div>
+
+                    <div id="ajusteCaixa" class="ajuste-section">
+                        <h3><i class="fa-solid fa-scale-balanced"></i> Conferência de Caixa</h3>
+                        <div class="conferencia-grid">
+                            <div class="conf-item">
+                                <label>Dinheiro Real (Gaveta)</label>
+                                <input type="number" id="realDinheiro" placeholder="R$ 0,00" step="0.01">
+                                <small>Sistema: <span id="sistemaDinheiro">R$ 0,00</span></small>
+                                <small class="diff" id="diferencaDinheiro">Dif: R$ 0,00</small>
                             </div>
-                            <div class="ajuste-group">
-                                <label>Saldo em PIX</label>
-                                <span>Saldo do Sistema: <strong id="sistemaPix">R$ 0,00</strong></span>
-                                <input type="number" id="realPix" placeholder="Valor real no extrato" step="0.01">
-                                <span>Diferença: <strong id="diferencaPix">R$ 0,00</strong></span>
+                            <div class="conf-item">
+                                <label>PIX Real (Banco)</label>
+                                <input type="number" id="realPix" placeholder="R$ 0,00" step="0.01">
+                                <small>Sistema: <span id="sistemaPix">R$ 0,00</span></small>
+                                <small class="diff" id="diferencaPix">Dif: R$ 0,00</small>
                             </div>
-                            <textarea id="motivoAjuste" placeholder="Motivo do(s) ajuste(s)..."></textarea>
                         </div>
-                    </div>
-                    <div class="button-group justify-center">
-                        <button type="button" id="btnVerLogs" class="btn btn-secondary hidden">📜 Histórico</button>
-                        <button type="button" id="btnEditar" class="btn btn-secondary">Editar</button>
-                        <button type="button" id="btnConfirmar" class="btn btn-success">Confirmar e Salvar</button>
+                        <textarea id="motivoAjuste" placeholder="Justificativa da diferença (se houver)..."></textarea>
                     </div>
                 </div>
-            </div>
-
-            <div id="envio" class="modal-overlay hidden">
-                <div class="modal-content">
-                    <h2>✅ Registro Salvo!</h2>
-                    <p>Seu registro diário foi salvo com sucesso na nuvem.</p>
-                    <div class="button-group justify-center">
-                        <button type="button" id="btnEnviarWhatsApp" class="btn btn-success">Enviar para WhatsApp</button>
-                        <button type="button" id="btnNovoRegistro" class="btn btn-primary">Novo Registro</button>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnVerLogs" class="btn-secondary hidden"
+                        style="margin-right: auto;">Logs</button>
+                    <button type="button" id="btnEditar" class="btn-secondary">Voltar / Editar</button>
+                    <button type="button" id="btnConfirmar" class="btn-success-glow">CONFIRMAR REGISTRO <i
+                            class="fa-solid fa-check"></i></button>
                 </div>
             </div>
-        </main>
-    </div>
-
-    <!-- Datalist para Autocomplete de Motivos -->
-    <datalist id="motivosList">
-        <option value="Gelo"></option>
-        <option value="Limpeza"></option>
-        <option value="Suprimentos"></option>
-        <option value="Manutenção"></option>
-        <option value="Pagamento Fornecedor"></option>
-        <option value="Outros"></option>
-    </datalist>
-
-    <!-- Modal para Logs -->
-    <div id="logsModal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <button id="closeLogsModal" class="btn-close-modal">&times;</button>
-            <h3>Histórico de Revisões</h3>
-            <div id="logsContainer"></div>
         </div>
+
+        <div id="envio" class="modal-overlay hidden">
+            <div class="glass-modal success-modal">
+                <div class="success-content">
+                    <div class="checkmark-circle">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <h2>Registro Salvo!</h2>
+                    <p>Tudo certo. Os dados já estão seguros.</p>
+                    <div class="action-buttons">
+                        <button type="button" id="btnEnviarWhatsApp" class="btn-whatsapp"><i
+                                class="fa-brands fa-whatsapp"></i> Mandar Resumo</button>
+                        <button type="button" id="btnNovoRegistro" class="btn-secondary">Novo Dia</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Logs -->
+        <div id="logsModal" class="modal-overlay hidden">
+            <div class="glass-modal">
+                <div class="modal-header">
+                    <h2>Histórico de Edições</h2>
+                    <button id="closeLogsModal" class="btn-close-modal">&times;</button>
+                </div>
+                <div class="modal-body" id="logsContainer">
+                    <!-- Logs aqui -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Datalist para autocomplete -->
+        <datalist id="motivosList">
+            <option value="Gelo"></option>
+            <option value="Limpeza"></option>
+            <option value="Suprimentos"></option>
+            <option value="Manutenção"></option>
+            <option value="Fornecedor"></option>
+            <option value="Lanche"></option>
+        </datalist>
+
     </div>
-    
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script type="module" src="app.js"></script>
 </body>
+
 </html>

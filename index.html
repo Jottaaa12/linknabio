@@ -1,35 +1,74 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Açaí Sabor da Terra - Links Oficiais</title>
-    <meta name="description" content="Peça o melhor açaí da região, fale conosco no WhatsApp, siga-nos no Instagram e deixe sua avaliação. Todos os links em um só lugar!">
+    <meta name="description"
+        content="Peça o melhor açaí da região, fale conosco no WhatsApp, siga-nos no Instagram e deixe sua avaliação. Todos os links em um só lugar!">
     <meta property="og:title" content="Açaí Sabor da Terra - Links Oficiais">
-    <meta property="og:description" content="Acesse nosso cardápio online, WhatsApp, Instagram e mais. Tudo que você precisa está aqui!">
+    <meta property="og:description"
+        content="Acesse nosso cardápio online, WhatsApp, Instagram e mais. Tudo que você precisa está aqui!">
     <meta property="og:image" content="https://i.imgur.com/d1KJ35R.jpeg">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.acaisabordaterra.com.br/">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍇</text></svg>">
-    
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍇</text></svg>">
+
     <!-- Google Analytics Aprimorado -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8E9HZ5QYNT"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-8E9HZ5QYNT', {
-        page_title: 'Link na Bio - Açaí Sabor da Terra'
-      });
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-8E9HZ5QYNT', {
+            page_title: 'Link na Bio - Açaí Sabor da Terra'
+        });
     </script>
-    
+
+    <!-- JSON-LD Structured Data (SEO) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FoodEstablishment",
+      "name": "Açaí Sabor da Terra",
+      "image": "https://i.imgur.com/d1KJ35R.jpeg",
+      "telephone": "+5588988229312",
+      "url": "https://www.acaisabordaterra.com.br/",
+      "menu": "https://acaisabordaterra.deeliv.app",
+      "servesCuisine": "Açaí",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bitupitá",
+        "addressRegion": "CE",
+        "addressCountry": "BR"
+      },
+      "priceRange": "$",
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "16:00",
+        "closes": "23:00"
+      }
+    }
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
     <style>
@@ -43,8 +82,17 @@
             --dark-text-on-green: #1a2e05;
             --gradient-purple: linear-gradient(135deg, #6b21a8 0%, #7c3aed 100%);
             --gradient-green: linear-gradient(135deg, #bef264 0%, #a3e635 100%);
+            /* Variáveis adicionais para componentes */
+            --primary-color: #6b21a8;
+            --primary-dark: #581c87;
+            --error-color: #ef4444;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --bg-secondary: rgba(255, 255, 255, 0.05);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
         }
-        
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--dark-purple);
@@ -57,49 +105,69 @@
             position: fixed;
             width: 100%;
             height: 100%;
-            background-color: var(--dark-purple); /* Fundo para as partículas */
-            background-image: url('');
+            background-color: var(--dark-purple);
+            /* Fundo para as partículas */
             background-repeat: no-repeat;
             background-size: cover;
             background-position: 50% 50%;
-            z-index: -3; /* Abaixo de tudo */
+            z-index: -3;
+            /* Abaixo de tudo */
         }
 
         body::before {
             content: '';
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
                 radial-gradient(ellipse at 20% 20%, rgba(107, 33, 168, 0.15), transparent 50%),
                 radial-gradient(ellipse at 80% 80%, rgba(190, 242, 100, 0.1), transparent 50%),
                 radial-gradient(ellipse at 50% 50%, rgba(124, 58, 237, 0.05), transparent 70%);
-            z-index: -2; /* Acima do particles-js, abaixo do conteúdo */
+            z-index: -2;
+            /* Acima do particles-js, abaixo do conteúdo */
         }
 
         /* Animações Suaves */
-        .fade-in-up { 
-            opacity: 0; 
-            transform: translateY(30px); 
-            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
-        .fade-in-up.delay-1 { animation-delay: 0.1s; }
-        .fade-in-up.delay-2 { animation-delay: 0.3s; }
-        .fade-in-up.delay-3 { animation-delay: 0.5s; }
-        .fade-in-up.delay-4 { animation-delay: 0.7s; }
-        .fade-in-up.delay-5 { animation-delay: 0.9s; }
-        
-        @keyframes fadeInUp { 
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            } 
+
+        .fade-in-up.delay-1 {
+            animation-delay: 0.1s;
+        }
+
+        .fade-in-up.delay-2 {
+            animation-delay: 0.3s;
+        }
+
+        .fade-in-up.delay-3 {
+            animation-delay: 0.5s;
+        }
+
+        .fade-in-up.delay-4 {
+            animation-delay: 0.7s;
+        }
+
+        .fade-in-up.delay-5 {
+            animation-delay: 0.9s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Animações de Hover */
         .hover-lift {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+
         .hover-lift:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
@@ -148,20 +216,23 @@
 
         /* Logo com Glow */
         .logo-glow {
-            box-shadow: 
+            box-shadow:
                 0 0 20px rgba(190, 242, 100, 0.3),
                 0 0 40px rgba(190, 242, 100, 0.1);
             animation: logoPulse 3s ease-in-out infinite;
         }
 
         @keyframes logoPulse {
-            0%, 100% { 
-                box-shadow: 
+
+            0%,
+            100% {
+                box-shadow:
                     0 0 20px rgba(190, 242, 100, 0.3),
                     0 0 40px rgba(190, 242, 100, 0.1);
             }
-            50% { 
-                box-shadow: 
+
+            50% {
+                box-shadow:
                     0 0 30px rgba(190, 242, 100, 0.5),
                     0 0 60px rgba(190, 242, 100, 0.2);
             }
@@ -202,8 +273,15 @@
         }
 
         @keyframes starTwinkle {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.2); }
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+            }
         }
 
         /* Responsividade */
@@ -238,8 +316,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Cardápio Dinâmico */
@@ -350,7 +433,8 @@
         }
 
         /* Estados do Cardápio */
-        .menu-loading, .menu-error {
+        .menu-loading,
+        .menu-error {
             text-align: center;
             padding: 2rem;
             border-radius: 1rem;
@@ -358,20 +442,7 @@
             margin: 1rem 0;
         }
 
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border-color);
-            border-top: 3px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        /* .loading-spinner já definido anteriormente */
 
         .menu-error .error-icon {
             font-size: 3rem;
@@ -442,55 +513,66 @@
         .menu-tamanhos {
             margin-bottom: 2rem;
         }
+
         .menu-tamanhos-lista {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
             justify-content: center;
         }
+
         .menu-tamanhos-lista .menu-item {
             min-width: 160px;
             max-width: 200px;
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(255,255,255,0.13);
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.13);
             border-radius: 12px;
             padding: 1rem;
             text-align: center;
             transition: all 0.3s;
         }
+
         .menu-tamanhos-lista .menu-item:hover {
-            background: rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.15);
             border-color: var(--accent-green);
             transform: translateY(-3px) scale(1.03);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.13);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.13);
         }
+
         .menu-item-title {
             font-weight: 700;
             font-size: 1.1rem;
             margin-bottom: 0.2rem;
         }
+
         .menu-item-description {
             font-size: 0.95rem;
             opacity: 0.8;
             margin-bottom: 0.2rem;
         }
+
         .menu-item-price {
             font-weight: 700;
             color: var(--accent-green, #bef264);
             font-size: 1.2rem;
         }
+
         .menu-complementos {
             margin-bottom: 2rem;
         }
+
         .menu-complementos h4 {
             margin-bottom: 0.5rem;
         }
+
         .menu-complementos-grupo {
             margin-bottom: 0.3rem;
         }
+
         .menu-complementos-grupo strong {
             color: var(--primary-color);
         }
+
         .menu-info {
             margin-top: 1.5rem;
             text-align: center;
@@ -501,7 +583,8 @@
         .chatbot-btn {
             position: fixed;
             right: 24px;
-            bottom: 24px; /* Ajustado para o canto inferior direito */
+            bottom: 24px;
+            /* Ajustado para o canto inferior direito */
             z-index: 9999;
             background: linear-gradient(135deg, #4A0E68 60%, #bef264 100%);
             color: #fff;
@@ -510,21 +593,24 @@
             width: 60px;
             height: 60px;
             font-size: 2rem;
-            box-shadow: 0 4px 16px rgba(74,14,104,0.18);
+            box-shadow: 0 4px 16px rgba(74, 14, 104, 0.18);
             cursor: pointer;
             transition: transform 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
         }
+
         @media (max-width: 600px) {
             .chatbot-btn {
                 right: 16px;
-                bottom: 16px; /* Ajustado para o canto inferior direito em mobile */
+                bottom: 16px;
+                /* Ajustado para o canto inferior direito em mobile */
                 width: 52px;
                 height: 52px;
                 font-size: 1.7rem;
             }
+
             .chatbot-modal {
                 right: 8px;
                 bottom: 60px;
@@ -532,6 +618,7 @@
                 max-width: 98vw;
                 max-height: 90vh;
             }
+
             .chatbot-messages {
                 max-height: 40vh;
             }
@@ -553,13 +640,17 @@
             background: #fff;
             color: #222;
             border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(74,14,104,0.18);
+            box-shadow: 0 8px 32px rgba(74, 14, 104, 0.18);
             z-index: 10000;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
-        .chatbot-modal.hidden { display: none; }
+
+        .chatbot-modal.hidden {
+            display: none;
+        }
+
         .chatbot-header {
             background: linear-gradient(135deg, #4A0E68 60%, #bef264 100%);
             color: #fff;
@@ -570,6 +661,7 @@
             align-items: center;
             flex-shrink: 0;
         }
+
         .close-chatbot {
             background: none;
             border: none;
@@ -578,6 +670,7 @@
             cursor: pointer;
             flex-shrink: 0;
         }
+
         .chatbot-messages {
             flex: 1;
             padding: 1rem;
@@ -587,12 +680,14 @@
             min-height: 80px;
             max-height: 45vh;
         }
+
         .chatbot-form {
             display: flex;
             border-top: 1px solid #eee;
             background: #faf7fd;
             flex-shrink: 0;
         }
+
         .chatbot-form input {
             flex: 1;
             border: none;
@@ -602,6 +697,7 @@
             outline: none;
             background: #faf7fd;
         }
+
         .chatbot-form button {
             background: #4A0E68;
             color: #fff;
@@ -612,21 +708,26 @@
             border-radius: 0 0 18px 0;
             transition: background 0.2s;
         }
+
         .chatbot-form button:hover {
             background: #bef264;
             color: #4A0E68;
         }
+
         .chatbot-message {
             margin-bottom: 0.7rem;
             display: flex;
             align-items: flex-end;
         }
+
         .chatbot-message.user {
             justify-content: flex-end;
         }
+
         .chatbot-message.bot {
             justify-content: flex-start;
         }
+
         .chatbot-bubble {
             max-width: 80%;
             padding: 0.7rem 1rem;
@@ -634,13 +735,15 @@
             background: #eee;
             color: #222;
             font-size: 1rem;
-            box-shadow: 0 2px 8px rgba(74,14,104,0.07);
+            box-shadow: 0 2px 8px rgba(74, 14, 104, 0.07);
         }
+
         .chatbot-message.user .chatbot-bubble {
             background: #4A0E68;
             color: #fff;
             border-bottom-right-radius: 0.3rem;
         }
+
         .chatbot-message.bot .chatbot-bubble {
             background: #bef264;
             color: #222;
@@ -648,86 +751,98 @@
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-6">
-    <div id="particles-js"></div>
 
-    <main class="w-full max-w-sm mx-auto text-center z-10">
-        
+<body class="flex items-center justify-center min-h-screen p-6">
+    <div id="particles-js" aria-hidden="true"></div>
+
+    <main role="main" class="w-full max-w-sm mx-auto text-center z-10">
+
         <div class="fade-in-up delay-1">
-            <img id="logo" src="https://i.imgur.com/d1KJ35R.jpeg" alt="Logo Açaí Sabor da Terra" 
-                 class="w-28 h-28 rounded-full mx-auto border-4 border-white/10 shadow-lg logo-glow">
-            
+            <img id="logo" src="https://i.imgur.com/d1KJ35R.jpeg" alt="Logo Açaí Sabor da Terra"
+                class="w-28 h-28 rounded-full mx-auto border-4 border-white/10 shadow-lg logo-glow">
+
             <h1 class="text-2xl font-extrabold mt-6 tracking-tight">Açaí Sabor da Terra</h1>
             <p class="mt-2 text-md opacity-70" style="color: var(--subtle-text);">Mais que açaí, uma experiência.</p>
 
             <div class="flex justify-center space-x-5 mt-6 text-xl" style="color: var(--subtle-text);">
-                <a id="instagram-link" href="https://www.instagram.com/acaisabordaterra_" target="_blank" aria-label="Instagram" 
-                   class="transition-all duration-300 hover:scale-125 hover:text-[var(--accent-green)] hover-lift">
-                   <i class="fab fa-instagram"></i>
+                <a id="instagram-link" href="https://www.instagram.com/acaisabordaterra_" target="_blank"
+                    aria-label="Instagram"
+                    class="transition-all duration-300 hover:scale-125 hover:text-[var(--accent-green)] hover-lift">
+                    <i class="fab fa-instagram"></i>
                 </a>
-                <a id="whatsapp-link" href="https://wa.me/5588988229312" target="_blank" aria-label="WhatsApp" 
-                   class="transition-all duration-300 hover:scale-125 hover:text-[var(--accent-green)] hover-lift">
-                   <i class="fab fa-whatsapp"></i>
+                <a id="whatsapp-link" href="https://wa.me/5588988229312" target="_blank" aria-label="WhatsApp"
+                    class="transition-all duration-300 hover:scale-125 hover:text-[var(--accent-green)] hover-lift">
+                    <i class="fab fa-whatsapp"></i>
                 </a>
-                <a id="facebook-link" href="https://www.facebook.com/profile.php?id=61572671844988&mibextid=ZbWKwL" target="_blank" aria-label="Facebook" 
-                   class="transition-all duration-300 hover:scale-125 hover:text-[var(--accent-green)] hover-lift">
-                   <i class="fab fa-facebook"></i>
+                <a id="facebook-link" href="https://www.facebook.com/profile.php?id=61572671844988&mibextid=ZbWKwL"
+                    target="_blank" aria-label="Facebook"
+                    class="transition-all duration-300 hover:scale-125 hover:text-[var(--accent-green)] hover-lift">
+                    <i class="fab fa-facebook"></i>
                 </a>
             </div>
         </div>
 
         <div class="space-y-4 mt-10 fade-in-up delay-2">
-            <a id="order-link" href="https://acaisabordaterra.deeliv.app/" target="_blank" 
-               class="flex items-center justify-center w-full p-4 rounded-full shadow-lg font-bold text-lg btn-primary hover-lift">
+            <a id="order-link" href="https://acaisabordaterra.deeliv.app/" target="_blank"
+                class="flex items-center justify-center w-full p-4 rounded-full shadow-lg font-bold text-lg btn-primary hover-lift">
                 <i class="fa-solid fa-hand-pointer mr-3"></i><span>Peça por aqui</span>
             </a>
-            
+
             <div class="space-y-4 pt-2">
-                <a id="rating-link" href="https://g.page/r/CdfFPeHDX5anEBE/review" target="_blank" 
-                   class="flex items-center justify-center w-full p-4 rounded-full font-medium rating-btn hover-lift">
+                <a id="rating-link" href="https://g.page/r/CdfFPeHDX5anEBE/review" target="_blank"
+                    class="flex items-center justify-center w-full p-4 rounded-full font-medium rating-btn hover-lift">
                     <i class="fa-solid fa-star w-6 mr-3"></i><span>Avalie nosso Atendimento</span>
                 </a>
-                 <a id="location-link" href="https://maps.app.goo.gl/bzaGzygRZ4emagVk8" target="_blank" 
+                <a id="location-link" href="https://maps.app.goo.gl/bzaGzygRZ4emagVk8" target="_blank"
                     class="flex items-center justify-center w-full p-4 rounded-full font-medium btn-secondary hover-lift">
-                    <i class="fa-solid fa-map-location-dot w-6 mr-3 text-[var(--accent-green)]"></i><span>Encontre nossa Loja</span>
+                    <i class="fa-solid fa-map-location-dot w-6 mr-3 text-[var(--accent-green)]"></i><span>Encontre nossa
+                        Loja</span>
                 </a>
-                <a id="download-app-link" href="https://play.google.com/store/apps/details?id=v002.app.deeliv.acaisabordaterra" 
-                   class="flex items-center justify-center w-full p-4 rounded-full font-medium btn-secondary hover-lift"
-                   target="_blank">
+                <a id="download-app-link"
+                    href="https://play.google.com/store/apps/details?id=v002.app.deeliv.acaisabordaterra"
+                    class="flex items-center justify-center w-full p-4 rounded-full font-medium btn-secondary hover-lift"
+                    target="_blank">
                     <i class="fa-solid fa-mobile-alt w-6 mr-3 text-[var(--accent-green)]"></i>
                     <span>Baixar nosso App</span>
                 </a>
             </div>
         </div>
-        
+
         <div class="grid grid-cols-2 gap-4 pt-8 fade-in-up delay-3">
-             <button id="wifi-button" class="flex items-center justify-center w-full p-3 rounded-full font-medium btn-secondary hover-lift text-sm" 
-                     style="color: var(--subtle-text);">
-                     <i class="fa-solid fa-wifi w-5 mr-2"></i><span>Wi-Fi da Loja</span>
-             </button>
-             <button id="qr-code-button" class="flex items-center justify-center w-full p-3 rounded-full font-medium btn-secondary hover-lift text-sm" 
-                     style="color: var(--subtle-text);">
-                     <i class="fa-solid fa-qrcode w-5 mr-2"></i><span>QR da Página</span>
-             </button>
-             <a id="vcard-button" href="#" class="flex items-center justify-center w-full p-3 rounded-full font-medium btn-secondary hover-lift text-sm" 
+            <button id="wifi-button"
+                class="flex items-center justify-center w-full p-3 rounded-full font-medium btn-secondary hover-lift text-sm"
+                style="color: var(--subtle-text);">
+                <i class="fa-solid fa-wifi w-5 mr-2"></i><span>Wi-Fi da Loja</span>
+            </button>
+            <button id="qr-code-button"
+                class="flex items-center justify-center w-full p-3 rounded-full font-medium btn-secondary hover-lift text-sm"
+                style="color: var(--subtle-text);">
+                <i class="fa-solid fa-qrcode w-5 mr-2"></i><span>QR da Página</span>
+            </button>
+            <a id="vcard-button" href="javascript:void(0)"
+                class="flex items-center justify-center w-full p-3 rounded-full font-medium btn-secondary hover-lift text-sm"
                 style="color: var(--subtle-text);">
                 <i class="fa-solid fa-address-book w-5 mr-2"></i><span>Salvar Contato</span>
-             </a>
-             <button id="share-button" class="flex items-center justify-center w-full p-3 rounded-full font-medium btn-secondary hover-lift text-sm" 
-                     style="color: var(--subtle-text);">
-                     <i class="fa-solid fa-share-alt w-5 mr-2"></i><span>Indicar Amigo</span>
-             </button>
+            </a>
+            <button id="share-button"
+                class="flex items-center justify-center w-full p-3 rounded-full font-medium btn-secondary hover-lift text-sm"
+                style="color: var(--subtle-text);">
+                <i class="fa-solid fa-share-alt w-5 mr-2"></i><span>Indicar Amigo</span>
+            </button>
         </div>
 
         <!-- Pedido Rápido Modal -->
         <div id="quick-order-modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50">
             <div class="modal-content p-6 rounded-2xl shadow-2xl text-center relative max-w-md w-full">
-                <button data-close-modal="quick-order-modal" class="absolute -top-3 -right-3 bg-white text-purple-700 w-8 h-8 rounded-full shadow-lg font-bold hover:scale-110 transition-transform" aria-label="Fechar modal">×</button>
+                <button data-close-modal="quick-order-modal"
+                    class="absolute -top-3 -right-3 bg-white text-purple-700 w-8 h-8 rounded-full shadow-lg font-bold hover:scale-110 transition-transform"
+                    aria-label="Fechar modal">×</button>
                 <h3 class="text-lg font-bold mb-4">Pedido Rápido</h3>
                 <form id="quick-order-form" class="space-y-4">
                     <div class="form-group">
                         <label for="customer-name" class="block text-sm font-medium mb-2">Seu Nome</label>
-                        <input type="text" id="customer-name" required class="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50">
+                        <input type="text" id="customer-name" required
+                            class="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50">
                     </div>
                     <div class="form-group">
                         <label for="selected-product" class="block text-sm font-medium mb-2">Produto Selecionado</label>
@@ -738,7 +853,8 @@
                     </div>
                     <div class="form-group">
                         <label for="pickup-time" class="block text-sm font-medium mb-2">Horário de Retirada</label>
-                        <select id="pickup-time" required class="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white">
+                        <select id="pickup-time" required
+                            class="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white">
                             <option value="">Escolha um horário</option>
                             <option value="Agora">Agora (se disponível)</option>
                             <option value="15min">Em 15 minutos</option>
@@ -749,7 +865,9 @@
                     </div>
                     <div class="form-group">
                         <label for="special-notes" class="block text-sm font-medium mb-2">Observações (opcional)</label>
-                        <textarea id="special-notes" rows="2" class="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50" placeholder="Ex: Sem granola, mais frutas..."></textarea>
+                        <textarea id="special-notes" rows="2"
+                            class="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50"
+                            placeholder="Ex: Sem granola, mais frutas..."></textarea>
                     </div>
                     <button type="submit" class="w-full p-4 rounded-full font-bold text-lg btn-primary hover-lift">
                         <i class="fa-solid fa-paper-plane mr-2"></i>
@@ -758,10 +876,11 @@
                 </form>
             </div>
         </div>
-        
+
         <footer class="mt-16 text-center text-xs opacity-50 fade-in-up delay-4">
             <p class="mb-2">© <span id="current-year"></span> Açaí Sabor da Terra</p>
-            <p>Feito com ❤️ por <a id="developer-link" href="https://www.instagram.com/jottaaa0" target="_blank" class="font-semibold underline hover:text-white">@jottaaa0</a></p>
+            <p>Feito com ❤️ por <a id="developer-link" href="https://www.instagram.com/jottaaa0" target="_blank"
+                    class="font-semibold underline hover:text-white">@jottaaa0</a></p>
         </footer>
     </main>
 
@@ -774,15 +893,19 @@
     <!-- Modais Aprimorados -->
     <div id="wifi-modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50">
         <div class="modal-content p-6 rounded-2xl shadow-2xl text-center relative max-w-xs w-full">
-            <button data-close-modal="wifi-modal" class="absolute -top-3 -right-3 bg-white text-purple-700 w-8 h-8 rounded-full shadow-lg font-bold hover:scale-110 transition-transform" aria-label="Fechar modal">×</button>
+            <button data-close-modal="wifi-modal"
+                class="absolute -top-3 -right-3 bg-white text-purple-700 w-8 h-8 rounded-full shadow-lg font-bold hover:scale-110 transition-transform"
+                aria-label="Fechar modal">×</button>
             <h3 class="text-lg font-bold mb-2">Conecte-se ao nosso Wi-Fi</h3>
             <p class="text-xs mb-4 opacity-70">Aponte sua câmera para o QR Code</p>
-            <img src="https://i.imgur.com/0tEv6OL.png" alt="QR Code para Wi-Fi" class="w-full h-auto rounded-lg mx-auto">
+            <img src="https://i.imgur.com/0tEv6OL.png" alt="QR Code para Wi-Fi"
+                class="w-full h-auto rounded-lg mx-auto">
             <div class="mt-4 text-left text-sm">
                 <p><strong class="font-semibold">Rede:</strong> FontNet_Acai Sabor Da Terra</p>
                 <div class="flex items-center justify-between mt-2">
                     <p><strong class="font-semibold">Senha:</strong> <span id="wifi-password">••••••••</span></p>
-                    <button id="copy-password-button" class="px-3 py-1 rounded-md text-xs btn-primary hover-lift"><i class="fa-solid fa-copy mr-1"></i> <span id="copy-text">Copiar</span></button>
+                    <button id="copy-password-button" class="px-3 py-1 rounded-md text-xs btn-primary hover-lift"><i
+                            class="fa-solid fa-copy mr-1"></i> <span id="copy-text">Copiar</span></button>
                 </div>
             </div>
         </div>
@@ -790,20 +913,26 @@
 
     <div id="qr-modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50">
         <div class="modal-content p-6 rounded-2xl shadow-2xl text-center relative max-w-xs w-full">
-            <button data-close-modal="qr-modal" class="absolute -top-3 -right-3 bg-white text-purple-700 w-8 h-8 rounded-full shadow-lg font-bold hover:scale-110 transition-transform" aria-label="Fechar modal">×</button>
+            <button data-close-modal="qr-modal"
+                class="absolute -top-3 -right-3 bg-white text-purple-700 w-8 h-8 rounded-full shadow-lg font-bold hover:scale-110 transition-transform"
+                aria-label="Fechar modal">×</button>
             <h3 class="text-lg font-bold mb-4">Escaneie para Compartilhar</h3>
-            <img id="qr-image" src="" alt="QR Code" class="w-full h-auto rounded-lg mx-auto">
+            <img id="qr-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                alt="QR Code da página" class="w-full h-auto rounded-lg mx-auto">
         </div>
     </div>
 
     <!-- Modal do Quiz em Desenvolvimento -->
     <div id="quiz-modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50">
         <div class="modal-content p-6 rounded-2xl shadow-2xl text-center relative max-w-sm w-full">
-            <button data-close-modal="quiz-modal" class="absolute -top-3 -right-3 bg-white text-purple-700 w-8 h-8 rounded-full shadow-lg font-bold hover:scale-110 transition-transform" aria-label="Fechar modal">×</button>
+            <button data-close-modal="quiz-modal"
+                class="absolute -top-3 -right-3 bg-white text-purple-700 w-8 h-8 rounded-full shadow-lg font-bold hover:scale-110 transition-transform"
+                aria-label="Fechar modal">×</button>
             <div class="mb-4">
                 <div class="text-4xl mb-3">🎮</div>
                 <h3 class="text-lg font-bold mb-2">Quiz em Desenvolvimento</h3>
-                <p class="text-sm text-[var(--subtle-text)]">Nosso quiz ainda está em desenvolvimento, e em breve estará disponível para vocês!</p>
+                <p class="text-sm text-[var(--subtle-text)]">Nosso quiz ainda está em desenvolvimento, e em breve estará
+                    disponível para vocês!</p>
             </div>
             <button data-close-modal="quiz-modal" class="w-full p-3 rounded-full font-medium btn-primary hover-lift">
                 <i class="fa-solid fa-check mr-2"></i>
@@ -813,14 +942,16 @@
     </div>
 
     <!-- Botão de Chatbot -->
-    <button id="chatbot-btn" class="chatbot-btn" title="Fale com a assistente virtual">
+    <button id="chatbot-btn" class="chatbot-btn" title="Fale com a assistente virtual"
+        aria-label="Abrir assistente virtual">
         💬
     </button>
     <!-- Modal do Chatbot -->
-    <div id="chatbot-modal" class="chatbot-modal hidden">
+    <div id="chatbot-modal" class="chatbot-modal hidden" role="dialog" aria-modal="true"
+        aria-labelledby="chatbot-title">
         <div class="chatbot-header">
-            <span>🤖 Assistente Virtual</span>
-            <button id="close-chatbot" class="close-chatbot">&times;</button>
+            <span id="chatbot-title">🤖 Assistente Virtual</span>
+            <button id="close-chatbot" class="close-chatbot" aria-label="Fechar chat">&times;</button>
         </div>
         <div id="chatbot-messages" class="chatbot-messages"></div>
         <form id="chatbot-form" class="chatbot-form">
@@ -832,14 +963,17 @@
     <!-- Modal de Serviços -->
     <div id="servicos-modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50">
         <div class="modal-content p-6 rounded-2xl shadow-2xl text-center relative max-w-sm w-full">
-            <button data-close-modal="servicos-modal" class="absolute -top-3 -right-3 bg-white text-purple-700 w-8 h-8 rounded-full shadow-lg font-bold hover:scale-110 transition-transform" aria-label="Fechar modal">×</button>
+            <button data-close-modal="servicos-modal"
+                class="absolute -top-3 -right-3 bg-white text-purple-700 w-8 h-8 rounded-full shadow-lg font-bold hover:scale-110 transition-transform"
+                aria-label="Fechar modal">×</button>
             <div class="mb-4">
                 <div class="text-4xl mb-3">💼</div>
                 <h3 class="text-lg font-bold mb-2 text-[var(--light-text)]">Gostaria do seu próprio link na bio?</h3>
                 <p class="text-sm text-[var(--subtle-text)] mb-4">Entre em contato para agilizarmos seu orçamento.</p>
-                <a id="request-quote-link" href="https://wa.me/5588981905006?text=Gostaria%20de%20um%20orçamento%20sobre%20a%20página%20de%20link%20na%20bio" 
-                   target="_blank"
-                   class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-[var(--accent-green)] text-[var(--dark-text-on-green)] hover:bg-[var(--accent-green-hover)] transition-all duration-200 hover:scale-105">
+                <a id="request-quote-link"
+                    href="https://wa.me/5588981905006?text=Gostaria%20de%20um%20orçamento%20sobre%20a%20página%20de%20link%20na%20bio"
+                    target="_blank"
+                    class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-[var(--accent-green)] text-[var(--dark-text-on-green)] hover:bg-[var(--accent-green-hover)] transition-all duration-200 hover:scale-105">
                     <i class="fa-brands fa-whatsapp mr-2"></i>
                     Solicitar Orçamento
                 </a>
@@ -848,13 +982,15 @@
     </div>
 
     <!-- Botão Flutuante de Serviços -->
-    <button id="servicos-btn" class="fixed bottom-5 left-5 z-40 bg-gradient-to-r from-purple-600 to-indigo-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl hover-lift hover:scale-110 transition-all duration-300" title="Contratar Serviços de Desenvolvimento">
+    <button id="servicos-btn"
+        class="fixed bottom-5 left-5 z-40 bg-gradient-to-r from-purple-600 to-indigo-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl hover-lift hover:scale-110 transition-all duration-300"
+        title="Contratar Serviços de Desenvolvimento">
         <i class="fa-solid fa-briefcase"></i>
     </button>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
+
             // --- GA4 Event Tracking (Senior Implementation) ---
             const trackEvent = (eventName, params = {}) => {
                 if (typeof gtag !== 'function') {
@@ -872,7 +1008,7 @@
                 'facebook-link': { name: 'select_content', params: { content_type: 'social_link', item_id: 'facebook' } },
                 // Main Actions
                 'order-link': { name: 'begin_checkout', params: { content_type: 'main_button', item_id: 'order_deeliv' } },
-                
+
                 // Secondary Actions
                 'rating-link': { name: 'generate_lead', params: { content_type: 'secondary_button', item_id: 'google_review' } },
                 'location-link': { name: 'select_content', params: { content_type: 'secondary_button', item_id: 'google_maps' } },
@@ -906,13 +1042,13 @@
                 const button = document.getElementById(buttonId);
                 if (!modal || !button) return;
                 const closeButtons = modal.querySelectorAll(`[data-close-modal="${modalId}"]`);
-                
-                const openModal = () => { 
-                    modal.classList.remove('hidden'); 
+
+                const openModal = () => {
+                    modal.classList.remove('hidden');
                     trackEvent('view_item', { item_list_id: modalId, item_list_name: 'modal' });
                 };
-                const closeModal = () => { 
-                    modal.classList.add('hidden'); 
+                const closeModal = () => {
+                    modal.classList.add('hidden');
                 };
 
                 button.addEventListener('click', openModal);
@@ -922,7 +1058,7 @@
 
             setupModal('qr-code-button', 'qr-modal');
             setupModal('wifi-button', 'wifi-modal');
-            
+
             setupModal('servicos-btn', 'servicos-modal');
 
             // QR Code
@@ -933,7 +1069,7 @@
 
             // Copiar senha Wi-Fi
             const copyPasswordBtn = document.getElementById('copy-password-button');
-            if(copyPasswordBtn) {
+            if (copyPasswordBtn) {
                 const passwordSpan = document.getElementById('wifi-password');
                 const copyTextSpan = document.getElementById('copy-text');
                 const wifiPassword = 'cliente25';
@@ -955,7 +1091,7 @@
 
             // VCard
             const vCardButton = document.getElementById('vcard-button');
-            if(vCardButton) {
+            if (vCardButton) {
                 const vCardData = `BEGIN:VCARD
 VERSION:3.0
 N:Sabor da Terra;Açaí;;;
@@ -968,27 +1104,27 @@ END:VCARD`;
 
             // Compartilhar
             const shareButton = document.getElementById('share-button');
-            if(shareButton) {
-                shareButton.addEventListener('click', async () => { 
+            if (shareButton) {
+                shareButton.addEventListener('click', async () => {
                     // Track the initial click event from the config
                     const trackingData = clickTrackingConfig['share-button'];
-                    if(trackingData) trackEvent(trackingData.name, trackingData.params);
+                    if (trackingData) trackEvent(trackingData.name, trackingData.params);
 
                     const sharePayload = {
                         title: 'Açaí Sabor da Terra',
                         text: 'Confira os links do Açaí Sabor da Terra!',
                         url: window.location.href
                     };
-                    if (navigator.share) { 
-                        try { 
-                            await navigator.share(sharePayload); 
+                    if (navigator.share) {
+                        try {
+                            await navigator.share(sharePayload);
                             trackEvent('share', { method: 'native_web_share', content_type: 'page', result: 'success' });
                         } catch (err) {
                             if (err.name !== 'AbortError') {
                                 trackEvent('share', { method: 'native_web_share', content_type: 'page', result: 'error', error_name: err.name });
                             }
-                        } 
-                    } else { 
+                        }
+                    } else {
                         // Fallback para navegadores sem suporte
                         if (navigator.clipboard) {
                             navigator.clipboard.writeText(sharePayload.url).then(() => {
@@ -999,7 +1135,7 @@ END:VCARD`;
                             prompt('Copie este link para compartilhar:', sharePayload.url);
                             trackEvent('share', { method: 'prompt_fallback', content_type: 'page', result: 'used' });
                         }
-                    } 
+                    }
                 });
             }
 
@@ -1050,6 +1186,14 @@ END:VCARD`;
                     botResponse = '🛒 Para fazer seu pedido, acesse nosso cardápio digital:<br><a href="https://acaisabordaterra.deeliv.app" target="_blank" class="chatbot-link">Clique aqui para pedir!</a>';
                 } else if (/promo|desconto|cupom/.test(msg)) {
                     botResponse = '🎁 Consulte nossas promoções e cupons no Instagram ou pergunte ao atendente!';
+                } else if (/ola|oi|eai|tudo bem|bom dia|boa tarde|boa noite|hey|hello/.test(msg)) {
+                    botResponse = 'Olá! 👋 Seja bem-vindo(a) ao Açaí Sabor da Terra! Como posso te ajudar hoje?';
+                } else if (/obrigado|obrigada|valeu|vlw|thanks|brigado|grato/.test(msg)) {
+                    botResponse = 'De nada! 🍇 Ficamos felizes em ajudar. Bom açaí e volte sempre!';
+                } else if (/tchau|ate mais|adeus|bye|flw|falou/.test(msg)) {
+                    botResponse = 'Até logo! 👋 Foi um prazer atender você. Volte sempre ao Açaí Sabor da Terra! 🍇';
+                } else if (/wifi|internet|senha da loja/.test(msg)) {
+                    botResponse = '📶 Nossa rede Wi-Fi é: <b>FontNet_Acai Sabor Da Terra</b><br>Senha: <b>cliente25</b>';
                 } else {
                     botResponse = '🤖 Sou uma assistente virtual! Posso te ajudar com dúvidas sobre endereço, horário, cardápio, promoções, fidelidade, delivery, formas de pagamento e mais!';
                 }
@@ -1066,17 +1210,18 @@ END:VCARD`;
                 }
             }
 
-            chatbotBtn.addEventListener('click', openChatbot);
-            chatbotBtn.addEventListener('touchstart', function(e) {
-                e.preventDefault();
+            chatbotBtn.addEventListener('click', (e) => {
+                e.preventDefault(); // Garante que não haja comportamento padrão indesejado
                 openChatbot();
             });
+            // Removido o touchstart duplicado para evitar abrir/fechar errático em mobile moderno que já dispara click
+
 
             closeChatbot.onclick = () => {
                 chatbotModal.classList.add('hidden');
                 trackEvent('chatbot_closed');
             };
-            
+
             chatbotForm.onsubmit = e => {
                 e.preventDefault();
                 const userMsg = chatbotInput.value.trim();
@@ -1089,7 +1234,7 @@ END:VCARD`;
 
             // Inicializar
             document.getElementById('current-year').textContent = new Date().getFullYear();
-            
+
             // Tracking de tempo na página
             let startTime = Date.now();
             window.addEventListener('beforeunload', () => {
@@ -1103,14 +1248,14 @@ END:VCARD`;
             "particles": {
                 "number": {
                     "value": 40, /* Reduzido de 80 para 40 */
-                    "density": {"enable": true, "value_area": 800}
+                    "density": { "enable": true, "value_area": 800 }
                 },
-                "color": {"value": "#bef264" /* Cor dos pontinhos (accent-green) */},
+                "color": { "value": "#bef264" /* Cor dos pontinhos (accent-green) */ },
                 "shape": {
                     "type": "circle",
-                    "stroke": {"width": 0, "color": "#000000"},
-                    "polygon": {"nb_sides": 5},
-                    "image": {"src": "img/github.svg", "width": 100, "height": 100}
+                    "stroke": { "width": 0, "color": "#000000" },
+                    "polygon": { "nb_sides": 5 },
+                    "image": { "src": "img/github.svg", "width": 100, "height": 100 }
                 },
                 "opacity": {
                     "value": 0.6, // Slightly higher base opacity
@@ -1157,20 +1302,21 @@ END:VCARD`;
             "interactivity": {
                 "detect_on": "canvas",
                 "events": {
-                    "onhover": {"enable": false, /* Desativado */ "mode": "grab"},
-                    "onclick": {"enable": false, /* Desativado */ "mode": "push"},
+                    "onhover": { "enable": false, /* Desativado */ "mode": "grab" },
+                    "onclick": { "enable": false, /* Desativado */ "mode": "push" },
                     "resize": true
                 },
                 "modes": {
-                    "grab": {"distance": 140, "line_linked": {"opacity": 1}},
-                    "bubble": {"distance": 400, "size": 40, "duration": 2, "opacity": 8, "speed": 3},
-                    "repulse": {"distance": 200, "duration": 0.4},
-                    "push": {"particles_nb": 4},
-                    "remove": {"particles_nb": 2}
+                    "grab": { "distance": 140, "line_linked": { "opacity": 1 } },
+                    "bubble": { "distance": 400, "size": 40, "duration": 2, "opacity": 8, "speed": 3 },
+                    "repulse": { "distance": 200, "duration": 0.4 },
+                    "push": { "particles_nb": 4 },
+                    "remove": { "particles_nb": 2 }
                 }
             },
             "retina_detect": false /* Desativado */
         });
     </script>
 </body>
+
 </html>

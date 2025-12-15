@@ -4,6 +4,7 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase
 import { FirestoreService } from "./services/firestoreService.js";
 import { LogService } from "./services/logService.js";
 import { UIManager } from "./ui/uiManager.js";
+import { firebaseConfig } from "../shared/firebase-config.js";
 
 // Constantes da aplicação
 const CONSTANTS = {
@@ -13,14 +14,7 @@ const CONSTANTS = {
         "Nayara",
         "João Pedro (gerente)"
     ],
-    FIREBASE_CONFIG: {
-        apiKey: "AIzaSyCyzA-QWhXZTUahk13tKhMEAt8AqLpCzDc",
-        authDomain: "acai-sabordaterra-fiados.firebaseapp.com",
-        projectId: "acai-sabordaterra-fiados",
-        storageBucket: "acai-sabordaterra-fiados.appspot.com",
-        messagingSenderId: "95507357232",
-        appId: "1:95507357232:web:22d0264b98bd5ab0ff57f5"
-    }
+    FIREBASE_CONFIG: firebaseConfig
 };
 
 class PainelControleApp {
@@ -115,7 +109,7 @@ class PainelControleApp {
     async refreshLogs() {
         const logsContent = document.getElementById('logsContent');
         const logs = await this.logService.getLogs();
-        
+
         logsContent.innerHTML = logs.map(log => `
             <div class="log-entry ${log.status}">
                 <div class="log-timestamp">${this.logService.formatLogTimestamp(log.timestamp)}</div>
@@ -285,13 +279,13 @@ class PainelControleApp {
 
             this.todosOsRegistros = registros;
             this.aplicarFiltros();
-            
+
             await this.logService.addLog(
                 'Atualização de Dados',
                 `${registros.length} registros carregados`,
                 'info'
             );
-            
+
             document.getElementById('statusCarregamento').style.display = 'none';
         });
     }
@@ -331,7 +325,7 @@ class PainelControleApp {
 
             // Filtro por funcionário
             if (funcionario && funcionario !== "Todos") {
-                registrosFiltrados = registrosFiltrados.filter(registro => 
+                registrosFiltrados = registrosFiltrados.filter(registro =>
                     registro.funcionario === funcionario
                 );
             }
@@ -364,16 +358,16 @@ class PainelControleApp {
             // Aplica filtros de data
             if (inicio) {
                 registrosFiltrados = registrosFiltrados.filter(registro => {
-                    const dataRegistro = registro.timestamp ? 
-                        registro.timestamp.toDate() : 
+                    const dataRegistro = registro.timestamp ?
+                        registro.timestamp.toDate() :
                         new Date(registro.data.replace(/-/g, '\/')); // Fallback para o campo 'data' string
                     return dataRegistro >= inicio;
                 });
             }
             if (fim) {
                 registrosFiltrados = registrosFiltrados.filter(registro => {
-                    const dataRegistro = registro.timestamp ? 
-                        registro.timestamp.toDate() : 
+                    const dataRegistro = registro.timestamp ?
+                        registro.timestamp.toDate() :
                         new Date(registro.data.replace(/-/g, '\/')); // Fallback para o campo 'data' string
                     return dataRegistro <= fim;
                 });
@@ -392,10 +386,10 @@ class PainelControleApp {
     atualizarUI() {
         // Atualiza cards de métricas
         this.uiManager.updateMetricsCards(this.registrosFiltrados);
-        
+
         // Renderiza lista de registros
         this.uiManager.renderRegistrosList(this.registrosFiltrados);
-        
+
         // Renderiza gráficos
         this.uiManager.renderCharts(this.registrosFiltrados);
     }
@@ -417,12 +411,12 @@ class PainelControleApp {
             // Limpa arrays de dados
             this.todosOsRegistros = [];
             this.registrosFiltrados = [];
-            
+
             // Remove event listeners
             window.removeEventListener('beforeunload', this.cleanup);
-            
+
             this.isInitialized = false;
-            
+
             console.log('Recursos limpos com sucesso');
         } catch (error) {
             console.error('Erro ao limpar recursos:', error);
@@ -439,17 +433,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.warn('Aplicação já inicializada, limpando recursos...');
             app.cleanup();
         }
-        
+
         app = new PainelControleApp();
         await app.init();
-        
+
         // Adiciona listener para limpeza ao fechar
         window.addEventListener('beforeunload', () => {
             if (app) {
                 app.cleanup();
             }
         });
-        
+
     } catch (error) {
         console.error('Erro fatal na inicialização:', error);
         document.getElementById('statusCarregamento').textContent = 'Erro crítico na inicialização. Por favor, recarregue a página.';

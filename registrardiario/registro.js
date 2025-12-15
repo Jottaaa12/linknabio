@@ -22,6 +22,8 @@ export const RegistroDiarioModule = {
         this.setupEventListeners();
         this.loadDraft();
         document.getElementById('data').value = Utils.getTodayDateString();
+        this.updateDisplayDate(); // Atualiza a data do visual header
+        this.checkDateValidity(); // Verifica data inicial
         this.showHideFidelidade();
         this.updateMoodOptionsStyle();
         this.loadSavedMotivos(); // Carrega motivos para autocomplete
@@ -44,19 +46,27 @@ export const RegistroDiarioModule = {
             this.form.addEventListener('input', () => this.saveDraft());
         }
 
-        document.querySelectorAll('input[name="fidelidade"]').forEach(radio => radio.addEventListener('change', () => this.showHideFidelidade()));
-        document.querySelectorAll('.mood-option input').forEach(radio => radio.addEventListener('change', () => this.updateMoodOptionsStyle()));
-        
+        const fidelidadeToggle = document.getElementById('fidelidadeToggle');
+        if (fidelidadeToggle) {
+            fidelidadeToggle.addEventListener('change', () => this.showHideFidelidade());
+        }
+
+        // Mood listener para nova classe .mood-emoji
+        document.querySelectorAll('.mood-emoji input').forEach(radio => radio.addEventListener('change', () => this.updateMoodOptionsStyle()));
+
+        // Listener de Data
+        addSafeListener('data', 'change', () => this.checkDateValidity());
+
         addSafeListener('btnAdicionarSaida', 'click', () => this.addSaidaItem());
         addSafeListener('btnRevisar', 'click', () => this.review());
         addSafeListener('btnEditar', 'click', () => this.edit());
         addSafeListener('btnConfirmar', 'click', () => this.confirmAndSave());
         addSafeListener('btnEnviarWhatsApp', 'click', () => this.sendToWhatsApp());
         addSafeListener('btnNovoRegistro', 'click', () => this.reset());
-        
+
         addSafeListener('realDinheiro', 'input', () => this.updateAjuste());
         addSafeListener('realPix', 'input', () => this.updateAjuste());
-        
+
         addSafeListener('btnVerLogs', 'click', () => this.showLogsModal());
         addSafeListener('closeLogsModal', 'click', () => this.hideLogsModal());
     },
@@ -65,9 +75,13 @@ export const RegistroDiarioModule = {
     getFormValues() {
         const formValues = {};
         new FormData(this.form).forEach((value, key) => { formValues[key] = value; });
-        
+
         const ids = ['funcionario', 'data', 'dinheiroEntrada', 'pixEntrada', 'cartaoEntrada', 'fidelidadeQuantidade', 'observacoesDia'];
         ids.forEach(id => formValues[id] = document.getElementById(id).value);
+
+        // Ajuste para pegar valor do Toggle de Fidelidade
+        formValues.fidelidade = document.getElementById('fidelidadeToggle').checked ? 'sim' : 'nao';
+
         formValues.fraseMotivacionalArea = document.getElementById('fraseMotivacionalArea').innerText;
 
         // Captura saídas detalhadas
@@ -84,14 +98,14 @@ export const RegistroDiarioModule = {
         formValues.totalSaidas = saidas.reduce((sum, s) => sum + s.valor, 0);
 
         this.arquivoComprovante = document.getElementById('comprovante').files[0] || null;
-        
+
         return formValues;
     },
 
     validateForm() {
         const values = this.getFormValues();
         const totalEntradas = (parseFloat(values.dinheiroEntrada) || 0) + (parseFloat(values.pixEntrada) || 0) + (parseFloat(values.cartaoEntrada) || 0);
-        
+
         if (!values.funcionario || !values.data) {
             Utils.showToast("Preencha Funcionário e Data.", "error");
             return false;
@@ -108,6 +122,14 @@ export const RegistroDiarioModule = {
             Utils.showToast("Informe a quantidade de cartões fidelidade.", "error");
             return false;
         }
+
+        // Validação de Data Futura
+        const today = Utils.getTodayDateString();
+        if (values.data > today) {
+            Utils.showToast("Não é possível registrar datas futuras!", "error");
+            return false;
+        }
+
         return true;
     },
 
@@ -125,6 +147,9 @@ export const RegistroDiarioModule = {
             if (element) {
                 if (element.type === 'radio') {
                     element.checked = true;
+                } else if (key === 'fidelidade') {
+                    // Restaura Toggle
+                    document.getElementById('fidelidadeToggle').checked = (draft[key] === 'sim');
                 } else if (key === 'fraseMotivacionalArea') {
                     element.innerText = draft[key];
                 } else if (key !== 'saidasDetalhadas') {
@@ -132,7 +157,7 @@ export const RegistroDiarioModule = {
                 }
             }
         });
-        
+
         if (draft.saidasDetalhadas && draft.saidasDetalhadas.length > 0) {
             document.getElementById('saidasList').innerHTML = ''; // Limpa antes de carregar
             draft.saidasDetalhadas.forEach(saida => this.addSaidaItem(saida));
@@ -146,13 +171,13 @@ export const RegistroDiarioModule = {
     clearDraft() {
         LocalStorageModule.remove(this.RASCUNHO_KEY);
     },
-    
+
     // --- LÓGICA DE UI ---
     loadSavedMotivos() {
         const motivos = LocalStorageModule.get(this.MOTIVOS_KEY) || [];
         const datalist = document.getElementById('motivosList');
         // Limpa opções antigas, exceto as que podem estar fixas no HTML
-        datalist.innerHTML = ''; 
+        datalist.innerHTML = '';
         motivos.forEach(motivo => {
             const option = document.createElement('option');
             option.value = motivo;
@@ -160,13 +185,45 @@ export const RegistroDiarioModule = {
         });
     },
     showHideFidelidade() {
-        document.getElementById('fidelidadeDetalhes').classList.toggle('fidelidade-visivel', document.getElementById('fidelidadeSim').checked);
+        // Lógica para Toggle
+        const toggle = document.getElementById('fidelidadeToggle');
+        const detalhes = document.getElementById('fidelidadeDetalhes');
+        if (toggle && detalhes) {
+            if (toggle.checked) {
+                detalhes.classList.remove('hidden');
+            } else {
+                detalhes.classList.add('hidden');
+                // Limpa valor se desmarcar
+                document.getElementById('fidelidadeQuantidade').value = '';
+            }
+        }
     },
 
     updateMoodOptionsStyle() {
-        document.querySelectorAll('.mood-option').forEach(label => {
+        document.querySelectorAll('.mood-emoji').forEach(label => {
             label.classList.toggle('selected', label.querySelector('input').checked);
         });
+    },
+
+    checkDateValidity() {
+        const dateInput = document.getElementById('data');
+        const warning = document.getElementById('dateWarning');
+        const today = Utils.getTodayDateString();
+
+        if (dateInput.value !== today) {
+            warning.classList.remove('hidden');
+        } else {
+            warning.classList.add('hidden');
+        }
+        this.updateDisplayDate();
+    },
+
+    updateDisplayDate() {
+        const dateInput = document.getElementById('data').value;
+        const display = document.getElementById('displayDate');
+        if (display) {
+            display.textContent = Utils.formatDate(dateInput);
+        }
     },
 
     addSaidaItem(saida = { valor: '', motivo: '', metodo: 'dinheiro' }) {
@@ -178,12 +235,13 @@ export const RegistroDiarioModule = {
             <input type="number" class="saida-valor" placeholder="Valor" step="0.01" min="0" value="${saida.valor}">
             <input type="text" class="saida-motivo" placeholder="Motivo" list="motivosList" value="${saida.motivo}">
             <div class="saida-metodo">
+                <!-- Se quiser customizar o radio também, senão deixa padrão ou remove estilo -->
                 <input type="radio" id="dinheiro_${saidaId}" name="metodo_${saidaId}" value="dinheiro" ${saida.metodo === 'dinheiro' ? 'checked' : ''}>
                 <label for="dinheiro_${saidaId}">Dinheiro</label>
                 <input type="radio" id="pix_${saidaId}" name="metodo_${saidaId}" value="pix" ${saida.metodo === 'pix' ? 'checked' : ''}>
                 <label for="pix_${saidaId}">PIX</label>
             </div>
-            <button type="button" class="btn btn-secondary btn-remover-saida">–</button>
+            <button type="button" class="btn-remover-saida"><i class="fa-solid fa-minus"></i></button>
         `;
         container.appendChild(div);
 
@@ -192,7 +250,7 @@ export const RegistroDiarioModule = {
             this.updateTotalSaidas();
             this.saveDraft();
         });
-        
+
         div.querySelectorAll('input').forEach(input => {
             input.addEventListener('input', () => {
                 this.updateTotalSaidas(); // Recalcula totais e salva o rascunho
@@ -210,14 +268,15 @@ export const RegistroDiarioModule = {
     // --- FLUXO PRINCIPAL (REVISÃO, SALVAMENTO) ---
     review() {
         if (!this.validateForm()) return;
-        
+
         this.dadosParaEnvio = this.getFormValues();
-        document.getElementById('resumo').innerHTML = this.generateSummaryHTML(this.dadosParaEnvio);
-        
+        this.dadosParaEnvio = this.getFormValues();
+        document.getElementById('resumo').innerHTML = this.generateReviewHTML(this.dadosParaEnvio);
+
         const { saldoDinheiro, saldoPix } = this.calculateTotals(this.dadosParaEnvio);
         document.getElementById('sistemaDinheiro').textContent = Utils.formatCurrency(saldoDinheiro);
         document.getElementById('sistemaPix').textContent = Utils.formatCurrency(saldoPix);
-        
+
         document.getElementById('realDinheiro').value = '';
         document.getElementById('realPix').value = '';
         document.getElementById('motivoAjuste').value = '';
@@ -260,7 +319,7 @@ export const RegistroDiarioModule = {
             comprovanteURL: ''
         };
         // Remove dados que não precisam ir para o DB
-        delete registroParaSalvar.saidasDetalhadas; 
+        delete registroParaSalvar.saidasDetalhadas;
 
         try {
             // 1. Upload do comprovante (se houver)
@@ -285,12 +344,17 @@ export const RegistroDiarioModule = {
 
             // 4. Salvar novos motivos de saída para autocomplete futuro
             this.saveNewMotivos(this.dadosParaEnvio.saidasDetalhadas);
-            
+
             this.dadosParaEnvio.ajuste = registroParaSalvar.ajuste;
             this.clearDraft();
             document.getElementById('confirmacao').classList.add('hidden');
             document.getElementById('envio').classList.remove('hidden');
             document.getElementById('btnVerLogs').classList.remove('hidden'); // Mostra o botão de logs
+            document.getElementById('btnVerLogs').classList.remove('hidden'); // Mostra o botão de logs
+
+            // --- EFEITO WOW: CONFETTI 🎉 ---
+            this.triggerConfetti();
+
             Utils.showToast("Registro salvo online com sucesso!", 'success');
 
         } catch (e) {
@@ -317,17 +381,17 @@ export const RegistroDiarioModule = {
         this.currentRegistroId = null;
         this.arquivoComprovante = null;
     },
-    
+
     // --- CÁLCULOS E GERAÇÃO DE TEXTO ---
     calculateTotals(data) {
         const dinheiroEntrada = parseFloat(data.dinheiroEntrada) || 0;
         const pixEntrada = parseFloat(data.pixEntrada) || 0;
         const cartaoEntrada = parseFloat(data.cartaoEntrada) || 0;
-        
+
         const totalEntradas = dinheiroEntrada + pixEntrada + cartaoEntrada;
         const totalSaidas = data.totalSaidas || 0;
         const totalGeral = totalEntradas - totalSaidas;
-        
+
         const saidasDinheiro = data.saidasDetalhadas?.filter(s => s.metodo === 'dinheiro').reduce((acc, s) => acc + s.valor, 0) || 0;
         const saidasPix = data.saidasDetalhadas?.filter(s => s.metodo === 'pix').reduce((acc, s) => acc + s.valor, 0) || 0;
 
@@ -337,48 +401,88 @@ export const RegistroDiarioModule = {
         return { totalEntradas, totalSaidas, totalGeral, saldoDinheiro, saldoPix };
     },
 
-    generateSummaryHTML(data) {
+    generateReviewHTML(data) {
         const { totalEntradas, totalSaidas, totalGeral } = this.calculateTotals(data);
-        let html = `<strong>REGISTRO DIÁRIO - AÇAÍ SABOR DA TERRA</strong>\n`;
-        html += `-------------------------------------\n`;
-        html += `<strong>Funcionário(a):</strong> ${data.funcionario}\n`;
-        html += `<strong>Data:</strong> ${Utils.formatDate(data.data)}\n`;
-        html += `-------------------------------------\n`;
-        html += `<strong>ENTRADAS:</strong>\n`;
-        html += `💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroEntrada)}\n`;
-        html += `📱 PIX: ${Utils.formatCurrency(data.pixEntrada)}\n`;
-        html += `💳 Cartão: ${Utils.formatCurrency(data.cartaoEntrada)}\n`;
-        html += `<span><strong>Total Entradas: ${Utils.formatCurrency(totalEntradas)}</strong></span>\n`;
-        html += `-------------------------------------`;
+        let html = `
+            <div class="review-card">
+                <div class="review-header">
+                    <h3>RESUMO DO DIA</h3>
+                    <p>${data.funcionario} • ${Utils.formatDate(data.data)}</p>
+                </div>
+                
+                <div class="review-section">
+                    <h4>ENTRADAS 💰</h4>
+                    <div class="review-row"><span>Dinheiro:</span> <strong>${Utils.formatCurrency(data.dinheiroEntrada)}</strong></div>
+                    <div class="review-row"><span>PIX:</span> <strong>${Utils.formatCurrency(data.pixEntrada)}</strong></div>
+                    <div class="review-row"><span>Cartão:</span> <strong>${Utils.formatCurrency(data.cartaoEntrada)}</strong></div>
+                    <div class="review-total highlight">Total Entradas: ${Utils.formatCurrency(totalEntradas)}</div>
+                </div>
+        `;
 
         if (data.saidasDetalhadas && data.saidasDetalhadas.length > 0) {
-            html += `\n<strong>SAÍDAS DETALHADAS:</strong>\n`;
+            html += `<div class="review-section"><h4>SAÍDAS 💸</h4>`;
             data.saidasDetalhadas.forEach(s => {
-                html += `– ${s.motivo} (${s.metodo.toUpperCase()}): ${Utils.formatCurrency(s.valor)}\n`;
+                html += `<div class="review-row small"><span>${s.motivo} (${s.metodo}):</span> <span>${Utils.formatCurrency(s.valor)}</span></div>`;
             });
-            html += `<span><strong>Total Saídas: ${Utils.formatCurrency(totalSaidas)}</strong></span>\n`;
-            html += `-------------------------------------`;
+            html += `<div class="review-total">Total Saídas: -${Utils.formatCurrency(totalSaidas)}</div></div>`;
+        }
+
+        html += `
+            <div class="review-section big-total">
+                <h4>SALDO FINAL</h4>
+                <h1>${Utils.formatCurrency(totalGeral)}</h1>
+            </div>
+            
+            <div class="review-section">
+                <p><strong>Clima:</strong> ${data.climaLoja}</p>
+                <p><strong>Obs:</strong> ${data.observacoesDia || '-'}</p>
+            </div>
+        </div>`;
+        return html;
+    },
+
+    generateWhatsAppText(data) {
+        const { totalEntradas, totalSaidas, totalGeral } = this.calculateTotals(data);
+        let text = `*REGISTRO DIÁRIO - AÇAÍ SABOR DA TERRA*\n`;
+        text += `-------------------------------------\n`;
+        text += `*Funcionário(a):* ${data.funcionario}\n`;
+        text += `*Data:* ${Utils.formatDate(data.data)}\n`;
+        text += `-------------------------------------\n`;
+        text += `*ENTRADAS:*\n`;
+        text += `💰 Dinheiro: ${Utils.formatCurrency(data.dinheiroEntrada)}\n`;
+        text += `📱 PIX: ${Utils.formatCurrency(data.pixEntrada)}\n`;
+        text += `💳 Cartão: ${Utils.formatCurrency(data.cartaoEntrada)}\n`;
+        text += `*Total Entradas: ${Utils.formatCurrency(totalEntradas)}*\n`;
+        text += `-------------------------------------\n`;
+
+        if (data.saidasDetalhadas && data.saidasDetalhadas.length > 0) {
+            text += `*SAÍDAS DETALHADAS:*\n`;
+            data.saidasDetalhadas.forEach(s => {
+                text += `– ${s.motivo} (${s.metodo.toUpperCase()}): ${Utils.formatCurrency(s.valor)}\n`;
+            });
+            text += `*Total Saídas: ${Utils.formatCurrency(totalSaidas)}*\n`;
+            text += `-------------------------------------\n`;
         }
 
         if (data.fidelidade === 'sim' && (parseInt(data.fidelidadeQuantidade) || 0) > 0) {
-            html += `\n<strong>FIDELIDADE:</strong>\n🎁 Cartões Utilizados: ${data.fidelidadeQuantidade}\n`;
-            html += `-------------------------------------`;
+            text += `*FIDELIDADE:*\n🎁 Cartões Utilizados: ${data.fidelidadeQuantidade}\n`;
+            text += `-------------------------------------\n`;
         }
 
-        html += `\n<strong>TOTAL GERAL (Sistema): ${Utils.formatCurrency(totalGeral)}</strong>\n`;
-        html += `-------------------------------------\n`;
-        html += `<strong>Termômetro da Loja:</strong> ${data.climaLoja}\n`;
-        html += `<strong>Observações:</strong> ${data.observacoesDia || 'Nenhuma'}`;
-        
-        return html;
+        text += `*TOTAL GERAL (Sistema): ${Utils.formatCurrency(totalGeral)}*\n`;
+        text += `-------------------------------------\n`;
+        text += `*Termômetro da Loja:* ${data.climaLoja}\n`;
+        text += `*Observações:* ${data.observacoesDia || 'Nenhuma'}`;
+
+        return text;
     },
 
     updateAjuste() {
         const { saldoDinheiro, saldoPix } = this.calculateTotals(this.dadosParaEnvio);
-        
+
         const realDinheiroEl = document.getElementById('realDinheiro');
         const realPixEl = document.getElementById('realPix');
-        
+
         const realDinheiro = parseFloat(realDinheiroEl.value) || saldoDinheiro;
         const realPix = parseFloat(realPixEl.value) || saldoPix;
 
@@ -395,7 +499,7 @@ export const RegistroDiarioModule = {
     },
 
     sendToWhatsApp() {
-        const text = document.getElementById('resumo').innerText; // Usa o texto já formatado
+        const text = this.generateWhatsAppText(this.dadosParaEnvio);
         window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
     },
 
@@ -413,7 +517,7 @@ export const RegistroDiarioModule = {
         try {
             const q = query(collection(this.db, 'logsEdicoes'), where('registroId', '==', this.currentRegistroId), orderBy('data', 'desc'));
             const querySnapshot = await getDocs(q);
-            
+
             if (querySnapshot.empty) {
                 logsContainer.innerHTML = '<p>Nenhum histórico de edição encontrado para este registro.</p>';
                 return;
@@ -453,7 +557,7 @@ export const RegistroDiarioModule = {
 
         const savedMotivos = LocalStorageModule.get(this.MOTIVOS_KEY) || [];
         const novosMotivos = saidas.map(s => s.motivo.trim()).filter(m => m);
-        
+
         let updated = false;
         novosMotivos.forEach(novoMotivo => {
             if (!savedMotivos.includes(novoMotivo)) {
@@ -465,6 +569,37 @@ export const RegistroDiarioModule = {
         if (updated) {
             LocalStorageModule.set(this.MOTIVOS_KEY, savedMotivos);
             this.loadSavedMotivos(); // Atualiza o datalist na UI
+        }
+    },
+
+    // --- WOW EFFECTS ---
+    triggerConfetti() {
+        if (typeof confetti === 'function') {
+            // Explosão central
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#d946ef', '#8b5cf6', '#0ea5e9', '#ffffff'] // Cores do tema
+            });
+
+            // Chuva lateral
+            setTimeout(() => {
+                confetti({
+                    particleCount: 50,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#d946ef', '#ffffff']
+                });
+                confetti({
+                    particleCount: 50,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#8b5cf6', '#ffffff']
+                });
+            }, 300);
         }
     }
 };
