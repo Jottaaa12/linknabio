@@ -652,6 +652,8 @@ input:checked+.slider:before {
     white-space: nowrap;
     animation: flySanta 6s linear forwards;
     filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+    opacity: 0.7;
+    /* User Request: Levemente transparente */
 }
 
 @keyframes flySanta {
@@ -870,6 +872,12 @@ input:checked+.slider:before {
         box-shadow: 0 0 0 transparent;
     }
 }
+
+
+
+
+
+
 
 /* DECORAÇÃO FLUTUANTE */
 .xmas-decor {

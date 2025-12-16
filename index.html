@@ -1317,6 +1317,358 @@ END:VCARD`;
             "retina_detect": false /* Desativado */
         });
     </script>
+    <!-- CHRISTMAS & INAUGURATION EXTRA -->
+    <style>
+        /* --- CHRISTMAS THEME --- */
+        .christmas-lights-wrapper {
+            position: fixed;
+            top: -5px;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .christmas-lights {
+            display: flex;
+            justify-content: center;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: max-content;
+            margin: 0;
+            padding: 0;
+            white-space: nowrap;
+        }
+
+        .christmas-lights li {
+            position: relative;
+            list-style: none;
+            margin: 0 10px;
+            padding: 0;
+            display: block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #fff;
+            animation: flash 2s infinite alternate;
+            flex-shrink: 0;
+        }
+
+        .christmas-lights li:nth-child(2n+1) {
+            background: #ff0000;
+            box-shadow: 0 0 10px #ff0000;
+            animation-duration: 1.2s;
+        }
+
+        .christmas-lights li:nth-child(4n+2) {
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+            animation-duration: 1.8s;
+        }
+
+        .christmas-lights li:nth-child(3n+1) {
+            background: #ffd700;
+            box-shadow: 0 0 10px #ffd700;
+            animation-duration: 1.5s;
+        }
+
+        @keyframes flash {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                box-shadow: 0 0 20px currentColor;
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(0.8);
+                box-shadow: 0 0 0 transparent;
+            }
+        }
+
+        /* Flying Santa */
+        .flying-santa {
+            position: fixed;
+            left: -200px;
+            font-size: 2.5rem;
+            z-index: 9998;
+            pointer-events: none;
+            white-space: nowrap;
+            animation: flySanta 6s linear forwards;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+            opacity: 0.7;
+        }
+
+        @keyframes flySanta {
+            0% {
+                left: -200px;
+                transform: rotate(5deg);
+            }
+
+            100% {
+                left: 110vw;
+                transform: rotate(-5deg);
+            }
+        }
+
+        /* Snowfall Canvas */
+        .snowfall-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            /* Above background, below content */
+        }
+
+        /* --- INAUGURATION MODAL --- */
+        #inaugurationModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        #inaugurationModal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .inauguration-card {
+            background: linear-gradient(135deg, rgba(88, 28, 135, 0.9), rgba(107, 33, 168, 0.9));
+            border: 2px solid #bef264;
+            box-shadow: 0 0 30px rgba(190, 242, 100, 0.4);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 90%;
+            width: 500px;
+            text-align: center;
+            color: #fff;
+            transform: scale(0.8);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #inaugurationModal.active .inauguration-card {
+            transform: scale(1);
+        }
+
+        .countdown-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #bef264;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(190, 242, 100, 0.5);
+        }
+
+        .inauguration-body p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            font-size: 1.05rem;
+            color: #e2e8f0;
+        }
+
+        .highlight-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border: 1px dashed #bef264;
+        }
+
+        .confetti-btn {
+            background: #bef264;
+            color: #1a2e05;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(190, 242, 100, 0.4);
+        }
+
+        .confetti-btn:hover {
+            transform: scale(1.05);
+            background: #a3e635;
+            box-shadow: 0 8px 20px rgba(190, 242, 100, 0.6);
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .close-modal-btn:hover {
+            color: #fff;
+        }
+
+        /* Animation for pulse */
+        @keyframes pulse-green {
+            0% {
+                box-shadow: 0 0 0 0 rgba(190, 242, 100, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(190, 242, 100, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(190, 242, 100, 0);
+            }
+        }
+
+        .pulse-effect {
+            animation: pulse-green 2s infinite;
+        }
+    </style>
+
+    <!-- INAUGURATION MODAL HTML -->
+    <div id="inaugurationModal">
+        <div class="inauguration-card">
+            <button class="close-modal-btn" onclick="closeInaugurationModal()">&times;</button>
+            <div class="countdown-title">🚀 FALTAM APENAS <span id="days-count">5</span> DIAS! 🚨</div>
+
+            <div class="inauguration-body">
+                <p>Você não pode perder a maior novidade do seu verão!</p>
+                <p>O seu açaí preferido ganhou um <strong>novo endereço</strong> com vista para o mar de Bitupitá e um
+                    ambiente feito para você relaxar. 🌴☀</p>
+
+                <div class="highlight-box">
+                    <h3 style="color: #bef264; font-weight: bold; margin-bottom: 5px;">🎉 INAUGURAÇÃO 20/12 às 16h 🎉
+                    </h3>
+                    <p style="font-size: 0.9rem; margin:0;">Compre e concorra a <br><strong
+                            style="font-size: 1.2rem; color: #fff;">1 KG DE AÇAÍ</strong> na hora!</p>
+                </div>
+
+                <p style="font-size: 0.9rem; opacity: 0.8;">📍 Travessa 7 Bocas (Próx. à Orla)</p>
+            </div>
+
+            <button class="confetti-btn pulse-effect" onclick="closeInaugurationModal()">Confirmar Presença ✨</button>
+        </div>
+    </div>
+
+    <script>
+        // --- LOGICA DE NATAL & INAUGURAÇÃO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const currentMonth = today.getMonth(); // 11 = Dez
+            const currentYear = today.getFullYear();
+            const inaugurationDate = new Date(currentYear, 11, 20); // 20 de Dezembro
+
+            // Só ativa em Dezembro
+            if (currentMonth === 11) {
+                initChristmasTheme();
+
+                // Lógica de Contagem Regressiva
+                const diffTime = inaugurationDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays >= 0) {
+                    const titleEl = document.querySelector('#days-count');
+                    const titleContainer = document.querySelector('.countdown-title');
+
+                    if (diffDays === 0) {
+                        titleContainer.innerHTML = "🚀 É HOJE! A INAUGURAÇÃO! 🚨";
+                    } else {
+                        titleEl.textContent = diffDays;
+                    }
+
+                    // Mostra modal automaticamente
+                    setTimeout(() => {
+                        document.getElementById('inaugurationModal').classList.add('active');
+                    }, 1000); // Delay de 1s pra dar um charme
+                }
+            }
+        });
+
+        function closeInaugurationModal() {
+            document.getElementById('inaugurationModal').classList.remove('active');
+            // Opcional: Salvar no localStorage pra não mostrar de novo na sessão? 
+            // Por enquanto deixarei mostrando sempre que atualizar como aviso importante.
+        }
+
+        function initChristmasTheme() {
+            // 1. Luzes
+            const wrapper = document.createElement('div');
+            wrapper.className = 'christmas-lights-wrapper';
+            const lights = document.createElement('ul');
+            lights.className = 'christmas-lights';
+            for (let i = 0; i < 30; i++) lights.appendChild(document.createElement('li'));
+            wrapper.appendChild(lights);
+            document.body.prepend(wrapper);
+
+            // 2. Neve (Canvas)
+            const canvas = document.createElement('canvas');
+            canvas.className = 'snowfall-canvas';
+            document.body.prepend(canvas);
+            const ctx = canvas.getContext('2d');
+            let w = window.innerWidth, h = window.innerHeight;
+            canvas.width = w; canvas.height = h;
+            const flakes = [];
+            const count = 15; // Suave
+            for (let i = 0; i < count; i++) flakes.push({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 3 + 1, s: Math.random() * 1 + 0.5 });
+
+            function drawSnow() {
+                ctx.clearRect(0, 0, w, h);
+                ctx.fillStyle = "rgba(255,255,255,0.6)";
+                ctx.beginPath();
+                flakes.forEach(f => {
+                    ctx.moveTo(f.x, f.y);
+                    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+                    f.y += f.s;
+                    if (f.y > h) f.y = -10;
+                });
+                ctx.fill();
+                requestAnimationFrame(drawSnow);
+            }
+            drawSnow();
+            window.addEventListener('resize', () => { w = window.innerWidth; h = window.innerHeight; canvas.width = w; canvas.height = h; });
+
+            // 3. Papai Noel
+            startSanta();
+        }
+
+        function startSanta() {
+            const spawn = () => {
+                const s = document.createElement('div');
+                s.className = 'flying-santa';
+                s.innerHTML = '🎅🦌💨 <span style="font-size: 1rem; color: #fff;">Ho Ho Ho!</span>';
+                s.style.top = (Math.random() * 60 + 10) + '%';
+                document.body.appendChild(s);
+                setTimeout(() => s.remove(), 8000);
+                setTimeout(spawn, Math.random() * 20000 + 10000);
+            };
+            setTimeout(spawn, 2000);
+        }
+    </script>
 </body>
 
 </html>

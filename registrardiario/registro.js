@@ -63,7 +63,80 @@ export const RegistroDiarioModule = {
             // Inicia efeitos extras
             this.addChristmasDecorations();
             this.startSantaRandomizer();
+            this.initSnowfall();
         }
+    },
+
+    initSnowfall() {
+        // Cria o Canvas para a neve
+        const canvas = document.createElement('canvas');
+        canvas.className = 'snowfall-canvas';
+        canvas.style.position = 'fixed';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.pointerEvents = 'none';
+        canvas.style.zIndex = '1'; /* Atrás do conteúdo, na frente do aurora */
+        document.body.prepend(canvas);
+
+        const ctx = canvas.getContext('2d');
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+
+        const snowflakes = [];
+        const count = 15; // Reduzi bastante como pedido (neve bem leve)
+
+        // Inicializa flocos
+        for (let i = 0; i < count; i++) {
+            snowflakes.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                r: Math.random() * 3 + 1, // Raio
+                d: Math.random() * count, // Densidade
+                speed: Math.random() * 1 + 0.5
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+            ctx.beginPath();
+
+            for (let i = 0; i < count; i++) {
+                const f = snowflakes[i];
+                ctx.moveTo(f.x, f.y);
+                ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, true);
+            }
+            ctx.fill();
+            move();
+        }
+
+        function move() {
+            for (let i = 0; i < count; i++) {
+                const f = snowflakes[i];
+                f.y += f.speed;
+                f.x += Math.sin(f.d) * 0.5; // Movimento lateral suave
+
+                // Reset quando sai da tela
+                if (f.y > height) {
+                    snowflakes[i] = { x: Math.random() * width, y: -10, r: f.r, d: f.d, speed: f.speed };
+                }
+            }
+            requestAnimationFrame(draw);
+        }
+
+        // Ajusta tamanho da tela
+        window.addEventListener('resize', () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        });
+
+        draw();
     },
 
     addChristmasDecorations() {
