@@ -73,60 +73,112 @@
 
     <style>
         :root {
-            --dark-purple: #0a0a0f;
-            --primary-purple: #6b21a8;
+            /* Paleta Premium & Vibrante */
+            --dark-purple: #05030a;
+            /* Mais profundo */
+            --primary-purple: #7c3aed;
+            --secondary-purple: #9333ea;
             --accent-green: #bef264;
-            --accent-green-hover: #a3e635;
-            --light-text: #f8fafc;
-            --subtle-text: #94a3b8;
-            --dark-text-on-green: #1a2e05;
-            --gradient-purple: linear-gradient(135deg, #6b21a8 0%, #7c3aed 100%);
-            --gradient-green: linear-gradient(135deg, #bef264 0%, #a3e635 100%);
-            /* Variáveis adicionais para componentes */
+            /* Mantendo o verde vibrante mas com melhor uso */
+            --accent-green-glow: rgba(190, 242, 100, 0.6);
+
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.15);
+
+            --text-main: #ffffff;
+            --text-secondary: #cbd5e1;
+
+            --gradient-main: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 50%, #7c3aed 100%);
+            --gradient-card: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+            --gradient-btn: linear-gradient(135deg, #bef264 0%, #84cc16 100%);
+            --gradient-gold: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+
+            /* Utils */
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 20px rgba(124, 58, 237, 0.3);
+            --shadow-green-glow: 0 0 20px rgba(190, 242, 100, 0.4);
+
+            /* Cores legadas para compatibilidade (recomenda-se migrar eventualmente) */
             --primary-color: #6b21a8;
             --primary-dark: #581c87;
             --error-color: #ef4444;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --bg-secondary: rgba(255, 255, 255, 0.05);
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --border-color: rgba(255, 255, 255, 0.1);
+            --subtle-text: #94a3b8;
+            --dark-text-on-green: #1a2e05;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--dark-purple);
-            color: var(--light-text);
+            color: var(--text-main);
             overflow-x: hidden;
             min-height: 100vh;
+            display: flex;
+            /* Garante alinhamento vertical */
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Gradient Orbs Background - Efeito Premium de Fundo */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -2;
+            opacity: 0.4;
+            animation: floatOrb 10s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, var(--primary-purple), transparent);
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            bottom: -10%;
+            right: -10%;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, var(--accent-green), transparent);
+            animation-delay: -5s;
+            opacity: 0.2;
+        }
+
+        .orb-3 {
+            top: 40%;
+            left: 50%;
+            width: 30vw;
+            height: 30vw;
+            background: radial-gradient(circle, #4c1d95, transparent);
+            transform: translate(-50%, -50%);
+            animation-delay: -2s;
+            opacity: 0.3;
+        }
+
+        @keyframes floatOrb {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(30px, -30px);
+            }
         }
 
         #particles-js {
             position: fixed;
             width: 100%;
             height: 100%;
-            background-color: var(--dark-purple);
-            /* Fundo para as partículas */
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-position: 50% 50%;
-            z-index: -3;
-            /* Abaixo de tudo */
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background:
-                radial-gradient(ellipse at 20% 20%, rgba(107, 33, 168, 0.15), transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(190, 242, 100, 0.1), transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(124, 58, 237, 0.05), transparent 70%);
-            z-index: -2;
-            /* Acima do particles-js, abaixo do conteúdo */
+            z-index: -1;
+            /* Particulas discretas sobre os orbs */
         }
 
         /* Animações Suaves */
@@ -141,11 +193,11 @@
         }
 
         .fade-in-up.delay-2 {
-            animation-delay: 0.3s;
+            animation-delay: 0.2s;
         }
 
         .fade-in-up.delay-3 {
-            animation-delay: 0.5s;
+            animation-delay: 0.3s;
         }
 
         .fade-in-up.delay-4 {
@@ -174,16 +226,20 @@
         }
 
         .btn-primary {
-            background: var(--gradient-green);
+            background: var(--gradient-btn);
             color: var(--dark-text-on-green);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-green-glow);
+            z-index: 1;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(190, 242, 100, 0.3);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(190, 242, 100, 0.4);
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
         .btn-primary::before {
@@ -193,58 +249,62 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn-primary:hover::before {
-            left: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.6s;
+            z-index: -1;
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--glass-highlight);
             border-color: var(--accent-green);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
-        /* Logo com Glow */
+        /* Logo com Glow Avançado */
         .logo-glow {
-            box-shadow:
-                0 0 20px rgba(190, 242, 100, 0.3),
-                0 0 40px rgba(190, 242, 100, 0.1);
-            animation: logoPulse 3s ease-in-out infinite;
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1), var(--shadow-glow);
+            animation: logoPulse 4s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-glow:hover {
+            transform: scale(1.05) rotate(2deg);
         }
 
         @keyframes logoPulse {
 
             0%,
             100% {
-                box-shadow:
-                    0 0 20px rgba(190, 242, 100, 0.3),
-                    0 0 40px rgba(190, 242, 100, 0.1);
+                box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1), 0 0 20px rgba(124, 58, 237, 0.4);
             }
 
             50% {
-                box-shadow:
-                    0 0 30px rgba(190, 242, 100, 0.5),
-                    0 0 60px rgba(190, 242, 100, 0.2);
+                box-shadow: 0 0 0 6px rgba(190, 242, 100, 0.3), 0 0 40px rgba(124, 58, 237, 0.6);
             }
         }
 
         /* Modal Aprimorado */
+        /* Modal Aprimorado */
         .modal-content {
-            background: rgba(15, 15, 25, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(190, 242, 100, 0.2);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            background: rgba(10, 10, 20, 0.85);
+            /* Fundo mais escuro para contraste */
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            border-radius: 24px;
+            /* Bordas mais arredondadas */
         }
 
         /* Botão de Avaliação Destacado */
@@ -326,20 +386,22 @@
         }
 
         /* Cardápio Dinâmico */
+        /* Cardápio Dinâmico */
         .menu-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+            background: var(--gradient-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
             padding: 16px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+            backdrop-filter: blur(5px);
         }
 
         .menu-item:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             border-color: var(--accent-green);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.3);
         }
 
         .menu-item-image {
@@ -753,30 +815,42 @@
 </head>
 
 <body class="flex items-center justify-center min-h-screen p-6">
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
     <div id="particles-js" aria-hidden="true"></div>
 
-    <main role="main" class="w-full max-w-sm mx-auto text-center z-10">
+    <main role="main" class="w-full max-w-sm mx-auto text-center z-10 relative">
 
-        <div class="fade-in-up delay-1">
-            <img id="logo" src="https://i.imgur.com/d1KJ35R.jpeg" alt="Logo Açaí Sabor da Terra"
-                class="w-28 h-28 rounded-full mx-auto border-4 border-white/10 shadow-lg logo-glow">
+        <!-- Header Premium -->
+        <div class="fade-in-up delay-1 mb-8 pt-8">
+            <div class="relative inline-block group">
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-purple-600 to-green-400 rounded-full blur opacity-40 group-hover:opacity-60 transition-opacity duration-500">
+                </div>
+                <img id="logo" src="https://i.imgur.com/d1KJ35R.jpeg" alt="Logo Açaí Sabor da Terra"
+                    class="relative w-32 h-32 rounded-full mx-auto border-4 border-white/10 shadow-2xl logo-glow object-cover z-10">
+            </div>
 
-            <h1 class="text-2xl font-extrabold mt-6 tracking-tight">Açaí Sabor da Terra</h1>
-            <p class="mt-2 text-md opacity-70" style="color: var(--subtle-text);">Mais que açaí, uma experiência.</p>
+            <h1 class="text-3xl font-black mt-6 tracking-tight text-white drop-shadow-lg glitch-text">
+                Açaí Sabor da Terra
+            </h1>
+            <p class="mt-2 text-lg font-medium text-gray-300">Mais que açaí, uma <span
+                    class="text-[#bef264]">experiência</span>.</p>
 
-            <div class="flex justify-center space-x-5 mt-6 text-xl" style="color: var(--subtle-text);">
+            <div class="flex justify-center space-x-6 mt-6">
                 <a id="instagram-link" href="https://www.instagram.com/acaisabordaterra_" target="_blank"
                     aria-label="Instagram"
-                    class="transition-all duration-300 hover:scale-125 hover:text-[var(--accent-green)] hover-lift">
+                    class="text-2xl text-white/70 hover:text-[#E1306C] transition-all duration-300 transform hover:scale-125 hover:rotate-6">
                     <i class="fab fa-instagram"></i>
                 </a>
                 <a id="whatsapp-link" href="https://wa.me/5588988229312" target="_blank" aria-label="WhatsApp"
-                    class="transition-all duration-300 hover:scale-125 hover:text-[var(--accent-green)] hover-lift">
+                    class="text-2xl text-white/70 hover:text-[#25D366] transition-all duration-300 transform hover:scale-125 hover:-rotate-6">
                     <i class="fab fa-whatsapp"></i>
                 </a>
                 <a id="facebook-link" href="https://www.facebook.com/profile.php?id=61572671844988&mibextid=ZbWKwL"
                     target="_blank" aria-label="Facebook"
-                    class="transition-all duration-300 hover:scale-125 hover:text-[var(--accent-green)] hover-lift">
+                    class="text-2xl text-white/70 hover:text-[#1877F2] transition-all duration-300 transform hover:scale-125 hover:rotate-6">
                     <i class="fab fa-facebook"></i>
                 </a>
             </div>
@@ -883,12 +957,158 @@
             </div>
         </div>
 
-        <footer class="mt-16 text-center text-xs opacity-50 fade-in-up delay-4">
-            <p class="mb-2">© <span id="current-year"></span> Açaí Sabor da Terra</p>
-            <p>Feito com ❤️ por <a id="developer-link" href="https://www.instagram.com/jottaaa0" target="_blank"
-                    class="font-semibold underline hover:text-white">@jottaaa0</a></p>
+        <footer
+            class="mt-20 pt-10 pb-10 border-t border-white/10 text-center text-sm opacity-80 fade-in-up delay-4 bg-black/20 backdrop-blur-md rounded-t-3xl">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-6 mb-8 text-left max-w-4xl mx-auto">
+                <!-- Coluna 1: Marca -->
+                <div class="space-y-4">
+                    <h4 class="font-black text-xl text-white">Açaí Sabor da Terra</h4>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        A melhor experiência de açaí da região. Qualidade, sabor e carinho em cada camada.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://www.instagram.com/acaisabordaterra_" target="_blank"
+                            class="text-white/60 hover:text-[#E1306C] transition-colors"><i
+                                class="fab fa-instagram text-lg"></i></a>
+                        <a href="https://wa.me/5588988229312" target="_blank"
+                            class="text-white/60 hover:text-[#25D366] transition-colors"><i
+                                class="fab fa-whatsapp text-lg"></i></a>
+                    </div>
+                </div>
+
+                <!-- Coluna 2: Links Rápidos -->
+                <div class="space-y-2">
+                    <h4 class="font-bold text-white mb-2">Institucional</h4>
+                    <ul class="space-y-2 text-xs text-gray-400">
+                        <li><button onclick="openModal('termsModal')"
+                                class="hover:text-[#bef264] transition-colors">Termos de Uso</button></li>
+                        <li><button onclick="openModal('privacyModal')"
+                                class="hover:text-[#bef264] transition-colors">Política de Privacidade</button></li>
+                        <li><a href="https://acaisabordaterra.deeliv.app/" target="_blank"
+                                class="hover:text-[#bef264] transition-colors">Faça seu Pedido</a></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 3: Contato -->
+                <div class="space-y-2">
+                    <h4 class="font-bold text-white mb-2">Contato</h4>
+                    <p class="text-xs text-gray-400"><i class="fa-solid fa-location-dot mr-2"></i>Travessa 7 Bocas
+                        (Próx. à Orla)</p>
+                    <p class="text-xs text-gray-400"><i
+                            class="fa-solid fa-envelope mr-2"></i>pix@acaisabordaterra.com.br</p>
+                    <p class="text-xs text-gray-400"><i class="fa-solid fa-phone mr-2"></i>(88) 98822-9312</p>
+                </div>
+            </div>
+
+            <div
+                class="border-t border-white/5 pt-6 px-6 flex flex-col md:flex-row justify-between items-center max-w-4xl mx-auto text-xs text-gray-500">
+                <p class="mb-2 md:mb-0">© <span id="current-year">2025</span> Açaí Sabor da Terra. Todos os direitos
+                    reservados.</p>
+                <p>Desenvolvido com 💜 por <a href="https://www.instagram.com/jottaaa0" target="_blank"
+                        class="font-bold hover:text-[#bef264] transition-colors">@jottaaa0</a></p>
+            </div>
         </footer>
     </main>
+
+    <!-- MODAL: TERMOS DE USO -->
+    <div id="termsModal"
+        class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9999]">
+        <div
+            class="bg-[#0f0a14] border border-white/10 p-6 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-y-auto relative animate-fade-in-up">
+            <button onclick="closeModal('termsModal')"
+                class="absolute top-4 right-4 text-white/50 hover:text-white text-2xl">&times;</button>
+            <h2 class="text-2xl font-bold text-white mb-6 border-b border-white/10 pb-2">Termos de Uso</h2>
+            <div class="space-y-4 text-sm text-gray-300 leading-relaxed text-justify">
+                <p>Bem-vindo ao Açaí Sabor da Terra. Ao utilizar nossos serviços, você concorda com os seguintes termos:
+                </p>
+
+                <h3 class="font-bold text-[#bef264]">1. Pedidos e Entregas</h3>
+                <p>Nos comprometemos a entregar produtos frescos e de qualidade. O tempo de entrega pode variar conforme
+                    a demanda e localização. Verifique a área de cobertura no momento do pedido.</p>
+
+                <h3 class="font-bold text-[#bef264]">2. Pagamentos</h3>
+                <p>Aceitamos cartões, PIX e dinheiro. O pagamento deve ser confirmado para que o pedido seja preparado.
+                    Em caso de falha no pagamento, o pedido poderá ser cancelado.</p>
+
+                <h3 class="font-bold text-[#bef264]">3. Uso Indevido</h3>
+                <p>É proibido utilizar nosso site para práticas fraudulentas, spam ou qualquer atividade ilegal.
+                    Reservamo-nos o direito de bloquear usuários que violem estas regras.</p>
+
+                <h3 class="font-bold text-[#bef264]">4. Alterações</h3>
+                <p>Podemos atualizar estes termos a qualquer momento. Recomendamos a consulta periódica.</p>
+            </div>
+            <div class="mt-6 text-center">
+                <button onclick="closeModal('termsModal')"
+                    class="px-6 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white font-bold transition-colors">Entendi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: POLÍTICA DE PRIVACIDADE -->
+    <div id="privacyModal"
+        class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9999]">
+        <div
+            class="bg-[#0f0a14] border border-white/10 p-6 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-y-auto relative animate-fade-in-up">
+            <button onclick="closeModal('privacyModal')"
+                class="absolute top-4 right-4 text-white/50 hover:text-white text-2xl">&times;</button>
+            <h2 class="text-2xl font-bold text-white mb-6 border-b border-white/10 pb-2">Política de Privacidade</h2>
+            <div class="space-y-4 text-sm text-gray-300 leading-relaxed text-justify">
+                <p>Sua privacidade é importante para nós. Esta política explica como tratamos seus dados:</p>
+
+                <h3 class="font-bold text-[#bef264]">1. Coleta de Dados</h3>
+                <p>Coletamos apenas as informações necessárias para processar seu pedido (nome, endereço, telefone). Não
+                    armazenamos detalhes completos do seu cartão de crédito.</p>
+
+                <h3 class="font-bold text-[#bef264]">2. Uso das Informações</h3>
+                <p>Usamos seus dados exclusivamente para: entregar seu açaí, comunicar sobre o status do pedido e, se
+                    você autorizar, enviar promoções exclusivas.</p>
+
+                <h3 class="font-bold text-[#bef264]">3. Compartilhamento</h3>
+                <p>Não vendemos nem compartilhamos seus dados com terceiros, exceto parceiros logísticos estritamente
+                    para fins de entrega.</p>
+
+                <h3 class="font-bold text-[#bef264]">4. Seus Direitos</h3>
+                <p>Você pode solicitar a exclusão dos seus dados de nossa base a qualquer momento entrando em contato
+                    conosco.</p>
+            </div>
+            <div class="mt-6 text-center">
+                <button onclick="closeModal('privacyModal')"
+                    class="px-6 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white font-bold transition-colors">Entendi</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ATUALIZAÇÃO AUTOMÁTICA DO ANO
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("current-year").textContent = new Date().getFullYear();
+        });
+
+        // LÓGICA DOS MODAIS JURÍDICOS
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        // Fechar ao clicar fora
+        window.onclick = function (event) {
+            if (event.target.classList.contains('fixed')) {
+                event.target.classList.add('hidden');
+                event.target.classList.remove('flex');
+            }
+        }
+    </script>
 
     <!-- Mascote Animado -->
     <!-- <div class="mascot" id="mascot" title="Olá! Precisa de ajuda?">
@@ -1020,54 +1240,74 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Pack 1 -->
                     <div
-                        class="bg-white/5 p-4 rounded-xl border border-white/10 hover:border-[#bef264] transition-colors relative overflow-hidden group">
+                        class="menu-item relative group overflow-hidden border border-white/10 hover:border-[#bef264] transition-all duration-500">
                         <div
-                            class="absolute top-0 right-0 bg-[#bef264] text-black text-xs font-bold px-2 py-1 rounded-bl-lg">
+                            class="absolute top-0 right-0 bg-gradient-to-r from-[#bef264] to-[#a3e635] text-black text-xs font-black px-3 py-1 rounded-bl-xl shadow-lg z-10">
                             POPULAR</div>
-                        <h4 class="font-bold text-lg text-white mb-2">1. Básico da Galera</h4>
+                        <div
+                            class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        </div>
+                        <h4 class="font-black text-xl text-white mb-2 relative z-10">1. Básico da Galera</h4>
                         <!-- Preço removido -->
-                        <ul class="text-sm text-gray-400 space-y-1 mb-4">
-                            <li>• 10L Açaí Tradicional</li>
-                            <li>• 6 Acompanhamentos Clássicos</li>
-                            <li>• Carrinho + 1 Operador (3h)</li>
-                            <li>• Até 60 pessoas (200ml)</li>
+                        <ul class="text-sm text-gray-300 space-y-2 mb-4 relative z-10">
+                            <li class="flex items-center"><i class="fa-solid fa-check text-[#bef264] mr-2 text-xs"></i>
+                                10L Açaí Tradicional</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-[#bef264] mr-2 text-xs"></i>
+                                6 Acompanhamentos</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-[#bef264] mr-2 text-xs"></i>
+                                Carrinho + 1 Operador (3h)</li>
+                            <li class="flex items-center"><i class="fa-solid fa-users text-[#bef264] mr-2 text-xs"></i>
+                                Até 60 pessoas (200ml)</li>
                         </ul>
                     </div>
 
                     <!-- Pack 2 -->
-                    <div
-                        class="bg-white/5 p-4 rounded-xl border border-white/10 hover:border-purple-400 transition-colors">
-                        <h4 class="font-bold text-lg text-white mb-2">2. Kids & Teen 🍭</h4>
+                    <!-- Pack 2 -->
+                    <div class="menu-item border border-white/10 hover:border-purple-400 transition-all duration-500">
+                        <h4 class="font-black text-xl text-white mb-2">2. Kids & Teen 🍭</h4>
                         <!-- Preço removido -->
-                        <ul class="text-sm text-gray-400 space-y-1 mb-4">
-                            <li>• 5L Açaí + 5L Creme (Oreo/Paçoquita)</li>
-                            <li>• 6 Clássicos + 1 Especial</li>
-                            <li>• Carrinho + 1 Operador (3h)</li>
+                        <ul class="text-sm text-gray-300 space-y-2 mb-4">
+                            <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2 text-xs"></i>
+                                5L Açaí + 5L Creme</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2 text-xs"></i>
+                                6 Clássicos + 1 Especial</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2 text-xs"></i>
+                                Carrinho + 1 Operador (3h)</li>
                         </ul>
                     </div>
 
                     <!-- Pack 3 -->
-                    <div
-                        class="bg-white/5 p-4 rounded-xl border border-white/10 hover:border-blue-400 transition-colors">
-                        <h4 class="font-bold text-lg text-white mb-2">3. Clássico Ninho ⭐</h4>
+                    <!-- Pack 3 -->
+                    <div class="menu-item border border-white/10 hover:border-blue-400 transition-all duration-500">
+                        <h4 class="font-black text-xl text-white mb-2">3. Clássico Ninho ⭐</h4>
                         <!-- Preço removido -->
-                        <ul class="text-sm text-gray-400 space-y-1 mb-4">
-                            <li>• 10L Açaí Esp. + 5L Creme Ninho</li>
-                            <li>• 6 Clássicos + 2 Especiais (Leite Pó/Gotas)</li>
-                            <li>• Carrinho + 1-2 Operadores (3h)</li>
+                        <ul class="text-sm text-gray-300 space-y-2 mb-4">
+                            <li class="flex items-center"><i class="fa-solid fa-check text-blue-400 mr-2 text-xs"></i>
+                                10L Açaí + 5L Ninho</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-blue-400 mr-2 text-xs"></i> 6
+                                Clássicos + 2 Especiais</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-blue-400 mr-2 text-xs"></i>
+                                Carrinho + 1-2 Ops (3h)</li>
                         </ul>
                     </div>
 
                     <!-- Pack 4 -->
+                    <!-- Pack 4 -->
                     <div
-                        class="bg-gradient-to-br from-yellow-900/40 to-yellow-600/20 p-4 rounded-xl border border-yellow-500/30 hover:border-yellow-400 transition-colors">
-                        <h4 class="font-bold text-lg text-yellow-400 mb-2">4. Premium Gold 👑</h4>
+                        class="menu-item border border-yellow-500/30 hover:border-yellow-400 transition-all duration-500 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-transparent"></div>
+                        <h4 class="font-black text-xl text-yellow-400 mb-2 relative z-10">4. Premium Gold 👑</h4>
                         <!-- Preço removido -->
-                        <ul class="text-sm text-gray-300 space-y-1 mb-4">
-                            <li>• 10L Açaí Prem. + 5L Creme Prem.</li>
-                            <li>• Clássicos Livres</li>
-                            <li>• <strong>Inclusões Luxo:</strong> Nutella, Cereja, Castanha</li>
-                            <li>• Copos Premium + 2 Operadores (4h)</li>
+                        <ul class="text-sm text-gray-300 space-y-2 mb-4 relative z-10">
+                            <li class="flex items-center"><i class="fa-solid fa-star text-yellow-500 mr-2 text-xs"></i>
+                                10L Açaí Prem. + 5L Creme</li>
+                            <li class="flex items-center"><i class="fa-solid fa-star text-yellow-500 mr-2 text-xs"></i>
+                                Clássicos Livres</li>
+                            <li class="flex items-center"><i class="fa-solid fa-crown text-yellow-500 mr-2 text-xs"></i>
+                                <strong>Inclusões Luxo:</strong> Nutella, etc
+                            </li>
+                            <li class="flex items-center"><i class="fa-solid fa-star text-yellow-500 mr-2 text-xs"></i>
+                                Copos Premium + 2 Ops (4h)</li>
                         </ul>
                     </div>
                 </div>
@@ -1378,32 +1618,45 @@ END:VCARD`;
             });
         });
 
-        /* particles.js config */
+        /* Parallax Effect for Orbs */
+        document.addEventListener('mousemove', (e) => {
+            const orbs = document.querySelectorAll('.bg-orb');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+
+            orbs.forEach((orb, index) => {
+                const speed = (index + 1) * 20;
+                const xOffset = (window.innerWidth / 2 - e.clientX) / speed;
+                const yOffset = (window.innerHeight / 2 - e.clientY) / speed;
+                orb.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+            });
+        });
+
+        /* Configuração do Particles.js - Estilo Sutil Premium */
         particlesJS("particles-js", {
             "particles": {
                 "number": {
-                    "value": 40, /* Reduzido de 80 para 40 */
+                    "value": 30, /* Menos partículas para um visual mais limpo */
                     "density": { "enable": true, "value_area": 800 }
                 },
-                "color": { "value": "#bef264" /* Cor dos pontinhos (accent-green) */ },
+                "color": { "value": "#ffffff" /* Branco para melhor contraste com o fundo escuro */ },
                 "shape": {
                     "type": "circle",
                     "stroke": { "width": 0, "color": "#000000" },
-                    "polygon": { "nb_sides": 5 },
-                    "image": { "src": "img/github.svg", "width": 100, "height": 100 }
+                    "polygon": { "nb_sides": 5 }
                 },
                 "opacity": {
-                    "value": 0.6, // Slightly higher base opacity
-                    "random": true, // Enable random opacity
+                    "value": 0.3, /* Mais sutil */
+                    "random": true,
                     "anim": {
-                        "enable": true, // Enable opacity animation
-                        "speed": 1,
-                        "opacity_min": 0.2, // Minimum opacity
+                        "enable": true,
+                        "speed": 0.5,
+                        "opacity_min": 0.1,
                         "sync": false
                     }
                 },
                 "size": {
-                    "value": 3,
+                    "value": 2,
                     "random": true,
                     "anim": {
                         "enable": false,
@@ -1414,19 +1667,19 @@ END:VCARD`;
                 },
                 "line_linked": {
                     "enable": true,
-                    "distance": 180, // Increased distance for sparser lines
-                    "color": "#7c3aed", /* Cor das linhas (primary-purple) */
-                    "opacity": 0.4,
+                    "distance": 150,
+                    "color": "#ffffff",
+                    "opacity": 0.1, /* Linhas bem sutis */
                     "width": 1
                 },
                 "move": {
                     "enable": true,
-                    "speed": 2, /* Reduzido de 6 para 2 */
+                    "speed": 1, /* Movimento lento e elegante */
                     "direction": "none",
-                    "random": true, /* Alterado para true para movimento mais natural */
+                    "random": true,
                     "straight": false,
-                    "out_mode": "bounce", // Changed to bounce for "balanço" effect
-                    "bounce": true, // Explicitly enable bounce
+                    "out_mode": "out",
+                    "bounce": false,
                     "attract": {
                         "enable": false,
                         "rotateX": 600,
@@ -1437,19 +1690,19 @@ END:VCARD`;
             "interactivity": {
                 "detect_on": "canvas",
                 "events": {
-                    "onhover": { "enable": false, /* Desativado */ "mode": "grab" },
-                    "onclick": { "enable": false, /* Desativado */ "mode": "push" },
+                    "onhover": { "enable": true, "mode": "grab" }, /* Reativando interação leve */
+                    "onclick": { "enable": true, "mode": "push" },
                     "resize": true
                 },
                 "modes": {
-                    "grab": { "distance": 140, "line_linked": { "opacity": 1 } },
+                    "grab": { "distance": 140, "line_linked": { "opacity": 0.3 } },
                     "bubble": { "distance": 400, "size": 40, "duration": 2, "opacity": 8, "speed": 3 },
                     "repulse": { "distance": 200, "duration": 0.4 },
-                    "push": { "particles_nb": 4 },
+                    "push": { "particles_nb": 2 },
                     "remove": { "particles_nb": 2 }
                 }
             },
-            "retina_detect": false /* Desativado */
+            "retina_detect": true
         });
     </script>
     <!-- CHRISTMAS & INAUGURATION EXTRA -->
