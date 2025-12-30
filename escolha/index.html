@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,8 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥤</text></svg>">
+    <link rel="icon" type="image/x-icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥤</text></svg>">
 </head>
+
 <body>
     <div class="app-container">
         <header class="main-header">
@@ -56,6 +59,20 @@
                     </div>
                     <div class="card-arrow">→</div>
                 </a>
+
+                <a href="../estoque/" class="option-card estoque-card">
+                    <div class="card-icon">📋</div>
+                    <div class="card-content">
+                        <h3>Relatório de Estoque</h3>
+                        <p>Controle de insumos e alerta de reposição</p>
+                        <div class="card-features">
+                            <span class="feature">• Monitorar níveis</span>
+                            <span class="feature">• Atualizar quantidades</span>
+                            <span class="feature">• Lista de compras</span>
+                        </div>
+                    </div>
+                    <div class="card-arrow">→</div>
+                </a>
             </div>
 
             <div class="quick-stats">
@@ -85,7 +102,7 @@
         // Atualizar data e horário em tempo real
         function atualizarDataHora() {
             const agora = new Date();
-            
+
             // Formatar data
             const dataFormatada = agora.toLocaleDateString('pt-BR', {
                 weekday: 'long',
@@ -93,13 +110,13 @@
                 month: 'long',
                 day: 'numeric'
             });
-            
+
             // Formatar horário
             const horarioFormatado = agora.toLocaleTimeString('pt-BR', {
                 hour: '2-digit',
                 minute: '2-digit'
             });
-            
+
             document.getElementById('dataAtual').textContent = dataFormatada;
             document.getElementById('horarioAtual').textContent = horarioFormatado;
         }
@@ -110,23 +127,23 @@
 
         // Adicionar efeito de hover nos cards
         document.querySelectorAll('.option-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
+            card.addEventListener('mouseenter', function () {
                 this.style.transform = 'translateY(-5px) scale(1.02)';
             });
-            
-            card.addEventListener('mouseleave', function() {
+
+            card.addEventListener('mouseleave', function () {
                 this.style.transform = 'translateY(0) scale(1)';
             });
         });
 
         // Adicionar efeito de clique
         document.querySelectorAll('.option-card').forEach(card => {
-            card.addEventListener('click', function(e) {
+            card.addEventListener('click', function (e) {
                 // Criar efeito de ripple
                 const ripple = document.createElement('div');
                 ripple.classList.add('ripple');
                 this.appendChild(ripple);
-                
+
                 setTimeout(() => {
                     ripple.remove();
                 }, 600);
@@ -134,4 +151,5 @@
         });
     </script>
 </body>
-</html> 
+
+</html>

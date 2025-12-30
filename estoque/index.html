@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Estoque - Açaí Sabor da Terra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
+</head>
+
+<body>
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-card">
+            <div class="login-icon">🔒</div>
+            <h2>Acesso Restrito</h2>
+            <p>Digite a senha para acessar o estoque</p>
+            <form id="loginForm">
+                <div class="input-group">
+                    <input type="password" id="senhaInput" placeholder="Senha de administrador" required
+                        autocomplete="current-password">
+                    <button type="button" id="togglePassword" class="icon-btn">👁️</button>
+                </div>
+                <div id="loginError" class="error-message"></div>
+                <button type="submit" class="btn-login">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="appContainer" class="app-container hidden">
+        <header class="main-header">
+            <div class="header-top">
+                <a href="../escolha/" class="back-btn">← Voltar</a>
+                <div class="header-actions-top">
+                    <button id="tutorialBtn" class="icon-btn" title="Como usar?">❓</button>
+                    <button id="toggleEditBtn" class="icon-btn" title="Modo Edição">✏️</button>
+                    <button id="toggleInventoryBtn" class="icon-btn" title="Inventário Rápido">⚡</button>
+                    <button id="refreshBtn" class="icon-btn" title="Atualizar">↻</button>
+                </div>
+            </div>
+
+            <div class="header-content">
+                <h1>Controle de Estoque</h1>
+                <p>Relatório atualizado em tempo real</p>
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="🔍 Buscar item..." autocomplete="off">
+                </div>
+            </div>
+        </header>
+
+        <main class="categories-container" id="categoriesContainer">
+            <!-- As categorias serão geradas dinamicamente aqui -->
+            <div class="loading-state">
+                <div class="spinner"></div>
+                <p>Carregando estoque...</p>
+            </div>
+        </main>
+
+        <!-- Botão Flutuante (FAB) WhatsApp -->
+        <button id="whatsappBtn" class="fab-whatsapp" title="Enviar Relatório no WhatsApp">
+            <span class="whatsapp-icon">📱</span>
+            <span class="whatsapp-text">Gerar Relatório</span>
+        </button>
+
+        <!-- Botão Flutuante Adicionar Categoria (Visível apenas no modo edição) -->
+        <button id="addCategoryFab" class="fab-add hidden" title="Adicionar Categoria">
+            +
+        </button>
+
+        <footer class="main-footer">
+            <p>&copy; 2025 Açaí Sabor da Terra</p>
+        </footer>
+    </div>
+
+    <!-- INVENTÁRIO RÁPIDO OVERLAY -->
+    <div id="inventoryOverlay" class="inventory-overlay hidden">
+        <header class="inventory-header">
+            <h2>⚡ Inventário Rápido</h2>
+            <div class="inventory-search-container">
+                <input type="text" id="inventorySearchInput" placeholder="🔍 Buscar para contar..." autocomplete="off">
+            </div>
+            <p style="margin-top: 8px; font-size: 0.8rem;">Digite apenas o que contar.</p>
+        </header>
+        <div id="inventoryList" class="inventory-list">
+            <!-- Itens para contagem -->
+        </div>
+        <div class="inventory-display-footer">
+            <div class="stats-counter" id="inventoryStats">
+                <span id="countedItems">0</span> itens contados
+            </div>
+            <div class="inventory-actions">
+                <button id="cancelInventoryBtn" class="btn-cancel">Cancelar</button>
+                <button id="finishInventoryBtn" class="btn-confirm">Finalizar e Zerar Restante</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modais -->
+    <!-- Modal Adicionar/Editar Item -->
+    <div id="itemModal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modalTitle">Adicionar Item</h3>
+            <form id="itemForm">
+                <input type="hidden" id="itemCategoryId">
+                <input type="hidden" id="itemIndex"> <!-- Se preenchido, é edição -->
+
+                <div class="form-group">
+                    <label>Nome do Item</label>
+                    <input type="text" id="itemNameInput" required placeholder="Ex: Chocolate">
+                </div>
+
+                <div class="form-group">
+                    <label>Quantidade Inicial</label>
+                    <input type="number" id="itemQtyInput" required min="0" value="0">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('itemModal')">Cancelar</button>
+                    <button type="submit" class="btn-confirm">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Categoria -->
+    <div id="categoryModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Nova Categoria</h3>
+            <form id="categoryForm">
+                <div class="form-group">
+                    <label>Nome da Categoria (com Emoji)</label>
+                    <input type="text" id="categoryNameInput" required placeholder="Ex: 🥫 Conservas">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('categoryModal')">Cancelar</button>
+                    <button type="submit" class="btn-confirm">Criar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Preview WhatsApp -->
+    <div id="previewModal" class="modal hidden">
+        <div class="modal-content preview-content">
+            <h3>📝 Pré-visualização</h3>
+            <p class="preview-hint">Confira antes de enviar:</p>
+            <div id="whatsappPreviewArea" class="whatsapp-preview-box">
+                <!-- Conteúdo do texto aqui -->
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModal('previewModal')">Editar</button>
+                <button type="button" id="confirmSendWhatsapp" class="btn-confirm whatsapp-green">
+                    Enviar Agora 🚀
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmação Genérico -->
+    <div id="confirmationModal" class="modal hidden">
+        <div class="modal-content confirmation-content">
+            <div class="modal-icon">??</div>
+            <h3 id="confirmTitle">Tem certeza?</h3>
+            <p id="confirmMessage" class="confirm-text">Essa ação não pode ser desfeita.</p>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" id="btnConfirmCancel">Cancelar</button>
+                <button type="button" class="btn-confirm" id="btnConfirmYes">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Alerta Genérico (Success/Error) -->
+    <div id="alertModal" class="modal hidden">
+        <div class="modal-content confirmation-content">
+            <div class="modal-icon" id="alertIcon">⚠️</div>
+            <h3 id="alertTitle">Atenção!</h3>
+            <p id="alertMessage" class="confirm-text">Mensagem do alerta.</p>
+            <div class="modal-actions">
+                <button type="button" class="btn-confirm" id="btnAlertOk" style="width: 100%;">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tutorial -->
+    <div id="tutorialModal" class="modal hidden">
+        <div class="modal-content tutorial-content">
+            <button class="tutorial-close" onclick="closeModal('tutorialModal')">✕</button>
+            <h2 class="tutorial-title">📚 Como Usar o Sistema</h2>
+
+            <div class="tutorial-sections">
+                <!-- Seção 1: Básico -->
+                <div class="tutorial-section">
+                    <h3>🏠 Visão Geral</h3>
+                    <p>Este sistema controla o estoque da loja em <b>tempo real</b>. Tudo que você alterar aqui, aparece
+                        instantaneamente para todos!</p>
+                </div>
+
+                <!-- Seção 2: Ajustar Quantidade -->
+                <div class="tutorial-section">
+                    <h3>➕ Ajustar Quantidade</h3>
+                    <p>Para alterar a quantidade de um produto:</p>
+                    <ul>
+                        <li>Clique no botão <b>+</b> para aumentar</li>
+                        <li>Clique no botão <b>-</b> para diminuir</li>
+                    </ul>
+                    <div class="tutorial-example">
+                        <span class="example-label">Exemplo:</span>
+                        Vendeu 2 M&Ms? Clique 2x no <b>-</b> do M&M.
+                    </div>
+                </div>
+
+                <!-- Seção 3: Cores de Alerta -->
+                <div class="tutorial-section">
+                    <h3>🚨 Cores de Alerta</h3>
+                    <ul>
+                        <li><span class="color-dot yellow"></span> <b>Amarelo</b> = Só tem 1 unidade (atenção!)</li>
+                        <li><span class="color-dot red"></span> <b>Vermelho</b> = ZEROU! Precisa repor.</li>
+                    </ul>
+                </div>
+
+                <!-- Seção 4: Busca -->
+                <div class="tutorial-section">
+                    <h3>🔍 Buscar Produto</h3>
+                    <p>Digite o nome do produto na barra de busca no topo. A lista filtra automaticamente!</p>
+                </div>
+
+                <!-- Seção 5: Inventário Rápido -->
+                <div class="tutorial-section highlight">
+                    <h3>⚡ Inventário Rápido</h3>
+                    <p>Essa é a função <b>mais importante</b> para fazer a contagem diária!</p>
+                    <ol>
+                        <li>Clique no botão <b>⚡</b> no topo da tela</li>
+                        <li>Uma tela de contagem vai abrir</li>
+                        <li><b>Digite a quantidade</b> de cada item que você contou fisicamente</li>
+                        <li>Use o <b>+</b> ao lado para adicionar 1 rapidamente</li>
+                        <li>Itens que você <b>NÃO</b> digitar serão <b>ZERADOS</b></li>
+                        <li>Clique em <b>"Finalizar"</b> para salvar tudo</li>
+                    </ol>
+                    <div class="tutorial-warning">
+                        ⚠️ <b>Cuidado:</b> Só finalize quando tiver contado TUDO! Itens não contados vão zerar.
+                    </div>
+                </div>
+
+                <!-- Seção 6: Modo Edição -->
+                <div class="tutorial-section">
+                    <h3>✏️ Modo Edição (Avançado)</h3>
+                    <p>Só para <b>adicionar/remover</b> produtos ou categorias:</p>
+                    <ul>
+                        <li>Clique no <b>✏️</b> para ativar</li>
+                        <li>Use <b>+</b> para adicionar itens</li>
+                        <li>Use <b>🗑️</b> para excluir</li>
+                        <li>Clique de novo no <b>✏️</b> para sair</li>
+                    </ul>
+                </div>
+
+                <!-- Seção 7: WhatsApp -->
+                <div class="tutorial-section">
+                    <h3>📱 Relatório WhatsApp</h3>
+                    <p>O botão verde no canto gera um relatório completo para enviar no WhatsApp!</p>
+                </div>
+            </div>
+
+            <div class="tutorial-footer">
+                <button class="btn-confirm" onclick="closeModal('tutorialModal')" style="width: 100%;">Entendi!
+                    👍</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tour Interativo -->
+    <div id="tourOverlay" class="tour-overlay hidden">
+        <div class="tour-spotlight"></div>
+        <div class="tour-tooltip">
+            <div class="tour-step-indicator">
+                <span id="tourCurrentStep">1</span> / <span id="tourTotalSteps">6</span>
+            </div>
+            <h4 id="tourTitle">Título</h4>
+            <p id="tourDescription">Descrição do passo</p>
+            <div class="tour-actions">
+                <button id="tourPrev" class="tour-btn tour-btn-secondary">← Anterior</button>
+                <button id="tourNext" class="tour-btn tour-btn-primary">Próximo →</button>
+            </div>
+            <button id="tourSkip" class="tour-skip">Pular tutorial</button>
+        </div>
+    </div>
+
+    <!-- Templates -->
+    <template id="categoryTemplate">
+        <section class="category-section">
+            <div class="category-header">
+                <h2 class="category-title">
+                    <span class="category-icon"></span>
+                    <span class="category-name"></span>
+                </h2>
+                <div class="category-actions hidden"> <!-- Visível no modo edição -->
+                    <div class="reorder-controls">
+                        <button class="btn-move btn-move-up" title="Mover para cima">⬆</button>
+                        <button class="btn-move btn-move-down" title="Mover para baixo">⬇</button>
+                    </div>
+                    <button class="btn-add-item" title="Adicionar Item">+</button>
+                    <button class="btn-delete-cat" title="Remover Categoria">🗑️</button>
+                </div>
+            </div>
+            <div class="items-grid"></div>
+        </section>
+    </template>
+
+    <template id="itemTemplate">
+        <div class="stock-item">
+            <div class="item-info">
+                <span class="item-name"></span>
+                <span class="item-alert" title="Estoque Baixo">⚠</span>
+            </div>
+            <div class="quantity-control">
+                <button class="qty-btn minus" aria-label="Diminuir">-</button>
+                <div class="qty-display">
+                    <span class="qty-value">0</span>
+                    <span class="qty-unit">un</span>
+                </div>
+                <button class="qty-btn plus" aria-label="Aumentar">+</button>
+            </div>
+
+            <!-- Ações de Edição (Item) -->
+            <div class="item-edit-actions hidden">
+                <div class="reorder-controls mini">
+                    <button class="btn-move-item btn-move-left" title="Mover para trás">⬅</button>
+                    <button class="btn-move-item btn-move-right" title="Mover para frente">➡</button>
+                </div>
+                <button class="btn-edit-item" title="Editar">✏️</button>
+                <button class="btn-delete-item" title="Excluir">🗑️</button>
+            </div>
+        </div>
+    </template>
+
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
